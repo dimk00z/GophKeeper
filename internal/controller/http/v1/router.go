@@ -10,9 +10,9 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 
 	// Swagger docs.
-	_ "github.com/evrone/go-clean-template/docs"
-	"github.com/evrone/go-clean-template/internal/usecase"
-	"github.com/evrone/go-clean-template/pkg/logger"
+	_ "github.com/dimk00z/GophKeeper/docs"
+	"github.com/dimk00z/GophKeeper/internal/usecase"
+	"github.com/dimk00z/GophKeeper/pkg/logger"
 )
 
 // NewRouter -.

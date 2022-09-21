@@ -1,5 +1,5 @@
 // Package app configures and runs application.
-package app
+package config
 
 import (
 	"fmt"
@@ -9,16 +9,16 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/evrone/go-clean-template/config"
-	amqprpc "github.com/evrone/go-clean-template/internal/controller/amqp_rpc"
-	v1 "github.com/evrone/go-clean-template/internal/controller/http/v1"
-	"github.com/evrone/go-clean-template/internal/usecase"
-	"github.com/evrone/go-clean-template/internal/usecase/repo"
-	"github.com/evrone/go-clean-template/internal/usecase/webapi"
-	"github.com/evrone/go-clean-template/pkg/httpserver"
-	"github.com/evrone/go-clean-template/pkg/logger"
-	"github.com/evrone/go-clean-template/pkg/postgres"
-	"github.com/evrone/go-clean-template/pkg/rabbitmq/rmq_rpc/server"
+	config "github.com/dimk00z/GophKeeper/config/server"
+	amqprpc "github.com/dimk00z/GophKeeper/internal/controller/amqp_rpc"
+	v1 "github.com/dimk00z/GophKeeper/internal/controller/http/v1"
+	"github.com/dimk00z/GophKeeper/internal/usecase"
+	"github.com/dimk00z/GophKeeper/internal/usecase/repo"
+	"github.com/dimk00z/GophKeeper/internal/usecase/webapi"
+	"github.com/dimk00z/GophKeeper/pkg/httpserver"
+	"github.com/dimk00z/GophKeeper/pkg/logger"
+	"github.com/dimk00z/GophKeeper/pkg/postgres"
+	"github.com/dimk00z/GophKeeper/pkg/rabbitmq/rmq_rpc/server"
 )
 
 // Run creates objects via constructors.

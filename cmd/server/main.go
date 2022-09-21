@@ -3,11 +3,13 @@ package main
 import (
 	"log"
 
-	"github.com/evrone/go-clean-template/config"
-	"github.com/evrone/go-clean-template/internal/app"
+	config "github.com/dimk00z/GophKeeper/config/server"
+	server "github.com/dimk00z/GophKeeper/internal/app/server"
 )
 
 func main() {
+	log.Println("Server App")
+
 	// Configuration
 	cfg, err := config.NewConfig()
 	if err != nil {
@@ -15,5 +17,5 @@ func main() {
 	}
 
 	// Run
-	app.Run(cfg)
+	server.Run(cfg)
 }
