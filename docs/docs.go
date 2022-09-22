@@ -23,7 +23,7 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/translation/do-translate": {
+        "/GophKeeper/do-translate": {
             "post": {
                 "description": "Translate a text",
                 "consumes": [
@@ -33,13 +33,13 @@ var doc = `{
                     "application/json"
                 ],
                 "tags": [
-                    "translation"
+                    "GophKeeper"
                 ],
                 "summary": "Translate",
                 "operationId": "do-translate",
                 "parameters": [
                     {
-                        "description": "Set up translation",
+                        "description": "Set up GophKeeper",
                         "name": "request",
                         "in": "body",
                         "required": true,
@@ -52,7 +52,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/entity.Translation"
+                            "$ref": "#/definitions/entity.GophKeeper"
                         }
                     },
                     "400": {
@@ -70,9 +70,9 @@ var doc = `{
                 }
             }
         },
-        "/translation/history": {
+        "/GophKeeper/history": {
             "get": {
-                "description": "Show all translation history",
+                "description": "Show all GophKeeper history",
                 "consumes": [
                     "application/json"
                 ],
@@ -80,7 +80,7 @@ var doc = `{
                     "application/json"
                 ],
                 "tags": [
-                    "translation"
+                    "GophKeeper"
                 ],
                 "summary": "Show history",
                 "operationId": "history",
@@ -102,7 +102,7 @@ var doc = `{
         }
     },
     "definitions": {
-        "entity.Translation": {
+        "entity.GophKeeper": {
             "type": "object",
             "properties": {
                 "destination": {
@@ -117,9 +117,9 @@ var doc = `{
                     "type": "string",
                     "example": "auto"
                 },
-                "translation": {
+                "GophKeeper": {
                     "type": "string",
-                    "example": "text for translation"
+                    "example": "text for GophKeeper"
                 }
             }
         },
@@ -151,7 +151,7 @@ var doc = `{
                 "history": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/entity.Translation"
+                        "$ref": "#/definitions/entity.GophKeeper"
                     }
                 }
             }
@@ -184,7 +184,7 @@ var SwaggerInfo = swaggerInfo{
 	BasePath:    "/v1",
 	Schemes:     []string{},
 	Title:       "Go Clean Template API",
-	Description: "Using a translation service as an example",
+	Description: "Using a GophKeeper service as an example",
 }
 
 type s struct{}

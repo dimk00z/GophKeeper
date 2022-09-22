@@ -21,24 +21,24 @@ type test struct {
 	err  error
 }
 
-func translation(t *testing.T) (*usecase.TranslationUseCase, *MockTranslationRepo, *MockTranslationWebAPI) {
+func GophKeeper(t *testing.T) (*usecase.GophKeeperUseCase, *MockGophKeeperRepo, *MockGophKeeperWebAPI) {
 	t.Helper()
 
 	mockCtl := gomock.NewController(t)
 	defer mockCtl.Finish()
 
-	repo := NewMockTranslationRepo(mockCtl)
-	webAPI := NewMockTranslationWebAPI(mockCtl)
+	repo := NewMockGophKeeperRepo(mockCtl)
+	webAPI := NewMockGophKeeperWebAPI(mockCtl)
 
-	translation := usecase.New(repo, webAPI)
+	GophKeeper := usecase.New(repo, webAPI)
 
-	return translation, repo, webAPI
+	return GophKeeper, repo, webAPI
 }
 
 func TestHistory(t *testing.T) {
 	t.Parallel()
 
-	translation, repo, _ := translation(t)
+	GophKeeper, repo, _ := GophKeeper(t)
 
 	tests := []test{
 		{
@@ -46,7 +46,7 @@ func TestHistory(t *testing.T) {
 			mock: func() {
 				repo.EXPECT().GetHistory(context.Background()).Return(nil, nil)
 			},
-			res: []entity.Translation(nil),
+			res: []entity.GophKeeper(nil),
 			err: nil,
 		},
 		{
@@ -54,7 +54,7 @@ func TestHistory(t *testing.T) {
 			mock: func() {
 				repo.EXPECT().GetHistory(context.Background()).Return(nil, errInternalServErr)
 			},
-			res: []entity.Translation(nil),
+			res: []entity.GophKeeper(nil),
 			err: errInternalServErr,
 		},
 	}
@@ -67,7 +67,7 @@ func TestHistory(t *testing.T) {
 
 			tc.mock()
 
-			res, err := translation.History(context.Background())
+			res, err := GophKeeper.History(context.Background())
 
 			require.Equal(t, res, tc.res)
 			require.ErrorIs(t, err, tc.err)
@@ -78,33 +78,33 @@ func TestHistory(t *testing.T) {
 func TestTranslate(t *testing.T) {
 	t.Parallel()
 
-	translation, repo, webAPI := translation(t)
+	GophKeeper, repo, webAPI := GophKeeper(t)
 
 	tests := []test{
 		{
 			name: "empty result",
 			mock: func() {
-				webAPI.EXPECT().Translate(entity.Translation{}).Return(entity.Translation{}, nil)
-				repo.EXPECT().Store(context.Background(), entity.Translation{}).Return(nil)
+				webAPI.EXPECT().Translate(entity.GophKeeper{}).Return(entity.GophKeeper{}, nil)
+				repo.EXPECT().Store(context.Background(), entity.GophKeeper{}).Return(nil)
 			},
-			res: entity.Translation{},
+			res: entity.GophKeeper{},
 			err: nil,
 		},
 		{
 			name: "web API error",
 			mock: func() {
-				webAPI.EXPECT().Translate(entity.Translation{}).Return(entity.Translation{}, errInternalServErr)
+				webAPI.EXPECT().Translate(entity.GophKeeper{}).Return(entity.GophKeeper{}, errInternalServErr)
 			},
-			res: entity.Translation{},
+			res: entity.GophKeeper{},
 			err: errInternalServErr,
 		},
 		{
 			name: "repo error",
 			mock: func() {
-				webAPI.EXPECT().Translate(entity.Translation{}).Return(entity.Translation{}, nil)
-				repo.EXPECT().Store(context.Background(), entity.Translation{}).Return(errInternalServErr)
+				webAPI.EXPECT().Translate(entity.GophKeeper{}).Return(entity.GophKeeper{}, nil)
+				repo.EXPECT().Store(context.Background(), entity.GophKeeper{}).Return(errInternalServErr)
 			},
-			res: entity.Translation{},
+			res: entity.GophKeeper{},
 			err: errInternalServErr,
 		},
 	}
@@ -117,7 +117,7 @@ func TestTranslate(t *testing.T) {
 
 			tc.mock()
 
-			res, err := translation.Translate(context.Background(), entity.Translation{})
+			res, err := GophKeeper.Translate(context.Background(), entity.GophKeeper{})
 
 			require.EqualValues(t, res, tc.res)
 			require.ErrorIs(t, err, tc.err)

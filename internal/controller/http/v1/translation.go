@@ -10,15 +10,15 @@ import (
 	"github.com/dimk00z/GophKeeper/pkg/logger"
 )
 
-type translationRoutes struct {
-	t usecase.Translation
+type GophKeeperRoutes struct {
+	t usecase.GophKeeper
 	l logger.Interface
 }
 
-func newTranslationRoutes(handler *gin.RouterGroup, t usecase.Translation, l logger.Interface) {
-	r := &translationRoutes{t, l}
+func newGophKeeperRoutes(handler *gin.RouterGroup, t usecase.GophKeeper, l logger.Interface) {
+	r := &GophKeeperRoutes{t, l}
 
-	h := handler.Group("/translation")
+	h := handler.Group("/GophKeeper")
 	{
 		h.GET("/history", r.history)
 		h.POST("/do-translate", r.doTranslate)
@@ -26,20 +26,20 @@ func newTranslationRoutes(handler *gin.RouterGroup, t usecase.Translation, l log
 }
 
 type historyResponse struct {
-	History []entity.Translation `json:"history"`
+	History []entity.GophKeeper `json:"history"`
 }
 
 // @Summary     Show history
-// @Description Show all translation history
+// @Description Show all GophKeeper history
 // @ID          history
-// @Tags  	    translation
+// @Tags  	    GophKeeper
 // @Accept      json
 // @Produce     json
 // @Success     200 {object} historyResponse
 // @Failure     500 {object} response
-// @Router      /translation/history [get]
-func (r *translationRoutes) history(c *gin.Context) {
-	translations, err := r.t.History(c.Request.Context())
+// @Router      /GophKeeper/history [get]
+func (r *GophKeeperRoutes) history(c *gin.Context) {
+	GophKeepers, err := r.t.History(c.Request.Context())
 	if err != nil {
 		r.l.Error(err, "http - v1 - history")
 		errorResponse(c, http.StatusInternalServerError, "database problems")
@@ -47,7 +47,7 @@ func (r *translationRoutes) history(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, historyResponse{translations})
+	c.JSON(http.StatusOK, historyResponse{GophKeepers})
 }
 
 type doTranslateRequest struct {
@@ -59,15 +59,15 @@ type doTranslateRequest struct {
 // @Summary     Translate
 // @Description Translate a text
 // @ID          do-translate
-// @Tags  	    translation
+// @Tags  	    GophKeeper
 // @Accept      json
 // @Produce     json
-// @Param       request body doTranslateRequest true "Set up translation"
-// @Success     200 {object} entity.Translation
+// @Param       request body doTranslateRequest true "Set up GophKeeper"
+// @Success     200 {object} entity.GophKeeper
 // @Failure     400 {object} response
 // @Failure     500 {object} response
-// @Router      /translation/do-translate [post]
-func (r *translationRoutes) doTranslate(c *gin.Context) {
+// @Router      /GophKeeper/do-translate [post]
+func (r *GophKeeperRoutes) doTranslate(c *gin.Context) {
 	var request doTranslateRequest
 	if err := c.ShouldBindJSON(&request); err != nil {
 		r.l.Error(err, "http - v1 - doTranslate")
@@ -76,9 +76,9 @@ func (r *translationRoutes) doTranslate(c *gin.Context) {
 		return
 	}
 
-	translation, err := r.t.Translate(
+	GophKeeper, err := r.t.Translate(
 		c.Request.Context(),
-		entity.Translation{
+		entity.GophKeeper{
 			Source:      request.Source,
 			Destination: request.Destination,
 			Original:    request.Original,
@@ -86,10 +86,10 @@ func (r *translationRoutes) doTranslate(c *gin.Context) {
 	)
 	if err != nil {
 		r.l.Error(err, "http - v1 - doTranslate")
-		errorResponse(c, http.StatusInternalServerError, "translation service problems")
+		errorResponse(c, http.StatusInternalServerError, "GophKeeper service problems")
 
 		return
 	}
 
-	c.JSON(http.StatusOK, translation)
+	c.JSON(http.StatusOK, GophKeeper)
 }

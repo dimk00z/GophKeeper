@@ -11,29 +11,29 @@ import (
 	"github.com/dimk00z/GophKeeper/pkg/rabbitmq/rmq_rpc/server"
 )
 
-type translationRoutes struct {
-	translationUseCase usecase.Translation
+type GophKeeperRoutes struct {
+	GophKeeperUseCase usecase.GophKeeper
 }
 
-func newTranslationRoutes(routes map[string]server.CallHandler, t usecase.Translation) {
-	r := &translationRoutes{t}
+func newGophKeeperRoutes(routes map[string]server.CallHandler, t usecase.GophKeeper) {
+	r := &GophKeeperRoutes{t}
 	{
 		routes["getHistory"] = r.getHistory()
 	}
 }
 
 type historyResponse struct {
-	History []entity.Translation `json:"history"`
+	History []entity.GophKeeper `json:"history"`
 }
 
-func (r *translationRoutes) getHistory() server.CallHandler {
+func (r *GophKeeperRoutes) getHistory() server.CallHandler {
 	return func(d *amqp.Delivery) (interface{}, error) {
-		translations, err := r.translationUseCase.History(context.Background())
+		GophKeepers, err := r.GophKeeperUseCase.History(context.Background())
 		if err != nil {
-			return nil, fmt.Errorf("amqp_rpc - translationRoutes - getHistory - r.translationUseCase.History: %w", err)
+			return nil, fmt.Errorf("amqp_rpc - GophKeeperRoutes - getHistory - r.GophKeeperUseCase.History: %w", err)
 		}
 
-		response := historyResponse{translations}
+		response := historyResponse{GophKeepers}
 
 		return response, nil
 	}

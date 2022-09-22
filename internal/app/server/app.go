@@ -1,5 +1,5 @@
 // Package app configures and runs application.
-package config
+package server
 
 import (
 	"fmt"
@@ -10,45 +10,37 @@ import (
 	"github.com/gin-gonic/gin"
 
 	config "github.com/dimk00z/GophKeeper/config/server"
-	amqprpc "github.com/dimk00z/GophKeeper/internal/controller/amqp_rpc"
 	v1 "github.com/dimk00z/GophKeeper/internal/controller/http/v1"
 	"github.com/dimk00z/GophKeeper/internal/usecase"
 	"github.com/dimk00z/GophKeeper/internal/usecase/repo"
 	"github.com/dimk00z/GophKeeper/internal/usecase/webapi"
 	"github.com/dimk00z/GophKeeper/pkg/httpserver"
 	"github.com/dimk00z/GophKeeper/pkg/logger"
-	"github.com/dimk00z/GophKeeper/pkg/postgres"
-	"github.com/dimk00z/GophKeeper/pkg/rabbitmq/rmq_rpc/server"
 )
 
 // Run creates objects via constructors.
 func Run(cfg *config.Config) {
 	l := logger.New(cfg.Log.Level)
-
-	// Repository
-	pg, err := postgres.New(cfg.PG.URL, postgres.MaxPoolSize(cfg.PG.PoolMax))
-	if err != nil {
-		l.Fatal(fmt.Errorf("app - Run - postgres.New: %w", err))
-	}
-	defer pg.Close()
+	gophKeeperRepo := repo.New(cfg.PG.URL, l)
+	gophKeeperRepo.Migrate()
 
 	// Use case
-	translationUseCase := usecase.New(
-		repo.New(pg),
+	GophKeeperUseCase := usecase.New(
+		gophKeeperRepo,
 		webapi.New(),
 	)
-
+	var err error
 	// RabbitMQ RPC Server
-	rmqRouter := amqprpc.NewRouter(translationUseCase)
+	// rmqRouter := amqprpc.NewRouter(GophKeeperUseCase)
 
-	rmqServer, err := server.New(cfg.RMQ.URL, cfg.RMQ.ServerExchange, rmqRouter, l)
-	if err != nil {
-		l.Fatal(fmt.Errorf("app - Run - rmqServer - server.New: %w", err))
-	}
+	// rmqServer, err := server.New(cfg.RMQ.URL, cfg.RMQ.ServerExchange, rmqRouter, l)
+	// if err != nil {
+	// 	l.Fatal(fmt.Errorf("app - Run - rmqServer - server.New: %w", err))
+	// }
 
 	// HTTP Server
 	handler := gin.New()
-	v1.NewRouter(handler, l, translationUseCase)
+	v1.NewRouter(handler, l, GophKeeperUseCase)
 	httpServer := httpserver.New(handler, httpserver.Port(cfg.HTTP.Port))
 
 	// Waiting signal
@@ -60,8 +52,6 @@ func Run(cfg *config.Config) {
 		l.Info("app - Run - signal: " + s.String())
 	case err = <-httpServer.Notify():
 		l.Error(fmt.Errorf("app - Run - httpServer.Notify: %w", err))
-	case err = <-rmqServer.Notify():
-		l.Error(fmt.Errorf("app - Run - rmqServer.Notify: %w", err))
 	}
 
 	// Shutdown
@@ -70,7 +60,6 @@ func Run(cfg *config.Config) {
 		l.Error(fmt.Errorf("app - Run - httpServer.Shutdown: %w", err))
 	}
 
-	err = rmqServer.Shutdown()
 	if err != nil {
 		l.Error(fmt.Errorf("app - Run - rmqServer.Shutdown: %w", err))
 	}

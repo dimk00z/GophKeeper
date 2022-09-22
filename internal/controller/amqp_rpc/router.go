@@ -6,10 +6,10 @@ import (
 )
 
 // NewRouter -.
-func NewRouter(t usecase.Translation) map[string]server.CallHandler {
+func NewRouter(t usecase.GophKeeper) map[string]server.CallHandler {
 	routes := make(map[string]server.CallHandler)
 	{
-		newTranslationRoutes(routes, t)
+		newGophKeeperRoutes(routes, t)
 	}
 
 	return routes

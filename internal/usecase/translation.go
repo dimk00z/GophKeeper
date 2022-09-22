@@ -7,41 +7,41 @@ import (
 	"github.com/dimk00z/GophKeeper/internal/entity"
 )
 
-// TranslationUseCase -.
-type TranslationUseCase struct {
-	repo   TranslationRepo
-	webAPI TranslationWebAPI
+// GophKeeperUseCase -.
+type GophKeeperUseCase struct {
+	repo   GophKeeperRepo
+	webAPI GophKeeperWebAPI
 }
 
 // New -.
-func New(r TranslationRepo, w TranslationWebAPI) *TranslationUseCase {
-	return &TranslationUseCase{
+func New(r GophKeeperRepo, w GophKeeperWebAPI) *GophKeeperUseCase {
+	return &GophKeeperUseCase{
 		repo:   r,
 		webAPI: w,
 	}
 }
 
 // History - getting translate history from store.
-func (uc *TranslationUseCase) History(ctx context.Context) ([]entity.Translation, error) {
-	translations, err := uc.repo.GetHistory(ctx)
+func (uc *GophKeeperUseCase) History(ctx context.Context) ([]entity.GophKeeper, error) {
+	GophKeepers, err := uc.repo.GetHistory(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("TranslationUseCase - History - s.repo.GetHistory: %w", err)
+		return nil, fmt.Errorf("GophKeeperUseCase - History - s.repo.GetHistory: %w", err)
 	}
 
-	return translations, nil
+	return GophKeepers, nil
 }
 
 // Translate -.
-func (uc *TranslationUseCase) Translate(ctx context.Context, t entity.Translation) (entity.Translation, error) {
-	translation, err := uc.webAPI.Translate(t)
+func (uc *GophKeeperUseCase) Translate(ctx context.Context, t entity.GophKeeper) (entity.GophKeeper, error) {
+	GophKeeper, err := uc.webAPI.Translate(t)
 	if err != nil {
-		return entity.Translation{}, fmt.Errorf("TranslationUseCase - Translate - s.webAPI.Translate: %w", err)
+		return entity.GophKeeper{}, fmt.Errorf("GophKeeperUseCase - Translate - s.webAPI.Translate: %w", err)
 	}
 
-	err = uc.repo.Store(context.Background(), translation)
+	err = uc.repo.Store(context.Background(), GophKeeper)
 	if err != nil {
-		return entity.Translation{}, fmt.Errorf("TranslationUseCase - Translate - s.repo.Store: %w", err)
+		return entity.GophKeeper{}, fmt.Errorf("GophKeeperUseCase - Translate - s.repo.Store: %w", err)
 	}
 
-	return translation, nil
+	return GophKeeper, nil
 }

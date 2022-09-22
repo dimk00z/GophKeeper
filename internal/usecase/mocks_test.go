@@ -12,99 +12,99 @@ import (
 	gomock "github.com/golang/mock/gomock"
 )
 
-// MockTranslation is a mock of Translation interface.
-type MockTranslation struct {
+// MockGophKeeper is a mock of GophKeeper interface.
+type MockGophKeeper struct {
 	ctrl     *gomock.Controller
-	recorder *MockTranslationMockRecorder
+	recorder *MockGophKeeperMockRecorder
 }
 
-// MockTranslationMockRecorder is the mock recorder for MockTranslation.
-type MockTranslationMockRecorder struct {
-	mock *MockTranslation
+// MockGophKeeperMockRecorder is the mock recorder for MockGophKeeper.
+type MockGophKeeperMockRecorder struct {
+	mock *MockGophKeeper
 }
 
-// NewMockTranslation creates a new mock instance.
-func NewMockTranslation(ctrl *gomock.Controller) *MockTranslation {
-	mock := &MockTranslation{ctrl: ctrl}
-	mock.recorder = &MockTranslationMockRecorder{mock}
+// NewMockGophKeeper creates a new mock instance.
+func NewMockGophKeeper(ctrl *gomock.Controller) *MockGophKeeper {
+	mock := &MockGophKeeper{ctrl: ctrl}
+	mock.recorder = &MockGophKeeperMockRecorder{mock}
 	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockTranslation) EXPECT() *MockTranslationMockRecorder {
+func (m *MockGophKeeper) EXPECT() *MockGophKeeperMockRecorder {
 	return m.recorder
 }
 
 // History mocks base method.
-func (m *MockTranslation) History(arg0 context.Context) ([]entity.Translation, error) {
+func (m *MockGophKeeper) History(arg0 context.Context) ([]entity.GophKeeper, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "History", arg0)
-	ret0, _ := ret[0].([]entity.Translation)
+	ret0, _ := ret[0].([]entity.GophKeeper)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // History indicates an expected call of History.
-func (mr *MockTranslationMockRecorder) History(arg0 interface{}) *gomock.Call {
+func (mr *MockGophKeeperMockRecorder) History(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "History", reflect.TypeOf((*MockTranslation)(nil).History), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "History", reflect.TypeOf((*MockGophKeeper)(nil).History), arg0)
 }
 
 // Translate mocks base method.
-func (m *MockTranslation) Translate(arg0 context.Context, arg1 entity.Translation) (entity.Translation, error) {
+func (m *MockGophKeeper) Translate(arg0 context.Context, arg1 entity.GophKeeper) (entity.GophKeeper, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Translate", arg0, arg1)
-	ret0, _ := ret[0].(entity.Translation)
+	ret0, _ := ret[0].(entity.GophKeeper)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // Translate indicates an expected call of Translate.
-func (mr *MockTranslationMockRecorder) Translate(arg0, arg1 interface{}) *gomock.Call {
+func (mr *MockGophKeeperMockRecorder) Translate(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Translate", reflect.TypeOf((*MockTranslation)(nil).Translate), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Translate", reflect.TypeOf((*MockGophKeeper)(nil).Translate), arg0, arg1)
 }
 
-// MockTranslationRepo is a mock of TranslationRepo interface.
-type MockTranslationRepo struct {
+// MockGophKeeperRepo is a mock of GophKeeperRepo interface.
+type MockGophKeeperRepo struct {
 	ctrl     *gomock.Controller
-	recorder *MockTranslationRepoMockRecorder
+	recorder *MockGophKeeperRepoMockRecorder
 }
 
-// MockTranslationRepoMockRecorder is the mock recorder for MockTranslationRepo.
-type MockTranslationRepoMockRecorder struct {
-	mock *MockTranslationRepo
+// MockGophKeeperRepoMockRecorder is the mock recorder for MockGophKeeperRepo.
+type MockGophKeeperRepoMockRecorder struct {
+	mock *MockGophKeeperRepo
 }
 
-// NewMockTranslationRepo creates a new mock instance.
-func NewMockTranslationRepo(ctrl *gomock.Controller) *MockTranslationRepo {
-	mock := &MockTranslationRepo{ctrl: ctrl}
-	mock.recorder = &MockTranslationRepoMockRecorder{mock}
+// NewMockGophKeeperRepo creates a new mock instance.
+func NewMockGophKeeperRepo(ctrl *gomock.Controller) *MockGophKeeperRepo {
+	mock := &MockGophKeeperRepo{ctrl: ctrl}
+	mock.recorder = &MockGophKeeperRepoMockRecorder{mock}
 	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockTranslationRepo) EXPECT() *MockTranslationRepoMockRecorder {
+func (m *MockGophKeeperRepo) EXPECT() *MockGophKeeperRepoMockRecorder {
 	return m.recorder
 }
 
 // GetHistory mocks base method.
-func (m *MockTranslationRepo) GetHistory(arg0 context.Context) ([]entity.Translation, error) {
+func (m *MockGophKeeperRepo) GetHistory(arg0 context.Context) ([]entity.GophKeeper, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetHistory", arg0)
-	ret0, _ := ret[0].([]entity.Translation)
+	ret0, _ := ret[0].([]entity.GophKeeper)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // GetHistory indicates an expected call of GetHistory.
-func (mr *MockTranslationRepoMockRecorder) GetHistory(arg0 interface{}) *gomock.Call {
+func (mr *MockGophKeeperRepoMockRecorder) GetHistory(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetHistory", reflect.TypeOf((*MockTranslationRepo)(nil).GetHistory), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetHistory", reflect.TypeOf((*MockGophKeeperRepo)(nil).GetHistory), arg0)
 }
 
 // Store mocks base method.
-func (m *MockTranslationRepo) Store(arg0 context.Context, arg1 entity.Translation) error {
+func (m *MockGophKeeperRepo) Store(arg0 context.Context, arg1 entity.GophKeeper) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Store", arg0, arg1)
 	ret0, _ := ret[0].(error)
@@ -112,45 +112,45 @@ func (m *MockTranslationRepo) Store(arg0 context.Context, arg1 entity.Translatio
 }
 
 // Store indicates an expected call of Store.
-func (mr *MockTranslationRepoMockRecorder) Store(arg0, arg1 interface{}) *gomock.Call {
+func (mr *MockGophKeeperRepoMockRecorder) Store(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Store", reflect.TypeOf((*MockTranslationRepo)(nil).Store), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Store", reflect.TypeOf((*MockGophKeeperRepo)(nil).Store), arg0, arg1)
 }
 
-// MockTranslationWebAPI is a mock of TranslationWebAPI interface.
-type MockTranslationWebAPI struct {
+// MockGophKeeperWebAPI is a mock of GophKeeperWebAPI interface.
+type MockGophKeeperWebAPI struct {
 	ctrl     *gomock.Controller
-	recorder *MockTranslationWebAPIMockRecorder
+	recorder *MockGophKeeperWebAPIMockRecorder
 }
 
-// MockTranslationWebAPIMockRecorder is the mock recorder for MockTranslationWebAPI.
-type MockTranslationWebAPIMockRecorder struct {
-	mock *MockTranslationWebAPI
+// MockGophKeeperWebAPIMockRecorder is the mock recorder for MockGophKeeperWebAPI.
+type MockGophKeeperWebAPIMockRecorder struct {
+	mock *MockGophKeeperWebAPI
 }
 
-// NewMockTranslationWebAPI creates a new mock instance.
-func NewMockTranslationWebAPI(ctrl *gomock.Controller) *MockTranslationWebAPI {
-	mock := &MockTranslationWebAPI{ctrl: ctrl}
-	mock.recorder = &MockTranslationWebAPIMockRecorder{mock}
+// NewMockGophKeeperWebAPI creates a new mock instance.
+func NewMockGophKeeperWebAPI(ctrl *gomock.Controller) *MockGophKeeperWebAPI {
+	mock := &MockGophKeeperWebAPI{ctrl: ctrl}
+	mock.recorder = &MockGophKeeperWebAPIMockRecorder{mock}
 	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockTranslationWebAPI) EXPECT() *MockTranslationWebAPIMockRecorder {
+func (m *MockGophKeeperWebAPI) EXPECT() *MockGophKeeperWebAPIMockRecorder {
 	return m.recorder
 }
 
 // Translate mocks base method.
-func (m *MockTranslationWebAPI) Translate(arg0 entity.Translation) (entity.Translation, error) {
+func (m *MockGophKeeperWebAPI) Translate(arg0 entity.GophKeeper) (entity.GophKeeper, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Translate", arg0)
-	ret0, _ := ret[0].(entity.Translation)
+	ret0, _ := ret[0].(entity.GophKeeper)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // Translate indicates an expected call of Translate.
-func (mr *MockTranslationWebAPIMockRecorder) Translate(arg0 interface{}) *gomock.Call {
+func (mr *MockGophKeeperWebAPIMockRecorder) Translate(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Translate", reflect.TypeOf((*MockTranslationWebAPI)(nil).Translate), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Translate", reflect.TypeOf((*MockGophKeeperWebAPI)(nil).Translate), arg0)
 }

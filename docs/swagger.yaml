@@ -1,6 +1,6 @@
 basePath: /v1
 definitions:
-  entity.Translation:
+  entity.GophKeeper:
     properties:
       destination:
         example: en
@@ -11,8 +11,8 @@ definitions:
       source:
         example: auto
         type: string
-      translation:
-        example: text for translation
+      GophKeeper:
+        example: text for GophKeeper
         type: string
     type: object
   v1.doTranslateRequest:
@@ -35,7 +35,7 @@ definitions:
     properties:
       history:
         items:
-          $ref: '#/definitions/entity.Translation'
+          $ref: '#/definitions/entity.GophKeeper'
         type: array
     type: object
   v1.response:
@@ -47,18 +47,18 @@ definitions:
 host: localhost:8080
 info:
   contact: {}
-  description: Using a translation service as an example
+  description: Using a GophKeeper service as an example
   title: Go Clean Template API
   version: "1.0"
 paths:
-  /translation/do-translate:
+  /GophKeeper/do-translate:
     post:
       consumes:
         - application/json
       description: Translate a text
       operationId: do-translate
       parameters:
-        - description: Set up translation
+        - description: Set up GophKeeper
           in: body
           name: request
           required: true
@@ -70,7 +70,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/entity.Translation'
+            $ref: '#/definitions/entity.GophKeeper'
         "400":
           description: Bad Request
           schema:
@@ -81,12 +81,12 @@ paths:
             $ref: '#/definitions/v1.response'
       summary: Translate
       tags:
-        - translation
-  /translation/history:
+        - GophKeeper
+  /GophKeeper/history:
     get:
       consumes:
         - application/json
-      description: Show all translation history
+      description: Show all GophKeeper history
       operationId: history
       produces:
         - application/json
@@ -101,5 +101,5 @@ paths:
             $ref: '#/definitions/v1.response'
       summary: Show history
       tags:
-        - translation
+        - GophKeeper
 swagger: "2.0"

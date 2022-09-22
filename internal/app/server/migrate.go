@@ -1,14 +1,14 @@
-//go:build migrate
-
 package server
 
 import (
 	"errors"
 	"log"
-	"os"
+	"strings"
 	"time"
 
+	"github.com/dimk00z/GophKeeper/pkg/logger"
 	"github.com/golang-migrate/migrate/v4"
+
 	// migrate tools
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
@@ -17,15 +17,13 @@ import (
 const (
 	_defaultAttempts = 20
 	_defaultTimeout  = time.Second
+	_sslMode         = "?sslmode=disable"
 )
 
-func init() {
-	databaseURL, ok := os.LookupEnv("PG_URL")
-	if !ok || len(databaseURL) == 0 {
-		log.Fatalf("migrate: environment variable not declared: PG_URL")
+func doMigrations(databaseURL string, l *logger.Logger) {
+	if !strings.Contains(databaseURL, _sslMode) {
+		databaseURL += _sslMode
 	}
-
-	databaseURL += "?sslmode=disable"
 
 	var (
 		attempts = _defaultAttempts
@@ -39,7 +37,7 @@ func init() {
 			break
 		}
 
-		log.Printf("Migrate: postgres is trying to connect, attempts left: %d", attempts)
+		l.Debug("Migrate: postgres is trying to connect, attempts left: %d", attempts)
 		time.Sleep(_defaultTimeout)
 		attempts--
 	}
@@ -50,12 +48,13 @@ func init() {
 
 	err = m.Up()
 	defer m.Close()
+
 	if err != nil && !errors.Is(err, migrate.ErrNoChange) {
-		log.Fatalf("Migrate: up error: %s", err)
+		l.Fatal("Migrate: up error: %s", err)
 	}
 
 	if errors.Is(err, migrate.ErrNoChange) {
-		log.Printf("Migrate: no change")
+		l.Debug("Migrate: no change")
 		return
 	}
 
