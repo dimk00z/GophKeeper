@@ -59,7 +59,7 @@ func healthCheck(attempts int) error {
 	return err
 }
 
-// HTTP POST: /translation/do-translate.
+// HTTP POST: /GophKeeper/do-translate.
 func TestHTTPDoTranslate(t *testing.T) {
 	body := `{
 		"destination": "en",
@@ -68,11 +68,11 @@ func TestHTTPDoTranslate(t *testing.T) {
 	}`
 	Test(t,
 		Description("DoTranslate Success"),
-		Post(basePath+"/translation/do-translate"),
+		Post(basePath+"/GophKeeper/do-translate"),
 		Send().Headers("Content-Type").Add("application/json"),
 		Send().Body().String(body),
 		Expect().Status().Equal(http.StatusOK),
-		Expect().Body().JSON().JQ(".translation").Equal("text for translation"),
+		Expect().Body().JSON().JQ(".GophKeeper").Equal("text for GophKeeper"),
 	)
 
 	body = `{
@@ -81,7 +81,7 @@ func TestHTTPDoTranslate(t *testing.T) {
 	}`
 	Test(t,
 		Description("DoTranslate Fail"),
-		Post(basePath+"/translation/do-translate"),
+		Post(basePath+"/GophKeeper/do-translate"),
 		Send().Headers("Content-Type").Add("application/json"),
 		Send().Body().String(body),
 		Expect().Status().Equal(http.StatusBadRequest),
@@ -89,11 +89,11 @@ func TestHTTPDoTranslate(t *testing.T) {
 	)
 }
 
-// HTTP GET: /translation/history.
+// HTTP GET: /GophKeeper/history.
 func TestHTTPHistory(t *testing.T) {
 	Test(t,
 		Description("History Success"),
-		Get(basePath+"/translation/history"),
+		Get(basePath+"/GophKeeper/history"),
 		Expect().Status().Equal(http.StatusOK),
 		Expect().Body().String().Contains(`{"history":[{`),
 	)
@@ -113,15 +113,15 @@ func TestRMQClientRPC(t *testing.T) {
 		}
 	}()
 
-	type Translation struct {
+	type GophKeeper struct {
 		Source      string `json:"source"`
 		Destination string `json:"destination"`
 		Original    string `json:"original"`
-		Translation string `json:"translation"`
+		GophKeeper  string `json:"GophKeeper"`
 	}
 
 	type historyResponse struct {
-		History []Translation `json:"history"`
+		History []GophKeeper `json:"history"`
 	}
 
 	for i := 0; i < requests; i++ {
