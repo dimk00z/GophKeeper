@@ -29,11 +29,20 @@ func New(dsn string, l *logger.Logger) *GophKeeperRepo {
 		db: db,
 		l:  l}
 }
+
 func (r *GophKeeperRepo) Migrate() {
-	err := r.db.AutoMigrate(&models.User{})
-	if err != nil {
+	tables := []interface{}{
+		&models.User{},
+		&models.CreditCard{},
+		&models.SavedLogin{},
+	}
+
+	if err := r.db.AutoMigrate(tables...); err != nil {
 		r.l.Fatal("GophKeeperRepo - Migrate - %v", err)
 	}
+	// r.db.Model(&models.CreditCard{}).AddForeignKey("user_id", "users(id)", "RESTRICT", "RESTRICT")
+
+	r.l.Debug("GophKeeperRepo - Migrate - success")
 }
 
 // GetHistory -.

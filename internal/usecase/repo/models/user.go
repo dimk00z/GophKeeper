@@ -1,24 +1,19 @@
 package models
 
 import (
-	"time"
+	"fmt"
 
-	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
 type User struct {
 	gorm.Model
-	ID             string `gorm:"primaryKey"`
-	Name           string
-	CreatedAt      time.Time
-	UpdatedAt      time.Time
-	HashedPassword string
+	Email       string `gorm:"uniqueIndex;not null"`
+	Password    string `gorm:"not null"`
+	CreditCards []CreditCard
+	SavedLogins []SavedLogin
 }
 
-func (user *User) BeforeCreate(tx *gorm.DB) (err error) {
-	// UUID version 4
-	user.ID = uuid.NewString()
-
-	return
+func (user *User) ToString() string {
+	return fmt.Sprintf("id: %v\nemail: %s", user.ID, user.Email)
 }

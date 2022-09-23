@@ -21,7 +21,7 @@ import (
 // @description Using a GophKeeper service as an example
 // @version     1.0
 // @host        localhost:8080
-// @BasePath    /v1
+// @BasePath    /api/v1
 func NewRouter(handler *gin.Engine, l logger.Interface, t usecase.GophKeeper) {
 	// Options
 	handler.Use(gin.Logger())
@@ -29,7 +29,7 @@ func NewRouter(handler *gin.Engine, l logger.Interface, t usecase.GophKeeper) {
 
 	// Swagger
 	swaggerHandler := ginSwagger.DisablingWrapHandler(swaggerFiles.Handler, "DISABLE_SWAGGER_HTTP_HANDLER")
-	handler.GET("/swagger/*any", swaggerHandler)
+	handler.GET("/swagger", swaggerHandler)
 
 	// K8s probe
 	handler.GET("/healthz", func(c *gin.Context) { c.Status(http.StatusOK) })
@@ -38,7 +38,7 @@ func NewRouter(handler *gin.Engine, l logger.Interface, t usecase.GophKeeper) {
 	handler.GET("/metrics", gin.WrapH(promhttp.Handler()))
 
 	// Routers
-	h := handler.Group("/v1")
+	h := handler.Group("/api/v1")
 	{
 		newGophKeeperRoutes(h, t, l)
 	}

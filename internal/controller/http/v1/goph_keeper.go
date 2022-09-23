@@ -11,17 +11,60 @@ import (
 )
 
 type GophKeeperRoutes struct {
-	t usecase.GophKeeper
+	g usecase.GophKeeper
 	l logger.Interface
 }
 
-func newGophKeeperRoutes(handler *gin.RouterGroup, t usecase.GophKeeper, l logger.Interface) {
-	r := &GophKeeperRoutes{t, l}
+func newGophKeeperRoutes(handler *gin.RouterGroup, g usecase.GophKeeper, l logger.Interface) {
+	r := &GophKeeperRoutes{g, l}
 
 	h := handler.Group("/GophKeeper")
 	{
 		h.GET("/history", r.history)
 		h.POST("/do-translate", r.doTranslate)
+	}
+
+	userAPI := handler.Group("/user")
+	{
+		userAPI.GET("me", func(c *gin.Context) {
+			c.JSON(http.StatusCreated, struct {
+				Response string `json:"response"`
+			}{
+				Response: "user_data",
+			})
+		})
+	}
+
+	authAPI := handler.Group("/auth")
+	{
+		authAPI.POST("/register", func(c *gin.Context) {
+			c.JSON(http.StatusCreated, struct {
+				Response string `json:"response"`
+			}{
+				Response: "created",
+			})
+		})
+		authAPI.POST("/login", func(c *gin.Context) {
+			c.JSON(http.StatusCreated, struct {
+				Response string `json:"response"`
+			}{
+				Response: "ok",
+			})
+		})
+		authAPI.GET("/refresh", func(c *gin.Context) {
+			c.JSON(http.StatusCreated, struct {
+				Response string `json:"response"`
+			}{
+				Response: "ok",
+			})
+		})
+		authAPI.GET("/logout", func(c *gin.Context) {
+			c.JSON(http.StatusCreated, struct {
+				Response string `json:"response"`
+			}{
+				Response: "ok",
+			})
+		})
 	}
 }
 
@@ -39,7 +82,7 @@ type historyResponse struct {
 // @Failure     500 {object} response
 // @Router      /GophKeeper/history [get]
 func (r *GophKeeperRoutes) history(c *gin.Context) {
-	GophKeepers, err := r.t.History(c.Request.Context())
+	GophKeepers, err := r.g.History(c.Request.Context())
 	if err != nil {
 		r.l.Error(err, "http - v1 - history")
 		errorResponse(c, http.StatusInternalServerError, "database problems")
@@ -76,7 +119,7 @@ func (r *GophKeeperRoutes) doTranslate(c *gin.Context) {
 		return
 	}
 
-	GophKeeper, err := r.t.Translate(
+	GophKeeper, err := r.g.Translate(
 		c.Request.Context(),
 		entity.GophKeeper{
 			Source:      request.Source,
