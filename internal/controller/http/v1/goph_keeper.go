@@ -18,6 +18,17 @@ type GophKeeperRoutes struct {
 func newGophKeeperRoutes(handler *gin.RouterGroup, g usecase.GophKeeper, l logger.Interface) {
 	r := &GophKeeperRoutes{g, l}
 
+	handler.GET("/health", func(ctx *gin.Context) {
+		err := g.HealthCheck()
+		if err != nil {
+			ctx.JSON(http.StatusInternalServerError, gin.H{"status": "error", "message": err.Error()})
+
+			return
+		}
+		message := "Connection established"
+		ctx.JSON(http.StatusOK, gin.H{"status": "connected", "message": message})
+	})
+
 	h := handler.Group("/GophKeeper")
 	{
 		h.GET("/history", r.history)
@@ -37,13 +48,7 @@ func newGophKeeperRoutes(handler *gin.RouterGroup, g usecase.GophKeeper, l logge
 
 	authAPI := handler.Group("/auth")
 	{
-		authAPI.POST("/register", func(c *gin.Context) {
-			c.JSON(http.StatusCreated, struct {
-				Response string `json:"response"`
-			}{
-				Response: "created",
-			})
-		})
+		authAPI.POST("/register", r.SignUpUser)
 		authAPI.POST("/login", func(c *gin.Context) {
 			c.JSON(http.StatusCreated, struct {
 				Response string `json:"response"`

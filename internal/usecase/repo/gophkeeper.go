@@ -40,9 +40,23 @@ func (r *GophKeeperRepo) Migrate() {
 	if err := r.db.AutoMigrate(tables...); err != nil {
 		r.l.Fatal("GophKeeperRepo - Migrate - %v", err)
 	}
-	// r.db.Model(&models.CreditCard{}).AddForeignKey("user_id", "users(id)", "RESTRICT", "RESTRICT")
 
 	r.l.Debug("GophKeeperRepo - Migrate - success")
+}
+
+func (r *GophKeeperRepo) DBHealthCheck() error {
+	sqlDB, err := r.db.DB()
+	if err != nil {
+		return err
+	}
+
+	return sqlDB.Ping()
+}
+
+func (r *GophKeeperRepo) AddUser(ctx context.Context, email, hashedPassword string) (user entity.User, err error) {
+	// TODO: add logic
+
+	return
 }
 
 // GetHistory -.

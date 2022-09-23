@@ -12,3 +12,9 @@ logger:
 postgres:
   pool_max: 2
   pg_url: 'postgres://user:pass@localhost:5432/postgres'
+
+security:
+  access_token_expired_in: '15m'
+  access_token_maxage: 15
+  refresh_token_expired_in: '60m'
+  refresh_token_maxage: 60

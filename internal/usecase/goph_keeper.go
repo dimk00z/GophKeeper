@@ -45,3 +45,12 @@ func (uc *GophKeeperUseCase) Translate(ctx context.Context, t entity.GophKeeper)
 
 	return GophKeeper, nil
 }
+
+func (uc *GophKeeperUseCase) HealthCheck() error {
+	return uc.repo.DBHealthCheck()
+}
+
+func (uc *GophKeeperUseCase) SignUpUser(ctx context.Context, email, password string) (user entity.User, err error) {
+	// TODO: add logic
+	return
+}

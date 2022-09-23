@@ -2,16 +2,19 @@ package models
 
 import (
 	"fmt"
+	"time"
 
-	"gorm.io/gorm"
+	"github.com/google/uuid"
 )
 
 type User struct {
-	gorm.Model
-	Email       string `gorm:"uniqueIndex;not null"`
-	Password    string `gorm:"not null"`
+	ID          uuid.UUID `gorm:"type:uuid;default:uuid_generate_v4();primary_key"`
+	Email       string    `gorm:"uniqueIndex;not null"`
+	Password    string    `gorm:"not null"`
 	CreditCards []CreditCard
 	SavedLogins []SavedLogin
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
 }
 
 func (user *User) ToString() string {

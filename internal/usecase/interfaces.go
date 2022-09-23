@@ -10,19 +10,23 @@ import (
 //go:generate mockgen -source=interfaces.go -destination=./mocks_test.go -package=usecase_test
 
 type (
-	// GophKeeper -.
+	// GophKeeper - use cases.
 	GophKeeper interface {
 		Translate(context.Context, entity.GophKeeper) (entity.GophKeeper, error)
 		History(context.Context) ([]entity.GophKeeper, error)
+		HealthCheck() error
+		SignUpUser(ctx context.Context, email, password string) (entity.User, error)
 	}
 
-	// GophKeeperRepo -.
+	// GophKeeperRepo - db logic.
 	GophKeeperRepo interface {
 		Store(context.Context, entity.GophKeeper) error
 		GetHistory(context.Context) ([]entity.GophKeeper, error)
+		DBHealthCheck() error
+		AddUser(ctx context.Context, email, hashedPassword string) (entity.User, error)
 	}
 
-	// GophKeeperWebAPI -.
+	// GophKeeperWebAPI - business logic.
 	GophKeeperWebAPI interface {
 		Translate(entity.GophKeeper) (entity.GophKeeper, error)
 	}
