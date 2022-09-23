@@ -2,8 +2,10 @@ package repo
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/dimk00z/GophKeeper/internal/entity"
+	"github.com/dimk00z/GophKeeper/internal/usecase/repo/errs"
 	"github.com/dimk00z/GophKeeper/internal/usecase/repo/models"
 	"github.com/dimk00z/GophKeeper/pkg/logger"
 	"gorm.io/driver/postgres"
@@ -55,8 +57,26 @@ func (r *GophKeeperRepo) DBHealthCheck() error {
 
 func (r *GophKeeperRepo) AddUser(ctx context.Context, email, hashedPassword string) (user entity.User, err error) {
 	// TODO: add logic
+	newUser := models.User{
+		Email:    email,
+		Password: hashedPassword,
+	}
+	result := r.db.Create(&newUser)
 
+	if result.Error == nil {
+		user.ID = newUser.ID
+		user.Email = newUser.Email
+
+		return
+	}
+	pgErr := errs.ParsePostgresErr(result.Error)
+	fmt.Println(pgErr)
+	if pgErr.Code == "23505" {
+		fmt.Println("Here!!!!!!!!11")
+	}
+	r.l.Debug("AddUser - %w", result.Error)
 	return
+
 }
 
 // GetHistory -.

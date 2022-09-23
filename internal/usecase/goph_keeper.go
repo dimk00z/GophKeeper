@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/dimk00z/GophKeeper/internal/entity"
+	"github.com/dimk00z/GophKeeper/internal/utils"
 )
 
 // GophKeeperUseCase -.
@@ -51,6 +52,11 @@ func (uc *GophKeeperUseCase) HealthCheck() error {
 }
 
 func (uc *GophKeeperUseCase) SignUpUser(ctx context.Context, email, password string) (user entity.User, err error) {
-	// TODO: add logic
+	hashedPassword, err := utils.HashPassword(password)
+	if err != nil {
+		return
+	}
+	user, err = uc.repo.AddUser(ctx, email, hashedPassword)
+
 	return
 }
