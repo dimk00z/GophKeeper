@@ -5,8 +5,8 @@ import (
 	"fmt"
 
 	"github.com/dimk00z/GophKeeper/internal/entity"
-	"github.com/dimk00z/GophKeeper/internal/usecase/repo/errs"
 	"github.com/dimk00z/GophKeeper/internal/usecase/repo/models"
+	"github.com/dimk00z/GophKeeper/internal/utils/errs"
 	"github.com/dimk00z/GophKeeper/pkg/logger"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -69,13 +69,18 @@ func (r *GophKeeperRepo) AddUser(ctx context.Context, email, hashedPassword stri
 
 		return
 	}
-	pgErr := errs.ParsePostgresErr(result.Error)
-	fmt.Println(pgErr)
-	if pgErr.Code == "23505" {
-		fmt.Println("Here!!!!!!!!11")
+
+	switch errs.ParsePostgresErr(result.Error).Code {
+	case "23505":
+		r.l.Debug("AddUser - %w", result.Error)
+		err = errs.ErrEmailAlreadyExists
+
+		return
+	default:
+		err = fmt.Errorf("AddUser - %w", result.Error)
+
+		return
 	}
-	r.l.Debug("AddUser - %w", result.Error)
-	return
 
 }
 

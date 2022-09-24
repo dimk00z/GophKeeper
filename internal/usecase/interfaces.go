@@ -16,6 +16,7 @@ type (
 		History(context.Context) ([]entity.GophKeeper, error)
 		HealthCheck() error
 		SignUpUser(ctx context.Context, email, password string) (entity.User, error)
+		SignInUser(ctx context.Context, email, password string) (entity.JWT, error)
 	}
 
 	// GophKeeperRepo - db logic.

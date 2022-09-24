@@ -49,13 +49,7 @@ func newGophKeeperRoutes(handler *gin.RouterGroup, g usecase.GophKeeper, l logge
 	authAPI := handler.Group("/auth")
 	{
 		authAPI.POST("/register", r.SignUpUser)
-		authAPI.POST("/login", func(c *gin.Context) {
-			c.JSON(http.StatusCreated, struct {
-				Response string `json:"response"`
-			}{
-				Response: "ok",
-			})
-		})
+		authAPI.POST("/login", r.SignInUser)
 		authAPI.GET("/refresh", func(c *gin.Context) {
 			c.JSON(http.StatusCreated, struct {
 				Response string `json:"response"`

@@ -3,9 +3,11 @@ package usecase
 import (
 	"context"
 	"fmt"
+	"net/mail"
 
 	"github.com/dimk00z/GophKeeper/internal/entity"
 	"github.com/dimk00z/GophKeeper/internal/utils"
+	"github.com/dimk00z/GophKeeper/internal/utils/errs"
 )
 
 // GophKeeperUseCase -.
@@ -52,11 +54,23 @@ func (uc *GophKeeperUseCase) HealthCheck() error {
 }
 
 func (uc *GophKeeperUseCase) SignUpUser(ctx context.Context, email, password string) (user entity.User, err error) {
+	if _, err = mail.ParseAddress(email); err != nil {
+		err = errs.ErrWrongEmail
+		return
+	}
 	hashedPassword, err := utils.HashPassword(password)
 	if err != nil {
 		return
 	}
-	user, err = uc.repo.AddUser(ctx, email, hashedPassword)
+
+	return uc.repo.AddUser(ctx, email, hashedPassword)
+}
+
+func (uc *GophKeeperUseCase) SignInUser(ctx context.Context, email, password string) (token entity.JWT, err error) {
+	if _, err = mail.ParseAddress(email); err != nil {
+		err = errs.ErrWrongEmail
+		return
+	}
 
 	return
 }

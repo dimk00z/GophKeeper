@@ -2,6 +2,12 @@ package errs
 
 import (
 	"encoding/json"
+	"errors"
+)
+
+var (
+	ErrWrongEmail         = errors.New("incorrect email given")
+	ErrEmailAlreadyExists = errors.New("given email already exists")
 )
 
 type GormErr struct {
