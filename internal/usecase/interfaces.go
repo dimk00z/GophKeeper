@@ -12,8 +12,6 @@ import (
 type (
 	// GophKeeper - use cases.
 	GophKeeper interface {
-		Translate(context.Context, entity.GophKeeper) (entity.GophKeeper, error)
-		History(context.Context) ([]entity.GophKeeper, error)
 		HealthCheck() error
 		SignUpUser(ctx context.Context, email, password string) (entity.User, error)
 		SignInUser(ctx context.Context, email, password string) (entity.JWT, error)
@@ -21,10 +19,9 @@ type (
 
 	// GophKeeperRepo - db logic.
 	GophKeeperRepo interface {
-		Store(context.Context, entity.GophKeeper) error
-		GetHistory(context.Context) ([]entity.GophKeeper, error)
 		DBHealthCheck() error
 		AddUser(ctx context.Context, email, hashedPassword string) (entity.User, error)
+		GetUser(ctx context.Context, email, hashedPassword string) (entity.User, error)
 	}
 
 	// GophKeeperWebAPI - business logic.

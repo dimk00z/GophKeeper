@@ -26,16 +26,17 @@ func (r *GophKeeperRoutes) SignUpUser(ctx *gin.Context) {
 	user, err := r.g.SignUpUser(ctx, payload.Email, payload.Password)
 	if err == nil {
 		ctx.JSON(http.StatusCreated, user)
-		return
 
+		return
 	}
+
 	if errors.Is(err, errs.ErrWrongEmail) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+
 		return
 	}
 
 	ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-
 }
 
 func (r *GophKeeperRoutes) SignInUser(ctx *gin.Context) {
@@ -45,14 +46,17 @@ func (r *GophKeeperRoutes) SignInUser(ctx *gin.Context) {
 
 		return
 	}
+
 	jwt, err := r.g.SignInUser(ctx, payload.Email, payload.Password)
+
 	fmt.Println(jwt, err)
+
 	if err == nil {
 		ctx.JSON(http.StatusOK, gin.H{"status": "success", "access_token": jwt.AccessToken})
 
 		return
 	}
 	// https://codevoweb.com/golang-gorm-postgresql-user-registration-with-refresh-tokens/
+	// TODO: add logic
 	ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-
 }

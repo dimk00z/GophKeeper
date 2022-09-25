@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"context"
-	"fmt"
 	"net/mail"
 
 	"github.com/dimk00z/GophKeeper/internal/entity"
@@ -24,30 +23,30 @@ func New(r GophKeeperRepo, w GophKeeperWebAPI) *GophKeeperUseCase {
 	}
 }
 
-// History - getting translate history from store.
-func (uc *GophKeeperUseCase) History(ctx context.Context) ([]entity.GophKeeper, error) {
-	GophKeepers, err := uc.repo.GetHistory(ctx)
-	if err != nil {
-		return nil, fmt.Errorf("GophKeeperUseCase - History - s.repo.GetHistory: %w", err)
-	}
+// // History - getting translate history from store.
+// func (uc *GophKeeperUseCase) History(ctx context.Context) ([]entity.GophKeeper, error) {
+// 	GophKeepers, err := uc.repo.GetHistory(ctx)
+// 	if err != nil {
+// 		return nil, fmt.Errorf("GophKeeperUseCase - History - s.repo.GetHistory: %w", err)
+// 	}
 
-	return GophKeepers, nil
-}
+// 	return GophKeepers, nil
+// }
 
-// Translate -.
-func (uc *GophKeeperUseCase) Translate(ctx context.Context, t entity.GophKeeper) (entity.GophKeeper, error) {
-	GophKeeper, err := uc.webAPI.Translate(t)
-	if err != nil {
-		return entity.GophKeeper{}, fmt.Errorf("GophKeeperUseCase - Translate - s.webAPI.Translate: %w", err)
-	}
+// // Translate -.
+// func (uc *GophKeeperUseCase) Translate(ctx context.Context, t entity.GophKeeper) (entity.GophKeeper, error) {
+// 	GophKeeper, err := uc.webAPI.Translate(t)
+// 	if err != nil {
+// 		return entity.GophKeeper{}, fmt.Errorf("GophKeeperUseCase - Translate - s.webAPI.Translate: %w", err)
+// 	}
 
-	err = uc.repo.Store(context.Background(), GophKeeper)
-	if err != nil {
-		return entity.GophKeeper{}, fmt.Errorf("GophKeeperUseCase - Translate - s.repo.Store: %w", err)
-	}
+// 	err = uc.repo.Store(context.Background(), GophKeeper)
+// 	if err != nil {
+// 		return entity.GophKeeper{}, fmt.Errorf("GophKeeperUseCase - Translate - s.repo.Store: %w", err)
+// 	}
 
-	return GophKeeper, nil
-}
+// 	return GophKeeper, nil
+// }
 
 func (uc *GophKeeperUseCase) HealthCheck() error {
 	return uc.repo.DBHealthCheck()
@@ -71,6 +70,7 @@ func (uc *GophKeeperUseCase) SignInUser(ctx context.Context, email, password str
 		err = errs.ErrWrongEmail
 		return
 	}
+	// TODO: add logic
 
 	return
 }

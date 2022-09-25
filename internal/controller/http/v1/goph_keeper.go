@@ -5,7 +5,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/dimk00z/GophKeeper/internal/entity"
 	"github.com/dimk00z/GophKeeper/internal/usecase"
 	"github.com/dimk00z/GophKeeper/pkg/logger"
 )
@@ -29,11 +28,11 @@ func newGophKeeperRoutes(handler *gin.RouterGroup, g usecase.GophKeeper, l logge
 		ctx.JSON(http.StatusOK, gin.H{"status": "connected", "message": message})
 	})
 
-	h := handler.Group("/GophKeeper")
-	{
-		h.GET("/history", r.history)
-		h.POST("/do-translate", r.doTranslate)
-	}
+	// h := handler.Group("/GophKeeper")
+	// {
+	// 	h.GET("/history", r.history)
+	// 	h.POST("/do-translate", r.doTranslate)
+	// }
 
 	userAPI := handler.Group("/user")
 	{
@@ -67,9 +66,9 @@ func newGophKeeperRoutes(handler *gin.RouterGroup, g usecase.GophKeeper, l logge
 	}
 }
 
-type historyResponse struct {
-	History []entity.GophKeeper `json:"history"`
-}
+// type historyResponse struct {
+// 	History []entity.GophKeeper `json:"history"`
+// }
 
 // @Summary     Show history
 // @Description Show all GophKeeper history
@@ -80,23 +79,23 @@ type historyResponse struct {
 // @Success     200 {object} historyResponse
 // @Failure     500 {object} response
 // @Router      /GophKeeper/history [get]
-func (r *GophKeeperRoutes) history(c *gin.Context) {
-	GophKeepers, err := r.g.History(c.Request.Context())
-	if err != nil {
-		r.l.Error(err, "http - v1 - history")
-		errorResponse(c, http.StatusInternalServerError, "database problems")
+// func (r *GophKeeperRoutes) history(c *gin.Context) {
+// 	GophKeepers, err := r.g.History(c.Request.Context())
+// 	if err != nil {
+// 		r.l.Error(err, "http - v1 - history")
+// 		errorResponse(c, http.StatusInternalServerError, "database problems")
 
-		return
-	}
+// 		return
+// 	}
 
-	c.JSON(http.StatusOK, historyResponse{GophKeepers})
-}
+// 	c.JSON(http.StatusOK, historyResponse{GophKeepers})
+// }
 
-type doTranslateRequest struct {
-	Source      string `json:"source"       binding:"required"  example:"auto"`
-	Destination string `json:"destination"  binding:"required"  example:"en"`
-	Original    string `json:"original"     binding:"required"  example:"текст для перевода"`
-}
+// type doTranslateRequest struct {
+// 	Source      string `json:"source"       binding:"required"  example:"auto"`
+// 	Destination string `json:"destination"  binding:"required"  example:"en"`
+// 	Original    string `json:"original"     binding:"required"  example:"текст для перевода"`
+// }
 
 // @Summary     Translate
 // @Description Translate a text
@@ -109,29 +108,29 @@ type doTranslateRequest struct {
 // @Failure     400 {object} response
 // @Failure     500 {object} response
 // @Router      /GophKeeper/do-translate [post]
-func (r *GophKeeperRoutes) doTranslate(c *gin.Context) {
-	var request doTranslateRequest
-	if err := c.ShouldBindJSON(&request); err != nil {
-		r.l.Error(err, "http - v1 - doTranslate")
-		errorResponse(c, http.StatusBadRequest, "invalid request body")
+// func (r *GophKeeperRoutes) doTranslate(c *gin.Context) {
+// 	var request doTranslateRequest
+// 	if err := c.ShouldBindJSON(&request); err != nil {
+// 		r.l.Error(err, "http - v1 - doTranslate")
+// 		errorResponse(c, http.StatusBadRequest, "invalid request body")
 
-		return
-	}
+// 		return
+// 	}
 
-	GophKeeper, err := r.g.Translate(
-		c.Request.Context(),
-		entity.GophKeeper{
-			Source:      request.Source,
-			Destination: request.Destination,
-			Original:    request.Original,
-		},
-	)
-	if err != nil {
-		r.l.Error(err, "http - v1 - doTranslate")
-		errorResponse(c, http.StatusInternalServerError, "GophKeeper service problems")
+// 	GophKeeper, err := r.g.Translate(
+// 		c.Request.Context(),
+// 		entity.GophKeeper{
+// 			Source:      request.Source,
+// 			Destination: request.Destination,
+// 			Original:    request.Original,
+// 		},
+// 	)
+// 	if err != nil {
+// 		r.l.Error(err, "http - v1 - doTranslate")
+// 		errorResponse(c, http.StatusInternalServerError, "GophKeeper service problems")
 
-		return
-	}
+// 		return
+// 	}
 
-	c.JSON(http.StatusOK, GophKeeper)
-}
+// 	c.JSON(http.StatusOK, GophKeeper)
+// }
