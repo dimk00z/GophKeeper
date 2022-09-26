@@ -15,17 +15,20 @@ type (
 		HealthCheck() error
 		SignUpUser(ctx context.Context, email, password string) (entity.User, error)
 		SignInUser(ctx context.Context, email, password string) (entity.JWT, error)
+		RefreshAccessToken(ctx context.Context, refreshToken string) (entity.JWT, error)
+		GetDomainName() string
 	}
 
 	// GophKeeperRepo - db logic.
 	GophKeeperRepo interface {
 		DBHealthCheck() error
 		AddUser(ctx context.Context, email, hashedPassword string) (entity.User, error)
-		GetUser(ctx context.Context, email, hashedPassword string) (entity.User, error)
+		GetUserByEmail(ctx context.Context, email, hashedPassword string) (entity.User, error)
+		GetUserByID(ctx context.Context, id string) (entity.User, error)
 	}
 
 	// GophKeeperWebAPI - business logic.
 	GophKeeperWebAPI interface {
-		Translate(entity.GophKeeper) (entity.GophKeeper, error)
+		// Translate(entity.GophKeeper) (entity.GophKeeper, error)
 	}
 )

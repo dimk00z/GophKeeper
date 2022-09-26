@@ -10,8 +10,8 @@ import (
 )
 
 type GophKeeperRoutes struct {
-	g usecase.GophKeeper
-	l logger.Interface
+	uc usecase.GophKeeper
+	l  logger.Interface
 }
 
 func newGophKeeperRoutes(handler *gin.RouterGroup, g usecase.GophKeeper, l logger.Interface) {
@@ -28,12 +28,6 @@ func newGophKeeperRoutes(handler *gin.RouterGroup, g usecase.GophKeeper, l logge
 		ctx.JSON(http.StatusOK, gin.H{"status": "connected", "message": message})
 	})
 
-	// h := handler.Group("/GophKeeper")
-	// {
-	// 	h.GET("/history", r.history)
-	// 	h.POST("/do-translate", r.doTranslate)
-	// }
-
 	userAPI := handler.Group("/user")
 	{
 		userAPI.GET("me", func(c *gin.Context) {
@@ -49,20 +43,8 @@ func newGophKeeperRoutes(handler *gin.RouterGroup, g usecase.GophKeeper, l logge
 	{
 		authAPI.POST("/register", r.SignUpUser)
 		authAPI.POST("/login", r.SignInUser)
-		authAPI.GET("/refresh", func(c *gin.Context) {
-			c.JSON(http.StatusCreated, struct {
-				Response string `json:"response"`
-			}{
-				Response: "ok",
-			})
-		})
-		authAPI.GET("/logout", func(c *gin.Context) {
-			c.JSON(http.StatusCreated, struct {
-				Response string `json:"response"`
-			}{
-				Response: "ok",
-			})
-		})
+		authAPI.GET("/refresh", r.RefreshAccessToken)
+		authAPI.GET("/logout", r.LogoutUser)
 	}
 }
 

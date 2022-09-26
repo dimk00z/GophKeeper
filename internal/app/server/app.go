@@ -29,6 +29,7 @@ func Run(cfg *config.Config) {
 	GophKeeperUseCase := usecase.New(
 		gophKeeperRepo,
 		webapi.New(),
+		cfg,
 	)
 	var err error
 	// RabbitMQ RPC Server

@@ -18,3 +18,4 @@ security:
   access_token_maxage: 15
   refresh_token_expired_in: '60m'
   refresh_token_maxage: 60
+  domain: 'localhost'

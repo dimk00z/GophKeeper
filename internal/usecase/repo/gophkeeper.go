@@ -6,8 +6,10 @@ import (
 
 	"github.com/dimk00z/GophKeeper/internal/entity"
 	"github.com/dimk00z/GophKeeper/internal/usecase/repo/models"
+	"github.com/dimk00z/GophKeeper/internal/utils"
 	"github.com/dimk00z/GophKeeper/internal/utils/errs"
 	"github.com/dimk00z/GophKeeper/pkg/logger"
+	"github.com/google/uuid"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -59,7 +61,7 @@ func (r *GophKeeperRepo) AddUser(ctx context.Context, email, hashedPassword stri
 		Email:    email,
 		Password: hashedPassword,
 	}
-	result := r.db.Create(&newUser)
+	result := r.db.WithContext(ctx).Create(&newUser)
 
 	if result.Error == nil {
 		user.ID = newUser.ID
@@ -82,9 +84,42 @@ func (r *GophKeeperRepo) AddUser(ctx context.Context, email, hashedPassword stri
 	}
 }
 
-func (r *GophKeeperRepo) GetUser(ctx context.Context, email, hashedPassword string) (user entity.User, err error) {
-	// TODO:add logic
-	// 	return fmt.Errorf("GophKeeperRepo - GetUser - ...: %w", err)
+func (r *GophKeeperRepo) GetUserByEmail(ctx context.Context, email, hashedPassword string) (user entity.User, err error) {
+	var userFromDB models.User
+
+	r.db.WithContext(ctx).Where("email = ?", email).First(&userFromDB)
+
+	if userFromDB.ID == uuid.Nil {
+		err = errs.ErrWrongCredentials
+
+		return
+	}
+
+	if err = utils.VerifyPassword(userFromDB.Password, hashedPassword); err != nil {
+		err = errs.ErrWrongCredentials
+
+		return
+	}
+
+	user.ID = userFromDB.ID
+	user.Email = userFromDB.Email
+
+	return
+}
+
+func (r *GophKeeperRepo) GetUserByID(ctx context.Context, id string) (user entity.User, err error) {
+	var userFromDB models.User
+
+	r.db.WithContext(ctx).Where("id = ?", id).First(&userFromDB)
+
+	if userFromDB.ID == uuid.Nil {
+		err = errs.ErrWrongCredentials
+
+		return
+	}
+
+	user.ID = userFromDB.ID
+	user.Email = userFromDB.Email
 
 	return
 }
