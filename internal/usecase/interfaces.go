@@ -17,6 +17,7 @@ type (
 		SignInUser(ctx context.Context, email, password string) (entity.JWT, error)
 		RefreshAccessToken(ctx context.Context, refreshToken string) (entity.JWT, error)
 		GetDomainName() string
+		CheckAccessToken(ctx context.Context, accessToken string) (entity.User, error)
 	}
 
 	// GophKeeperRepo - db logic.
@@ -25,10 +26,5 @@ type (
 		AddUser(ctx context.Context, email, hashedPassword string) (entity.User, error)
 		GetUserByEmail(ctx context.Context, email, hashedPassword string) (entity.User, error)
 		GetUserByID(ctx context.Context, id string) (entity.User, error)
-	}
-
-	// GophKeeperWebAPI - business logic.
-	GophKeeperWebAPI interface {
-		// Translate(entity.GophKeeper) (entity.GophKeeper, error)
 	}
 )

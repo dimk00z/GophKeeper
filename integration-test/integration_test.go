@@ -1,139 +1,138 @@
 package integration_test
 
-import (
-	"log"
-	"net/http"
-	"os"
-	"testing"
-	"time"
+// import (
+// 	"log"
+// 	"net/http"
+// 	"os"
+// 	"testing"
+// 	"time"
 
-	. "github.com/Eun/go-hit"
+// 	. "github.com/Eun/go-hit"
+// 	"github.com/containerd/containerd/runtime/v1/shim/client"
+// )
 
-	"github.com/dimk00z/GophKeeper/pkg/rabbitmq/rmq_rpc/client"
-)
+// const (
+// 	// Attempts connection
+// 	host       = "app:8080"
+// 	healthPath = "http://" + host + "/healthz"
+// 	attempts   = 20
 
-const (
-	// Attempts connection
-	host       = "app:8080"
-	healthPath = "http://" + host + "/healthz"
-	attempts   = 20
+// 	// HTTP REST
+// 	basePath = "http://" + host + "/v1"
 
-	// HTTP REST
-	basePath = "http://" + host + "/v1"
+// 	// RabbitMQ RPC
+// 	rmqURL            = "amqp://guest:guest@rabbitmq:5672/"
+// 	rpcServerExchange = "rpc_server"
+// 	rpcClientExchange = "rpc_client"
+// 	requests          = 10
+// )
 
-	// RabbitMQ RPC
-	rmqURL            = "amqp://guest:guest@rabbitmq:5672/"
-	rpcServerExchange = "rpc_server"
-	rpcClientExchange = "rpc_client"
-	requests          = 10
-)
+// func TestMain(m *testing.M) {
+// 	err := healthCheck(attempts)
+// 	if err != nil {
+// 		log.Fatalf("Integration tests: host %s is not available: %s", host, err)
+// 	}
 
-func TestMain(m *testing.M) {
-	err := healthCheck(attempts)
-	if err != nil {
-		log.Fatalf("Integration tests: host %s is not available: %s", host, err)
-	}
+// 	log.Printf("Integration tests: host %s is available", host)
 
-	log.Printf("Integration tests: host %s is available", host)
+// 	code := m.Run()
+// 	os.Exit(code)
+// }
 
-	code := m.Run()
-	os.Exit(code)
-}
+// func healthCheck(attempts int) error {
+// 	var err error
 
-func healthCheck(attempts int) error {
-	var err error
+// 	for attempts > 0 {
+// 		err = Do(Get(healthPath), Expect().Status().Equal(http.StatusOK))
+// 		if err == nil {
+// 			return nil
+// 		}
 
-	for attempts > 0 {
-		err = Do(Get(healthPath), Expect().Status().Equal(http.StatusOK))
-		if err == nil {
-			return nil
-		}
+// 		log.Printf("Integration tests: url %s is not available, attempts left: %d", healthPath, attempts)
 
-		log.Printf("Integration tests: url %s is not available, attempts left: %d", healthPath, attempts)
+// 		time.Sleep(time.Second)
 
-		time.Sleep(time.Second)
+// 		attempts--
+// 	}
 
-		attempts--
-	}
+// 	return err
+// }
 
-	return err
-}
+// // HTTP POST: /GophKeeper/do-translate.
+// func TestHTTPDoTranslate(t *testing.T) {
+// 	body := `{
+// 		"destination": "en",
+// 		"original": "текст для перевода",
+// 		"source": "auto"
+// 	}`
+// 	Test(t,
+// 		Description("DoTranslate Success"),
+// 		Post(basePath+"/GophKeeper/do-translate"),
+// 		Send().Headers("Content-Type").Add("application/json"),
+// 		Send().Body().String(body),
+// 		Expect().Status().Equal(http.StatusOK),
+// 		Expect().Body().JSON().JQ(".GophKeeper").Equal("text for GophKeeper"),
+// 	)
 
-// HTTP POST: /GophKeeper/do-translate.
-func TestHTTPDoTranslate(t *testing.T) {
-	body := `{
-		"destination": "en",
-		"original": "текст для перевода",
-		"source": "auto"
-	}`
-	Test(t,
-		Description("DoTranslate Success"),
-		Post(basePath+"/GophKeeper/do-translate"),
-		Send().Headers("Content-Type").Add("application/json"),
-		Send().Body().String(body),
-		Expect().Status().Equal(http.StatusOK),
-		Expect().Body().JSON().JQ(".GophKeeper").Equal("text for GophKeeper"),
-	)
+// 	body = `{
+// 		"destination": "en",
+// 		"original": "текст для перевода"
+// 	}`
+// 	Test(t,
+// 		Description("DoTranslate Fail"),
+// 		Post(basePath+"/GophKeeper/do-translate"),
+// 		Send().Headers("Content-Type").Add("application/json"),
+// 		Send().Body().String(body),
+// 		Expect().Status().Equal(http.StatusBadRequest),
+// 		Expect().Body().JSON().JQ(".error").Equal("invalid request body"),
+// 	)
+// }
 
-	body = `{
-		"destination": "en",
-		"original": "текст для перевода"
-	}`
-	Test(t,
-		Description("DoTranslate Fail"),
-		Post(basePath+"/GophKeeper/do-translate"),
-		Send().Headers("Content-Type").Add("application/json"),
-		Send().Body().String(body),
-		Expect().Status().Equal(http.StatusBadRequest),
-		Expect().Body().JSON().JQ(".error").Equal("invalid request body"),
-	)
-}
+// // HTTP GET: /GophKeeper/history.
+// func TestHTTPHistory(t *testing.T) {
+// 	Test(t,
+// 		Description("History Success"),
+// 		Get(basePath+"/GophKeeper/history"),
+// 		Expect().Status().Equal(http.StatusOK),
+// 		Expect().Body().String().Contains(`{"history":[{`),
+// 	)
+// }
 
-// HTTP GET: /GophKeeper/history.
-func TestHTTPHistory(t *testing.T) {
-	Test(t,
-		Description("History Success"),
-		Get(basePath+"/GophKeeper/history"),
-		Expect().Status().Equal(http.StatusOK),
-		Expect().Body().String().Contains(`{"history":[{`),
-	)
-}
+// // RabbitMQ RPC Client: getHistory.
+// func TestRMQClientRPC(t *testing.T) {
+// 	rmqClient, err := client.New(rmqURL, rpcServerExchange, rpcClientExchange)
+// 	if err != nil {
+// 		t.Fatal("RabbitMQ RPC Client - init error - client.New")
+// 	}
 
-// RabbitMQ RPC Client: getHistory.
-func TestRMQClientRPC(t *testing.T) {
-	rmqClient, err := client.New(rmqURL, rpcServerExchange, rpcClientExchange)
-	if err != nil {
-		t.Fatal("RabbitMQ RPC Client - init error - client.New")
-	}
+// 	defer func() {
+// 		err = rmqClient.Shutdown()
+// 		if err != nil {
+// 			t.Fatal("RabbitMQ RPC Client - shutdown error - rmqClient.RemoteCall", err)
+// 		}
+// 	}()
 
-	defer func() {
-		err = rmqClient.Shutdown()
-		if err != nil {
-			t.Fatal("RabbitMQ RPC Client - shutdown error - rmqClient.RemoteCall", err)
-		}
-	}()
+// 	type GophKeeper struct {
+// 		Source      string `json:"source"`
+// 		Destination string `json:"destination"`
+// 		Original    string `json:"original"`
+// 		GophKeeper  string `json:"GophKeeper"`
+// 	}
 
-	type GophKeeper struct {
-		Source      string `json:"source"`
-		Destination string `json:"destination"`
-		Original    string `json:"original"`
-		GophKeeper  string `json:"GophKeeper"`
-	}
+// 	type historyResponse struct {
+// 		History []GophKeeper `json:"history"`
+// 	}
 
-	type historyResponse struct {
-		History []GophKeeper `json:"history"`
-	}
+// 	for i := 0; i < requests; i++ {
+// 		var history historyResponse
 
-	for i := 0; i < requests; i++ {
-		var history historyResponse
+// 		err = rmqClient.RemoteCall("getHistory", nil, &history)
+// 		if err != nil {
+// 			t.Fatal("RabbitMQ RPC Client - remote call error - rmqClient.RemoteCall", err)
+// 		}
 
-		err = rmqClient.RemoteCall("getHistory", nil, &history)
-		if err != nil {
-			t.Fatal("RabbitMQ RPC Client - remote call error - rmqClient.RemoteCall", err)
-		}
-
-		if history.History[0].Original != "текст для перевода" {
-			t.Fatal("Original != текст для перевода")
-		}
-	}
-}
+// 		if history.History[0].Original != "текст для перевода" {
+// 			t.Fatal("Original != текст для перевода")
+// 		}
+// 	}
+// }

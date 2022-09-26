@@ -4,6 +4,7 @@ import (
 	"errors"
 	"net/http"
 
+	"github.com/dimk00z/GophKeeper/internal/entity"
 	"github.com/dimk00z/GophKeeper/internal/utils/errs"
 	"github.com/gin-gonic/gin"
 )
@@ -96,4 +97,13 @@ func (r *GophKeeperRoutes) LogoutUser(ctx *gin.Context) {
 	ctx.SetCookie("logged_in", "", -1, "/", domainName, false, false)
 
 	ctx.JSON(http.StatusOK, gin.H{"status": "success"})
+}
+
+func (r *GophKeeperRoutes) UserInfo(ctx *gin.Context) {
+	currentUser, ok := ctx.Get("currentUser")
+	if !ok {
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": errs.ErrUnexpectedError.Error()})
+	}
+
+	ctx.JSON(http.StatusOK, currentUser.(entity.User))
 }

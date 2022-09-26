@@ -15,6 +15,7 @@ type (
 		Log      `yaml:"logger"`
 		PG       `yaml:"postgres"`
 		Secutiry `yaml:"security"`
+		Cache    `yaml:"cache"`
 	}
 
 	// App -.
@@ -37,6 +38,10 @@ type (
 	PG struct {
 		PoolMax int    `env-required:"true" yaml:"pool_max" env:"PG_POOL_MAX"`
 		URL     string `env-required:"true" yaml:"pg_url" env:"PG_URL"`
+	}
+	Cache struct {
+		DefaultExpiration int `yaml:"default_expiration" env:"DEFAULT_EXPIRATION"`
+		CleanupInterval   int `yaml:"cleanup_interval" env:"CLEANUP_INTERVAL"`
 	}
 	Secutiry struct {
 		AccessTokenPrivateKey  string        `yaml:"access_token_private_key" env:"ACCESS_TOKEN_PRIVATE_KEY"`

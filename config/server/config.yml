@@ -19,3 +19,7 @@ security:
   refresh_token_expired_in: '60m'
   refresh_token_maxage: 60
   domain: 'localhost'
+
+cache:
+  default_expiration: 5
+  cleanup_interval: 10

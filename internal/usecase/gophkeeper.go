@@ -4,27 +4,31 @@ import (
 	"context"
 	"fmt"
 	"net/mail"
+	"time"
 
 	config "github.com/dimk00z/GophKeeper/config/server"
 	"github.com/dimk00z/GophKeeper/internal/entity"
 	"github.com/dimk00z/GophKeeper/internal/utils"
 	"github.com/dimk00z/GophKeeper/internal/utils/errs"
+	"github.com/patrickmn/go-cache"
 )
 
 const minutesPerHour = 60
 
 // GophKeeperUseCase -.
 type GophKeeperUseCase struct {
-	repo   GophKeeperRepo
-	webAPI GophKeeperWebAPI
-	cfg    *config.Config
+	repo  GophKeeperRepo
+	cfg   *config.Config
+	cache *cache.Cache
 }
 
-func New(r GophKeeperRepo, w GophKeeperWebAPI, cfg *config.Config) *GophKeeperUseCase {
+func New(r GophKeeperRepo, cfg *config.Config) *GophKeeperUseCase {
 	return &GophKeeperUseCase{
-		repo:   r,
-		webAPI: w,
-		cfg:    cfg,
+		repo: r,
+		cfg:  cfg,
+		cache: cache.New(
+			time.Duration(cfg.Cache.DefaultExpiration)*time.Minute,
+			time.Duration(cfg.Cache.CleanupInterval)*time.Minute),
 	}
 }
 
@@ -117,4 +121,36 @@ func (uc *GophKeeperUseCase) RefreshAccessToken(ctx context.Context, refreshToke
 
 func (uc *GophKeeperUseCase) GetDomainName() string {
 	return uc.cfg.Secutiry.Domain
+}
+
+func (uc *GophKeeperUseCase) CheckAccessToken(ctx context.Context, accessToken string) (entity.User, error) {
+	if userFromCache, found := uc.cache.Get(accessToken); found {
+		checkedUser, ok := userFromCache.(entity.User)
+
+		if ok {
+			return checkedUser, nil
+		}
+	}
+
+	var user entity.User
+
+	sub, err := utils.ValidateToken(accessToken, uc.cfg.AccessTokenPublicKey)
+	if err != nil {
+		err = errs.ErrTokenValidation
+
+		return user, err
+	}
+
+	userID := fmt.Sprint(sub)
+	user, err = uc.repo.GetUserByID(ctx, userID)
+
+	if err != nil {
+		err = errs.ErrTokenValidation
+
+		return user, err
+	}
+
+	uc.cache.Set(accessToken, user, cache.DefaultExpiration)
+
+	return user, nil
 }

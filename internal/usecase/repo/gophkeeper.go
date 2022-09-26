@@ -123,3 +123,13 @@ func (r *GophKeeperRepo) GetUserByID(ctx context.Context, id string) (user entit
 
 	return
 }
+
+func (r *GophKeeperRepo) ShutDown() {
+	db, err := r.db.DB()
+	if err != nil {
+		r.l.Error(err)
+	}
+
+	db.Close()
+	r.l.Debug("db connection closed")
+}

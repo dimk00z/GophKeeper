@@ -13,7 +13,6 @@ import (
 	v1 "github.com/dimk00z/GophKeeper/internal/controller/http/v1"
 	"github.com/dimk00z/GophKeeper/internal/usecase"
 	"github.com/dimk00z/GophKeeper/internal/usecase/repo"
-	"github.com/dimk00z/GophKeeper/internal/usecase/webapi"
 	"github.com/dimk00z/GophKeeper/pkg/httpserver"
 	"github.com/dimk00z/GophKeeper/pkg/logger"
 )
@@ -25,20 +24,14 @@ func Run(cfg *config.Config) {
 	gophKeeperRepo := repo.New(cfg.PG.URL, l)
 	gophKeeperRepo.Migrate()
 
+	defer gophKeeperRepo.ShutDown()
 	// Use case
 	GophKeeperUseCase := usecase.New(
 		gophKeeperRepo,
-		webapi.New(),
 		cfg,
 	)
-	var err error
-	// RabbitMQ RPC Server
-	// rmqRouter := amqprpc.NewRouter(GophKeeperUseCase)
 
-	// rmqServer, err := server.New(cfg.RMQ.URL, cfg.RMQ.ServerExchange, rmqRouter, l)
-	// if err != nil {
-	// 	l.Fatal(fmt.Errorf("app - Run - rmqServer - server.New: %w", err))
-	// }
+	var err error
 
 	// HTTP Server
 	handler := gin.New()
@@ -60,9 +53,5 @@ func Run(cfg *config.Config) {
 	err = httpServer.Shutdown()
 	if err != nil {
 		l.Error(fmt.Errorf("app - Run - httpServer.Shutdown: %w", err))
-	}
-
-	if err != nil {
-		l.Error(fmt.Errorf("app - Run - rmqServer.Shutdown: %w", err))
 	}
 }

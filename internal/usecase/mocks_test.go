@@ -4,153 +4,153 @@
 // Package usecase_test is a generated GoMock package.
 package usecase_test
 
-import (
-	context "context"
-	reflect "reflect"
+// import (
+// 	context "context"
+// 	reflect "reflect"
 
-	entity "github.com/dimk00z/GophKeeper/internal/entity"
-	gomock "github.com/golang/mock/gomock"
-)
+// 	entity "github.com/dimk00z/GophKeeper/internal/entity"
+// 	gomock "github.com/golang/mock/gomock"
+// )
 
-// MockGophKeeper is a mock of GophKeeper interface.
-type MockGophKeeper struct {
-	ctrl     *gomock.Controller
-	recorder *MockGophKeeperMockRecorder
-}
+// // MockGophKeeper is a mock of GophKeeper interface.
+// type MockGophKeeper struct {
+// 	ctrl     *gomock.Controller
+// 	recorder *MockGophKeeperMockRecorder
+// }
 
-// MockGophKeeperMockRecorder is the mock recorder for MockGophKeeper.
-type MockGophKeeperMockRecorder struct {
-	mock *MockGophKeeper
-}
+// // MockGophKeeperMockRecorder is the mock recorder for MockGophKeeper.
+// type MockGophKeeperMockRecorder struct {
+// 	mock *MockGophKeeper
+// }
 
-// NewMockGophKeeper creates a new mock instance.
-func NewMockGophKeeper(ctrl *gomock.Controller) *MockGophKeeper {
-	mock := &MockGophKeeper{ctrl: ctrl}
-	mock.recorder = &MockGophKeeperMockRecorder{mock}
-	return mock
-}
+// // NewMockGophKeeper creates a new mock instance.
+// func NewMockGophKeeper(ctrl *gomock.Controller) *MockGophKeeper {
+// 	mock := &MockGophKeeper{ctrl: ctrl}
+// 	mock.recorder = &MockGophKeeperMockRecorder{mock}
+// 	return mock
+// }
 
-// EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockGophKeeper) EXPECT() *MockGophKeeperMockRecorder {
-	return m.recorder
-}
+// // EXPECT returns an object that allows the caller to indicate expected use.
+// func (m *MockGophKeeper) EXPECT() *MockGophKeeperMockRecorder {
+// 	return m.recorder
+// }
 
-// History mocks base method.
-func (m *MockGophKeeper) History(arg0 context.Context) ([]entity.GophKeeper, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "History", arg0)
-	ret0, _ := ret[0].([]entity.GophKeeper)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
+// // History mocks base method.
+// func (m *MockGophKeeper) History(arg0 context.Context) ([]entity.GophKeeper, error) {
+// 	m.ctrl.T.Helper()
+// 	ret := m.ctrl.Call(m, "History", arg0)
+// 	ret0, _ := ret[0].([]entity.GophKeeper)
+// 	ret1, _ := ret[1].(error)
+// 	return ret0, ret1
+// }
 
-// History indicates an expected call of History.
-func (mr *MockGophKeeperMockRecorder) History(arg0 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "History", reflect.TypeOf((*MockGophKeeper)(nil).History), arg0)
-}
+// // History indicates an expected call of History.
+// func (mr *MockGophKeeperMockRecorder) History(arg0 interface{}) *gomock.Call {
+// 	mr.mock.ctrl.T.Helper()
+// 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "History", reflect.TypeOf((*MockGophKeeper)(nil).History), arg0)
+// }
 
-// Translate mocks base method.
-func (m *MockGophKeeper) Translate(arg0 context.Context, arg1 entity.GophKeeper) (entity.GophKeeper, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Translate", arg0, arg1)
-	ret0, _ := ret[0].(entity.GophKeeper)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
+// // Translate mocks base method.
+// func (m *MockGophKeeper) Translate(arg0 context.Context, arg1 entity.GophKeeper) (entity.GophKeeper, error) {
+// 	m.ctrl.T.Helper()
+// 	ret := m.ctrl.Call(m, "Translate", arg0, arg1)
+// 	ret0, _ := ret[0].(entity.GophKeeper)
+// 	ret1, _ := ret[1].(error)
+// 	return ret0, ret1
+// }
 
-// Translate indicates an expected call of Translate.
-func (mr *MockGophKeeperMockRecorder) Translate(arg0, arg1 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Translate", reflect.TypeOf((*MockGophKeeper)(nil).Translate), arg0, arg1)
-}
+// // Translate indicates an expected call of Translate.
+// func (mr *MockGophKeeperMockRecorder) Translate(arg0, arg1 interface{}) *gomock.Call {
+// 	mr.mock.ctrl.T.Helper()
+// 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Translate", reflect.TypeOf((*MockGophKeeper)(nil).Translate), arg0, arg1)
+// }
 
-// MockGophKeeperRepo is a mock of GophKeeperRepo interface.
-type MockGophKeeperRepo struct {
-	ctrl     *gomock.Controller
-	recorder *MockGophKeeperRepoMockRecorder
-}
+// // MockGophKeeperRepo is a mock of GophKeeperRepo interface.
+// type MockGophKeeperRepo struct {
+// 	ctrl     *gomock.Controller
+// 	recorder *MockGophKeeperRepoMockRecorder
+// }
 
-// MockGophKeeperRepoMockRecorder is the mock recorder for MockGophKeeperRepo.
-type MockGophKeeperRepoMockRecorder struct {
-	mock *MockGophKeeperRepo
-}
+// // MockGophKeeperRepoMockRecorder is the mock recorder for MockGophKeeperRepo.
+// type MockGophKeeperRepoMockRecorder struct {
+// 	mock *MockGophKeeperRepo
+// }
 
-// NewMockGophKeeperRepo creates a new mock instance.
-func NewMockGophKeeperRepo(ctrl *gomock.Controller) *MockGophKeeperRepo {
-	mock := &MockGophKeeperRepo{ctrl: ctrl}
-	mock.recorder = &MockGophKeeperRepoMockRecorder{mock}
-	return mock
-}
+// // NewMockGophKeeperRepo creates a new mock instance.
+// func NewMockGophKeeperRepo(ctrl *gomock.Controller) *MockGophKeeperRepo {
+// 	mock := &MockGophKeeperRepo{ctrl: ctrl}
+// 	mock.recorder = &MockGophKeeperRepoMockRecorder{mock}
+// 	return mock
+// }
 
-// EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockGophKeeperRepo) EXPECT() *MockGophKeeperRepoMockRecorder {
-	return m.recorder
-}
+// // EXPECT returns an object that allows the caller to indicate expected use.
+// func (m *MockGophKeeperRepo) EXPECT() *MockGophKeeperRepoMockRecorder {
+// 	return m.recorder
+// }
 
-// GetHistory mocks base method.
-func (m *MockGophKeeperRepo) GetHistory(arg0 context.Context) ([]entity.GophKeeper, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetHistory", arg0)
-	ret0, _ := ret[0].([]entity.GophKeeper)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
+// // GetHistory mocks base method.
+// func (m *MockGophKeeperRepo) GetHistory(arg0 context.Context) ([]entity.GophKeeper, error) {
+// 	m.ctrl.T.Helper()
+// 	ret := m.ctrl.Call(m, "GetHistory", arg0)
+// 	ret0, _ := ret[0].([]entity.GophKeeper)
+// 	ret1, _ := ret[1].(error)
+// 	return ret0, ret1
+// }
 
-// GetHistory indicates an expected call of GetHistory.
-func (mr *MockGophKeeperRepoMockRecorder) GetHistory(arg0 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetHistory", reflect.TypeOf((*MockGophKeeperRepo)(nil).GetHistory), arg0)
-}
+// // GetHistory indicates an expected call of GetHistory.
+// func (mr *MockGophKeeperRepoMockRecorder) GetHistory(arg0 interface{}) *gomock.Call {
+// 	mr.mock.ctrl.T.Helper()
+// 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetHistory", reflect.TypeOf((*MockGophKeeperRepo)(nil).GetHistory), arg0)
+// }
 
-// Store mocks base method.
-func (m *MockGophKeeperRepo) Store(arg0 context.Context, arg1 entity.GophKeeper) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Store", arg0, arg1)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
+// // Store mocks base method.
+// func (m *MockGophKeeperRepo) Store(arg0 context.Context, arg1 entity.GophKeeper) error {
+// 	m.ctrl.T.Helper()
+// 	ret := m.ctrl.Call(m, "Store", arg0, arg1)
+// 	ret0, _ := ret[0].(error)
+// 	return ret0
+// }
 
-// Store indicates an expected call of Store.
-func (mr *MockGophKeeperRepoMockRecorder) Store(arg0, arg1 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Store", reflect.TypeOf((*MockGophKeeperRepo)(nil).Store), arg0, arg1)
-}
+// // Store indicates an expected call of Store.
+// func (mr *MockGophKeeperRepoMockRecorder) Store(arg0, arg1 interface{}) *gomock.Call {
+// 	mr.mock.ctrl.T.Helper()
+// 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Store", reflect.TypeOf((*MockGophKeeperRepo)(nil).Store), arg0, arg1)
+// }
 
-// MockGophKeeperWebAPI is a mock of GophKeeperWebAPI interface.
-type MockGophKeeperWebAPI struct {
-	ctrl     *gomock.Controller
-	recorder *MockGophKeeperWebAPIMockRecorder
-}
+// // MockGophKeeperWebAPI is a mock of GophKeeperWebAPI interface.
+// type MockGophKeeperWebAPI struct {
+// 	ctrl     *gomock.Controller
+// 	recorder *MockGophKeeperWebAPIMockRecorder
+// }
 
-// MockGophKeeperWebAPIMockRecorder is the mock recorder for MockGophKeeperWebAPI.
-type MockGophKeeperWebAPIMockRecorder struct {
-	mock *MockGophKeeperWebAPI
-}
+// // MockGophKeeperWebAPIMockRecorder is the mock recorder for MockGophKeeperWebAPI.
+// type MockGophKeeperWebAPIMockRecorder struct {
+// 	mock *MockGophKeeperWebAPI
+// }
 
-// NewMockGophKeeperWebAPI creates a new mock instance.
-func NewMockGophKeeperWebAPI(ctrl *gomock.Controller) *MockGophKeeperWebAPI {
-	mock := &MockGophKeeperWebAPI{ctrl: ctrl}
-	mock.recorder = &MockGophKeeperWebAPIMockRecorder{mock}
-	return mock
-}
+// // NewMockGophKeeperWebAPI creates a new mock instance.
+// func NewMockGophKeeperWebAPI(ctrl *gomock.Controller) *MockGophKeeperWebAPI {
+// 	mock := &MockGophKeeperWebAPI{ctrl: ctrl}
+// 	mock.recorder = &MockGophKeeperWebAPIMockRecorder{mock}
+// 	return mock
+// }
 
-// EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockGophKeeperWebAPI) EXPECT() *MockGophKeeperWebAPIMockRecorder {
-	return m.recorder
-}
+// // EXPECT returns an object that allows the caller to indicate expected use.
+// func (m *MockGophKeeperWebAPI) EXPECT() *MockGophKeeperWebAPIMockRecorder {
+// 	return m.recorder
+// }
 
-// Translate mocks base method.
-func (m *MockGophKeeperWebAPI) Translate(arg0 entity.GophKeeper) (entity.GophKeeper, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Translate", arg0)
-	ret0, _ := ret[0].(entity.GophKeeper)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
+// // Translate mocks base method.
+// func (m *MockGophKeeperWebAPI) Translate(arg0 entity.GophKeeper) (entity.GophKeeper, error) {
+// 	m.ctrl.T.Helper()
+// 	ret := m.ctrl.Call(m, "Translate", arg0)
+// 	ret0, _ := ret[0].(entity.GophKeeper)
+// 	ret1, _ := ret[1].(error)
+// 	return ret0, ret1
+// }
 
-// Translate indicates an expected call of Translate.
-func (mr *MockGophKeeperWebAPIMockRecorder) Translate(arg0 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Translate", reflect.TypeOf((*MockGophKeeperWebAPI)(nil).Translate), arg0)
-}
+// // Translate indicates an expected call of Translate.
+// func (mr *MockGophKeeperWebAPIMockRecorder) Translate(arg0 interface{}) *gomock.Call {
+// 	mr.mock.ctrl.T.Helper()
+// 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Translate", reflect.TypeOf((*MockGophKeeperWebAPI)(nil).Translate), arg0)
+// }
