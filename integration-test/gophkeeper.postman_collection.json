@@ -6,7 +6,7 @@
 	},
 	"item": [
 		{
-			"name": "user",
+			"name": "auth",
 			"item": [
 				{
 					"name": "register",
@@ -117,7 +117,12 @@
 						}
 					},
 					"response": []
-				},
+				}
+			]
+		},
+		{
+			"name": "user",
+			"item": [
 				{
 					"name": "user_info",
 					"request": {
@@ -135,6 +140,103 @@
 								"v1",
 								"user",
 								"me"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "cards",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/user/cards",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"cards"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "addCard",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\":\"name\",\n    \"card_holder_hame\":\"card_holder_hame\",\n    \"number\":\"number\",\n    \"brand\":\"brand\",\n    \"expiration_month\":\"expiration_month\",\n    \"expiration_year\":\"expiration_year\",\n    \"security_code\":\"security_code\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/user/cards",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"cards"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "logins",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/user/logins",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"logins"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "secret-notes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/user/secret-notes",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"secret-notes"
 							]
 						}
 					},
