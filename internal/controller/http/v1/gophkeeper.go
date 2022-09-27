@@ -35,6 +35,7 @@ func newGophKeeperRoutes(handler *gin.RouterGroup, g usecase.GophKeeper, l logge
 
 		userAPI.GET("cards", r.ProtectedByAccessToken(), r.GetCards)
 		userAPI.POST("cards", r.ProtectedByAccessToken(), r.AddCard)
+
 		userAPI.GET("secret-notes", r.ProtectedByAccessToken(), r.GetSecretNotes)
 
 	}

@@ -23,6 +23,7 @@ func (r *GophKeeperRepo) GetCards(ctx context.Context, user entity.User) ([]enti
 	cards := make([]entity.Card, len(cardsFromDB))
 
 	for index := range cardsFromDB {
+		cards[index].ID = cardsFromDB[index].ID
 		cards[index].Brand = cardsFromDB[index].Brand
 		cards[index].CardHolderName = cardsFromDB[index].CardHolderName
 		cards[index].ExpirationMonth = cardsFromDB[index].ExpirationMonth
@@ -37,6 +38,7 @@ func (r *GophKeeperRepo) GetCards(ctx context.Context, user entity.User) ([]enti
 
 func (r *GophKeeperRepo) AddCard(ctx context.Context, card *entity.Card, userID uuid.UUID) error {
 	cardToDB := models.CreditCard{
+		ID:              uuid.New(),
 		UserID:          userID,
 		Name:            card.Name,
 		Brand:           card.Brand,
@@ -47,5 +49,10 @@ func (r *GophKeeperRepo) AddCard(ctx context.Context, card *entity.Card, userID 
 		SecurityCode:    card.SecurityCode,
 	}
 
-	return r.db.WithContext(ctx).Create(&cardToDB).Error
+	err := r.db.WithContext(ctx).Create(&cardToDB).Error
+	if err != nil {
+		card.ID = cardToDB.ID
+	}
+
+	return err
 }
