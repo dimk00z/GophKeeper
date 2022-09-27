@@ -13,6 +13,7 @@ type User struct {
 	Password    string    `gorm:"not null"`
 	CreditCards []CreditCard
 	SavedLogins []SavedLogin
+	SecretNotes []SecretNote
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 }
