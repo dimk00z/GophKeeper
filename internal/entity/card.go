@@ -5,7 +5,7 @@ type Card struct {
 	CardHolderName  string `json:"card_holder_hame"`
 	Number          string `json:"number"`
 	Brand           string `json:"brand"`
-	ExpirationMonth int    `json:"expiration_month"`
-	ExpirationYear  int    `json:"expiration_year"`
-	SecurityCode    int    `json:"security_code"`
+	ExpirationMonth string `json:"expiration_month"`
+	ExpirationYear  string `json:"expiration_year"`
+	SecurityCode    string `json:"security_code"`
 }

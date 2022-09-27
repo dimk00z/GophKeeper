@@ -17,7 +17,7 @@ func (r *GophKeeperRoutes) SignUpUser(ctx *gin.Context) {
 	var payload *loginPayload
 
 	if err := ctx.ShouldBindJSON(&payload); err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"status": "fail", "message": err.Error()})
+		errorResponse(ctx, http.StatusBadRequest, err.Error())
 
 		return
 	}
@@ -30,7 +30,7 @@ func (r *GophKeeperRoutes) SignUpUser(ctx *gin.Context) {
 	}
 
 	if errors.Is(err, errs.ErrWrongEmail) {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		errorResponse(ctx, http.StatusBadRequest, err.Error())
 
 		return
 	}
@@ -41,7 +41,7 @@ func (r *GophKeeperRoutes) SignUpUser(ctx *gin.Context) {
 func (r *GophKeeperRoutes) SignInUser(ctx *gin.Context) {
 	var payload *loginPayload
 	if err := ctx.ShouldBindJSON(&payload); err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"status": "fail", "message": err.Error()})
+		errorResponse(ctx, http.StatusBadRequest, err.Error())
 
 		return
 	}
@@ -59,7 +59,7 @@ func (r *GophKeeperRoutes) SignInUser(ctx *gin.Context) {
 	}
 
 	if errors.Is(err, errs.ErrWrongCredentials) {
-		ctx.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		errorResponse(ctx, http.StatusBadRequest, err.Error())
 
 		return
 	}
@@ -70,7 +70,7 @@ func (r *GophKeeperRoutes) SignInUser(ctx *gin.Context) {
 func (r *GophKeeperRoutes) RefreshAccessToken(ctx *gin.Context) {
 	refreshToken, err := ctx.Cookie("refresh_token")
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusForbidden, gin.H{"status": "fail", "message": "refresh token has not been found"})
+		errorResponse(ctx, http.StatusBadRequest, "refresh token has not been found")
 
 		return
 	}
@@ -86,7 +86,7 @@ func (r *GophKeeperRoutes) RefreshAccessToken(ctx *gin.Context) {
 		return
 	}
 
-	ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	errorResponse(ctx, http.StatusBadRequest, err.Error())
 }
 
 func (r *GophKeeperRoutes) LogoutUser(ctx *gin.Context) {

@@ -9,7 +9,7 @@ type SavedLogin struct {
 	gorm.Model
 	Name     string `gorm:"size:100"`
 	URI      string
-	Login    string `gorm:"size:100"`
-	Password string `gorm:"size:100"`
+	Login    string
+	Password string
 	UserID   uuid.UUID
 }
