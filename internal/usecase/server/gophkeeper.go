@@ -4,13 +4,12 @@ import (
 	"context"
 	"fmt"
 	"net/mail"
-	"time"
 
 	config "github.com/dimk00z/GophKeeper/config/server"
 	"github.com/dimk00z/GophKeeper/internal/entity"
 	"github.com/dimk00z/GophKeeper/internal/utils"
 	"github.com/dimk00z/GophKeeper/internal/utils/errs"
-	"github.com/patrickmn/go-cache"
+	cache "github.com/dimk00z/GophKeeper/pkg/cache"
 )
 
 const minutesPerHour = 60
@@ -19,16 +18,14 @@ const minutesPerHour = 60
 type GophKeeperUseCase struct {
 	repo  GophKeeperRepo
 	cfg   *config.Config
-	cache *cache.Cache
+	cache cache.Cacher
 }
 
-func New(r GophKeeperRepo, cfg *config.Config) *GophKeeperUseCase {
+func New(r GophKeeperRepo, cfg *config.Config, cache cache.Cacher) *GophKeeperUseCase {
 	return &GophKeeperUseCase{
-		repo: r,
-		cfg:  cfg,
-		cache: cache.New(
-			time.Duration(cfg.Cache.DefaultExpiration)*time.Minute,
-			time.Duration(cfg.Cache.CleanupInterval)*time.Minute),
+		repo:  r,
+		cfg:   cfg,
+		cache: cache,
 	}
 }
 
@@ -150,7 +147,7 @@ func (uc *GophKeeperUseCase) CheckAccessToken(ctx context.Context, accessToken s
 		return user, err
 	}
 
-	uc.cache.Set(accessToken, user, cache.DefaultExpiration)
+	uc.cache.Set(accessToken, user)
 
 	return user, nil
 }

@@ -11,8 +11,9 @@ import (
 
 	config "github.com/dimk00z/GophKeeper/config/server"
 	v1 "github.com/dimk00z/GophKeeper/internal/controller/http/v1"
-	"github.com/dimk00z/GophKeeper/internal/usecase"
-	"github.com/dimk00z/GophKeeper/internal/usecase/repo"
+	usecase "github.com/dimk00z/GophKeeper/internal/usecase/server"
+	"github.com/dimk00z/GophKeeper/internal/usecase/server/repo"
+	"github.com/dimk00z/GophKeeper/pkg/cache"
 	"github.com/dimk00z/GophKeeper/pkg/httpserver"
 	"github.com/dimk00z/GophKeeper/pkg/logger"
 )
@@ -29,6 +30,7 @@ func Run(cfg *config.Config) {
 	GophKeeperUseCase := usecase.New(
 		gophKeeperRepo,
 		cfg,
+		cache.New(cfg.Cache.DefaultExpiration, cfg.Cache.CleanupInterval),
 	)
 
 	var err error

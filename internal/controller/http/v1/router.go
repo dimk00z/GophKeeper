@@ -7,7 +7,7 @@ import (
 
 	// Swagger docs.
 	_ "github.com/dimk00z/GophKeeper/docs"
-	"github.com/dimk00z/GophKeeper/internal/usecase"
+	usecase "github.com/dimk00z/GophKeeper/internal/usecase/server"
 	"github.com/dimk00z/GophKeeper/pkg/logger"
 )
 

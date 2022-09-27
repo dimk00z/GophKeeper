@@ -5,7 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/dimk00z/GophKeeper/internal/usecase"
+	usecase "github.com/dimk00z/GophKeeper/internal/usecase/server"
 	"github.com/dimk00z/GophKeeper/pkg/logger"
 )
 
@@ -31,6 +31,10 @@ func newGophKeeperRoutes(handler *gin.RouterGroup, g usecase.GophKeeper, l logge
 	userAPI := handler.Group("/user")
 	{
 		userAPI.GET("me", r.ProtectedByAccessToken(), r.UserInfo)
+		userAPI.GET("logins", r.ProtectedByAccessToken(), r.GetLogins)
+		userAPI.GET("cards", r.ProtectedByAccessToken(), r.GetCards)
+		userAPI.GET("secret-notes", r.ProtectedByAccessToken(), r.GetSecretNotes)
+
 	}
 
 	authAPI := handler.Group("/auth")
