@@ -1,8 +1,6 @@
 package v1
 
 import (
-	"net/http"
-
 	"github.com/gin-gonic/gin"
 
 	usecase "github.com/dimk00z/GophKeeper/internal/usecase/server"
@@ -17,29 +15,26 @@ type GophKeeperRoutes struct {
 func newGophKeeperRoutes(handler *gin.RouterGroup, g usecase.GophKeeper, l logger.Interface) {
 	r := &GophKeeperRoutes{g, l}
 
-	handler.GET("/health", func(ctx *gin.Context) {
-		err := g.HealthCheck()
-		if err != nil {
-			ctx.JSON(http.StatusInternalServerError, gin.H{"status": "error", "message": err.Error()})
-
-			return
-		}
-		message := "Connection established"
-		ctx.JSON(http.StatusOK, gin.H{"status": "connected", "message": message})
-	})
+	handler.GET("/health", r.HealthCheck)
 
 	userAPI := handler.Group("/user")
 	{
 		userAPI.GET("me", r.ProtectedByAccessToken(), r.UserInfo)
+
 		userAPI.GET("logins", r.ProtectedByAccessToken(), r.GetLogins)
+		userAPI.POST("logins", r.ProtectedByAccessToken(), r.AddLogin)
+		userAPI.DELETE("logins/:id", r.ProtectedByAccessToken(), r.DelLogin)
+		userAPI.PATCH("logins/:id", r.ProtectedByAccessToken(), r.UpdateLogin)
 
 		userAPI.GET("cards", r.ProtectedByAccessToken(), r.GetCards)
 		userAPI.POST("cards", r.ProtectedByAccessToken(), r.AddCard)
 		userAPI.DELETE("cards/:id", r.ProtectedByAccessToken(), r.DelCard)
 		userAPI.PATCH("cards/:id", r.ProtectedByAccessToken(), r.UpdateCard)
 
-		userAPI.GET("secret-notes", r.ProtectedByAccessToken(), r.GetSecretNotes)
-
+		userAPI.GET("notes", r.ProtectedByAccessToken(), r.GetNotes)
+		userAPI.POST("notes", r.ProtectedByAccessToken(), r.AddNote)
+		userAPI.DELETE("notes/:id", r.ProtectedByAccessToken(), r.DelNote)
+		userAPI.PATCH("notes/:id", r.ProtectedByAccessToken(), r.UpdateNote)
 	}
 
 	authAPI := handler.Group("/auth")

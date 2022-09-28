@@ -1,42 +1,31 @@
-basePath: /v1
+basePath: /api/v1
 definitions:
-  entity.GophKeeper:
+  entity.JWT:
     properties:
-      destination:
-        example: en
+      access_token:
         type: string
-      original:
-        example: текст для перевода
+      accessTokenMaxAge:
+        type: integer
+      domain:
         type: string
-      source:
-        example: auto
+      refresh_token:
         type: string
-      GophKeeper:
-        example: text for GophKeeper
+      refreshTokenMaxAge:
+        type: integer
+    type: object
+  entity.User:
+    properties:
+      email:
+        type: string
+      uuid:
         type: string
     type: object
-  v1.doTranslateRequest:
+  v1.loginPayload:
     properties:
-      destination:
-        example: en
+      email:
         type: string
-      original:
-        example: текст для перевода
+      password:
         type: string
-      source:
-        example: auto
-        type: string
-    required:
-      - destination
-      - original
-      - source
-    type: object
-  v1.historyResponse:
-    properties:
-      history:
-        items:
-          $ref: '#/definitions/entity.GophKeeper'
-        type: array
     type: object
   v1.response:
     properties:
@@ -46,31 +35,34 @@ definitions:
     type: object
 host: localhost:8080
 info:
-  contact: {}
-  description: Using a GophKeeper service as an example
-  title: Go Clean Template API
-  version: "1.0"
+  contact:
+    email: dimk0z@yandex.ru
+    name: Kuznetsov Dmitriy
+    url: https://github.com/dimk00z
+  description: Gophkeeper project
+  title: Gophkeeper Server
+  version: 1.0.0
 paths:
-  /GophKeeper/do-translate:
-    post:
+  /auth/login:
+    get:
       consumes:
-        - application/json
-      description: Translate a text
-      operationId: do-translate
+      - application/json
+      description: getting user JWT
+      operationId: refresh
       parameters:
-        - description: Set up GophKeeper
-          in: body
-          name: request
-          required: true
-          schema:
-            $ref: '#/definitions/v1.doTranslateRequest'
+      - description: Sing in user
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/v1.loginPayload'
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/entity.GophKeeper'
+            $ref: '#/definitions/entity.JWT'
         "400":
           description: Bad Request
           schema:
@@ -79,27 +71,93 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/v1.response'
-      summary: Translate
+      summary: Refresh token
       tags:
-        - GophKeeper
-  /GophKeeper/history:
-    get:
+      - Auth
+    post:
       consumes:
-        - application/json
-      description: Show all GophKeeper history
-      operationId: history
+      - application/json
+      description: getting user JWT
+      operationId: login
+      parameters:
+      - description: Sing in user
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/v1.loginPayload'
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/v1.historyResponse'
+            $ref: '#/definitions/entity.JWT'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
         "500":
           description: Internal Server Error
           schema:
             $ref: '#/definitions/v1.response'
-      summary: Show history
+      summary: Login user
       tags:
-        - GophKeeper
+      - Auth
+  /auth/logout:
+    get:
+      description: dropping cookies
+      operationId: logout
+      responses:
+        "200":
+          description: OK
+      summary: Logout
+      tags:
+      - Auth
+  /auth/register:
+    post:
+      consumes:
+      - application/json
+      description: add new user
+      operationId: register
+      parameters:
+      - description: Sing up new user
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/v1.loginPayload'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entity.User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+      summary: Register user
+      tags:
+      - Auth
+  /health:
+    get:
+      consumes:
+      - '*/*'
+      description: get the status of server.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "500":
+          description: Internal Server Error
+      summary: Show the status of server.
+      tags:
+      - health
 swagger: "2.0"

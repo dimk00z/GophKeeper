@@ -21,13 +21,19 @@ type (
 		CheckAccessToken(ctx context.Context, accessToken string) (entity.User, error)
 
 		GetLogins(ctx context.Context, user entity.User) ([]entity.Login, error)
+		AddLogin(ctx context.Context, login *entity.Login, userID uuid.UUID) error
+		DelLogin(ctx context.Context, loginID, userID uuid.UUID) error
+		UpdateLogin(ctx context.Context, login *entity.Login, userID uuid.UUID) error
 
 		GetCards(ctx context.Context, user entity.User) ([]entity.Card, error)
 		AddCard(ctx context.Context, card *entity.Card, userID uuid.UUID) error
 		DelCard(ctx context.Context, cardUUID, userID uuid.UUID) error
 		UpdateCard(ctx context.Context, card *entity.Card, userID uuid.UUID) error
 
-		GetSecretNotes(ctx context.Context, user entity.User) ([]entity.SecretNote, error)
+		GetNotes(ctx context.Context, user entity.User) ([]entity.SecretNote, error)
+		AddNote(ctx context.Context, note *entity.SecretNote, userID uuid.UUID) error
+		DelNote(ctx context.Context, noteID, userID uuid.UUID) error
+		UpdateNote(ctx context.Context, note *entity.SecretNote, userID uuid.UUID) error
 	}
 
 	// GophKeeperRepo - db logic.
@@ -38,6 +44,10 @@ type (
 		GetUserByID(ctx context.Context, id string) (entity.User, error)
 
 		GetLogins(ctx context.Context, user entity.User) ([]entity.Login, error)
+		AddLogin(ctx context.Context, login *entity.Login, userID uuid.UUID) error
+		DelLogin(ctx context.Context, loginID, userID uuid.UUID) error
+		UpdateLogin(ctx context.Context, login *entity.Login, userID uuid.UUID) error
+		IsLoginOwner(ctx context.Context, loginID, userID uuid.UUID) bool
 
 		GetCards(ctx context.Context, user entity.User) ([]entity.Card, error)
 		AddCard(ctx context.Context, card *entity.Card, userID uuid.UUID) error
@@ -45,6 +55,10 @@ type (
 		UpdateCard(ctx context.Context, card *entity.Card, userID uuid.UUID) error
 		IsCardOwner(ctx context.Context, cardUUID, userID uuid.UUID) bool
 
-		GetSecretNotes(ctx context.Context, user entity.User) ([]entity.SecretNote, error)
+		GetNotes(ctx context.Context, user entity.User) ([]entity.SecretNote, error)
+		AddNote(ctx context.Context, note *entity.SecretNote, userID uuid.UUID) error
+		DelNote(ctx context.Context, noteID, userID uuid.UUID) error
+		UpdateNote(ctx context.Context, note *entity.SecretNote, userID uuid.UUID) error
+		IsNoteOwner(ctx context.Context, noteID, userID uuid.UUID) bool
 	}
 )

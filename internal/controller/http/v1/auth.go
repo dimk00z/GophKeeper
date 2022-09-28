@@ -13,6 +13,17 @@ type loginPayload struct {
 	Password string `json:"password"`
 }
 
+// @Summary     Register user
+// @Description add new user
+// @ID          register
+// @Tags  	    Auth
+// @Accept      json
+// @Produce     json
+// @Param       request body loginPayload true "Sing up new user"
+// @Success     201 {object} entity.User
+// @Failure     400 {object} response
+// @Failure     500 {object} response
+// @Router      /auth/register [post].
 func (r *GophKeeperRoutes) SignUpUser(ctx *gin.Context) {
 	var payload *loginPayload
 
@@ -38,6 +49,17 @@ func (r *GophKeeperRoutes) SignUpUser(ctx *gin.Context) {
 	ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 }
 
+// @Summary     Login user
+// @Description getting user JWT
+// @ID          login
+// @Tags  	    Auth
+// @Accept      json
+// @Produce     json
+// @Param       request body loginPayload true "Sing in user"
+// @Success     200 {object} entity.JWT
+// @Failure     400 {object} response
+// @Failure     500 {object} response
+// @Router      /auth/login [post].
 func (r *GophKeeperRoutes) SignInUser(ctx *gin.Context) {
 	var payload *loginPayload
 	if err := ctx.ShouldBindJSON(&payload); err != nil {
@@ -67,6 +89,17 @@ func (r *GophKeeperRoutes) SignInUser(ctx *gin.Context) {
 	ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 }
 
+// @Summary     Refresh token
+// @Description getting user JWT
+// @ID          refresh
+// @Tags  	    Auth
+// @Accept      json
+// @Produce     json
+// @Param       request body loginPayload true "Sing in user"
+// @Success     200 {object} entity.JWT
+// @Failure     400 {object} response
+// @Failure     500 {object} response
+// @Router      /auth/login [get].
 func (r *GophKeeperRoutes) RefreshAccessToken(ctx *gin.Context) {
 	refreshToken, err := ctx.Cookie("refresh_token")
 	if err != nil {
@@ -89,6 +122,12 @@ func (r *GophKeeperRoutes) RefreshAccessToken(ctx *gin.Context) {
 	errorResponse(ctx, http.StatusBadRequest, err.Error())
 }
 
+// @Summary     Logout
+// @Description dropping cookies
+// @ID          logout
+// @Tags  	    Auth
+// @Success     200
+// @Router      /auth/logout [get].
 func (r *GophKeeperRoutes) LogoutUser(ctx *gin.Context) {
 	domainName := r.uc.GetDomainName()
 	ctx.SetCookie("access_token", "", -1, "/", domainName, false, true)

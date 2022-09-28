@@ -1,139 +1,247 @@
 {
-  "swagger": "2.0",
-  "info": {
-    "description": "Using a GophKeeper service as an example",
-    "title": "Go Clean Template API",
-    "contact": {},
-    "version": "1.0"
-  },
-  "host": "localhost:8080",
-  "basePath": "/v1",
-  "paths": {
-    "/GophKeeper/do-translate": {
-      "post": {
-        "description": "Translate a text",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["GophKeeper"],
-        "summary": "Translate",
-        "operationId": "do-translate",
-        "parameters": [
-          {
-            "description": "Set up GophKeeper",
-            "name": "request",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/v1.doTranslateRequest"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "$ref": "#/definitions/entity.GophKeeper"
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/v1.response"
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "$ref": "#/definitions/v1.response"
-            }
-          }
-        }
-      }
+    "swagger": "2.0",
+    "info": {
+        "description": "Gophkeeper project",
+        "title": "Gophkeeper Server",
+        "contact": {
+            "name": "Kuznetsov Dmitriy",
+            "url": "https://github.com/dimk00z",
+            "email": "dimk0z@yandex.ru"
+        },
+        "version": "1.0.0"
     },
-    "/GophKeeper/history": {
-      "get": {
-        "description": "Show all GophKeeper history",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["GophKeeper"],
-        "summary": "Show history",
-        "operationId": "history",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "$ref": "#/definitions/v1.historyResponse"
+    "host": "localhost:8080",
+    "basePath": "/api/v1",
+    "paths": {
+        "/auth/login": {
+            "get": {
+                "description": "getting user JWT",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Refresh token",
+                "operationId": "refresh",
+                "parameters": [
+                    {
+                        "description": "Sing in user",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.loginPayload"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.JWT"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/v1.response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/v1.response"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "getting user JWT",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Login user",
+                "operationId": "login",
+                "parameters": [
+                    {
+                        "description": "Sing in user",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.loginPayload"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.JWT"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/v1.response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/v1.response"
+                        }
+                    }
+                }
             }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "$ref": "#/definitions/v1.response"
+        },
+        "/auth/logout": {
+            "get": {
+                "description": "dropping cookies",
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Logout",
+                "operationId": "logout",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
             }
-          }
+        },
+        "/auth/register": {
+            "post": {
+                "description": "add new user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Register user",
+                "operationId": "register",
+                "parameters": [
+                    {
+                        "description": "Sing up new user",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/v1.loginPayload"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/entity.User"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/v1.response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/v1.response"
+                        }
+                    }
+                }
+            }
+        },
+        "/health": {
+            "get": {
+                "description": "get the status of server.",
+                "consumes": [
+                    "*/*"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "health"
+                ],
+                "summary": "Show the status of server.",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
         }
-      }
+    },
+    "definitions": {
+        "entity.JWT": {
+            "type": "object",
+            "properties": {
+                "accessTokenMaxAge": {
+                    "type": "integer"
+                },
+                "access_token": {
+                    "type": "string"
+                },
+                "domain": {
+                    "type": "string"
+                },
+                "refreshTokenMaxAge": {
+                    "type": "integer"
+                },
+                "refresh_token": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.User": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "uuid": {
+                    "type": "string"
+                }
+            }
+        },
+        "v1.loginPayload": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "v1.response": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "message"
+                }
+            }
+        }
     }
-  },
-  "definitions": {
-    "entity.GophKeeper": {
-      "type": "object",
-      "properties": {
-        "destination": {
-          "type": "string",
-          "example": "en"
-        },
-        "original": {
-          "type": "string",
-          "example": "текст для перевода"
-        },
-        "source": {
-          "type": "string",
-          "example": "auto"
-        },
-        "GophKeeper": {
-          "type": "string",
-          "example": "text for GophKeeper"
-        }
-      }
-    },
-    "v1.doTranslateRequest": {
-      "type": "object",
-      "required": ["destination", "original", "source"],
-      "properties": {
-        "destination": {
-          "type": "string",
-          "example": "en"
-        },
-        "original": {
-          "type": "string",
-          "example": "текст для перевода"
-        },
-        "source": {
-          "type": "string",
-          "example": "auto"
-        }
-      }
-    },
-    "v1.historyResponse": {
-      "type": "object",
-      "properties": {
-        "history": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/entity.GophKeeper"
-          }
-        }
-      }
-    },
-    "v1.response": {
-      "type": "object",
-      "properties": {
-        "error": {
-          "type": "string",
-          "example": "message"
-        }
-      }
-    }
-  }
 }
