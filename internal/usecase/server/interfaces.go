@@ -24,6 +24,9 @@ type (
 
 		GetCards(ctx context.Context, user entity.User) ([]entity.Card, error)
 		AddCard(ctx context.Context, card *entity.Card, userID uuid.UUID) error
+		DelCard(ctx context.Context, cardUUID, userID uuid.UUID) error
+		UpdateCard(ctx context.Context, card *entity.Card, userID uuid.UUID) error
+
 		GetSecretNotes(ctx context.Context, user entity.User) ([]entity.SecretNote, error)
 	}
 
@@ -38,6 +41,9 @@ type (
 
 		GetCards(ctx context.Context, user entity.User) ([]entity.Card, error)
 		AddCard(ctx context.Context, card *entity.Card, userID uuid.UUID) error
+		DelCard(ctx context.Context, cardUUID, userID uuid.UUID) error
+		UpdateCard(ctx context.Context, card *entity.Card, userID uuid.UUID) error
+		IsCardOwner(ctx context.Context, cardUUID, userID uuid.UUID) bool
 
 		GetSecretNotes(ctx context.Context, user entity.User) ([]entity.SecretNote, error)
 	}

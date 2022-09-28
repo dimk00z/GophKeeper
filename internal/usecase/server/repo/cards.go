@@ -5,6 +5,7 @@ import (
 
 	"github.com/dimk00z/GophKeeper/internal/entity"
 	"github.com/dimk00z/GophKeeper/internal/usecase/server/repo/models"
+	"github.com/dimk00z/GophKeeper/internal/utils/errs"
 	"github.com/google/uuid"
 )
 
@@ -43,16 +44,53 @@ func (r *GophKeeperRepo) AddCard(ctx context.Context, card *entity.Card, userID 
 		Name:            card.Name,
 		Brand:           card.Brand,
 		CardHolderName:  card.CardHolderName,
-		Number:          card.Name,
+		Number:          card.Number,
 		ExpirationMonth: card.ExpirationMonth,
 		ExpirationYear:  card.ExpirationYear,
 		SecurityCode:    card.SecurityCode,
 	}
 
-	err := r.db.WithContext(ctx).Create(&cardToDB).Error
-	if err != nil {
-		card.ID = cardToDB.ID
+	if err := r.db.WithContext(ctx).Create(&cardToDB).Error; err != nil {
+		return err
 	}
 
-	return err
+	card.ID = cardToDB.ID
+
+	return nil
+}
+
+func (r *GophKeeperRepo) IsCardOwner(ctx context.Context, cardUUID, userID uuid.UUID) bool {
+	var cardFromDB models.CreditCard
+
+	r.db.WithContext(ctx).Where("id = ?", cardUUID).First(&cardFromDB)
+
+	return cardFromDB.UserID == userID
+}
+
+func (r *GophKeeperRepo) DelCard(ctx context.Context, cardUUID, userID uuid.UUID) error {
+	if !r.IsCardOwner(ctx, cardUUID, userID) {
+		return errs.ErrWrongOwnerOrNotFound
+	}
+
+	return r.db.WithContext(ctx).Delete(&models.CreditCard{}, cardUUID).Error
+}
+
+func (r *GophKeeperRepo) UpdateCard(ctx context.Context, card *entity.Card, userID uuid.UUID) error {
+	if !r.IsCardOwner(ctx, card.ID, userID) {
+		return errs.ErrWrongOwnerOrNotFound
+	}
+
+	cardToDB := models.CreditCard{
+		ID:              card.ID,
+		UserID:          userID,
+		Name:            card.Name,
+		Brand:           card.Brand,
+		CardHolderName:  card.CardHolderName,
+		Number:          card.Number,
+		ExpirationMonth: card.ExpirationMonth,
+		ExpirationYear:  card.ExpirationYear,
+		SecurityCode:    card.SecurityCode,
+	}
+
+	return r.db.WithContext(ctx).Save(&cardToDB).Error
 }
