@@ -209,6 +209,10 @@ paths:
           description: No Content
           schema:
             $ref: '#/definitions/v1.response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/v1.response'
         "500":
           description: Internal Server Error
           schema:
@@ -245,6 +249,10 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/v1.response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/v1.response'
         "500":
           description: Internal Server Error
           schema:
@@ -273,6 +281,10 @@ paths:
           description: Created
         "400":
           description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "401":
+          description: Unauthorized
           schema:
             $ref: '#/definitions/v1.response'
         "500":
@@ -314,6 +326,10 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/v1.response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/v1.response'
         "500":
           description: Internal Server Error
           schema:
@@ -345,6 +361,10 @@ paths:
             type: array
         "204":
           description: No Content
+          schema:
+            $ref: '#/definitions/v1.response'
+        "401":
+          description: Unauthorized
           schema:
             $ref: '#/definitions/v1.response'
         "500":
@@ -383,6 +403,10 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/v1.response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/v1.response'
         "500":
           description: Internal Server Error
           schema:
@@ -411,6 +435,10 @@ paths:
           description: Created
         "400":
           description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "401":
+          description: Unauthorized
           schema:
             $ref: '#/definitions/v1.response'
         "500":
@@ -452,6 +480,10 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/v1.response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/v1.response'
         "500":
           description: Internal Server Error
           schema:
@@ -483,6 +515,10 @@ paths:
             type: array
         "204":
           description: No Content
+          schema:
+            $ref: '#/definitions/v1.response'
+        "401":
+          description: Unauthorized
           schema:
             $ref: '#/definitions/v1.response'
         "500":
@@ -521,6 +557,10 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/v1.response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/v1.response'
         "500":
           description: Internal Server Error
           schema:
@@ -549,6 +589,10 @@ paths:
           description: Created
         "400":
           description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "401":
+          description: Unauthorized
           schema:
             $ref: '#/definitions/v1.response'
         "500":
@@ -588,6 +632,10 @@ paths:
           description: Accepted
         "400":
           description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "401":
+          description: Unauthorized
           schema:
             $ref: '#/definitions/v1.response'
         "500":

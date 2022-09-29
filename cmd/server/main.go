@@ -15,6 +15,7 @@ import (
 // @contact.email dimk0z@yandex.ru
 // @host localhost:8080
 // @BasePath /api/v1
+// Main func.
 func main() {
 	log.Println("Server App")
 
