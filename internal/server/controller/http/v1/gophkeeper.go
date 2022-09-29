@@ -3,7 +3,7 @@ package v1
 import (
 	"github.com/gin-gonic/gin"
 
-	usecase "github.com/dimk00z/GophKeeper/internal/usecase/server"
+	usecase "github.com/dimk00z/GophKeeper/internal/server/usecase"
 	"github.com/dimk00z/GophKeeper/pkg/logger"
 )
 

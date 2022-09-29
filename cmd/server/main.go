@@ -4,7 +4,7 @@ import (
 	"log"
 
 	config "github.com/dimk00z/GophKeeper/config/server"
-	server "github.com/dimk00z/GophKeeper/internal/app/server"
+	server "github.com/dimk00z/GophKeeper/internal/server/app"
 )
 
 // @title Gophkeeper Server

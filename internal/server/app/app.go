@@ -10,9 +10,9 @@ import (
 	"github.com/gin-gonic/gin"
 
 	config "github.com/dimk00z/GophKeeper/config/server"
-	v1 "github.com/dimk00z/GophKeeper/internal/controller/http/v1"
-	usecase "github.com/dimk00z/GophKeeper/internal/usecase/server"
-	"github.com/dimk00z/GophKeeper/internal/usecase/server/repo"
+	v1 "github.com/dimk00z/GophKeeper/internal/server/controller/http/v1"
+	usecase "github.com/dimk00z/GophKeeper/internal/server/usecase"
+	"github.com/dimk00z/GophKeeper/internal/server/usecase/repo"
 	"github.com/dimk00z/GophKeeper/pkg/cache"
 	"github.com/dimk00z/GophKeeper/pkg/httpserver"
 	"github.com/dimk00z/GophKeeper/pkg/logger"

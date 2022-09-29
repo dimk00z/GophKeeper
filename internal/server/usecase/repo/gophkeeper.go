@@ -1,7 +1,7 @@
 package repo
 
 import (
-	"github.com/dimk00z/GophKeeper/internal/usecase/server/repo/models"
+	"github.com/dimk00z/GophKeeper/internal/server/usecase/repo/models"
 	"github.com/dimk00z/GophKeeper/pkg/logger"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"

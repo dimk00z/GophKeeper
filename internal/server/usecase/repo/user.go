@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/dimk00z/GophKeeper/internal/entity"
-	"github.com/dimk00z/GophKeeper/internal/usecase/server/repo/models"
+	"github.com/dimk00z/GophKeeper/internal/server/usecase/repo/models"
 	"github.com/dimk00z/GophKeeper/internal/utils"
 	"github.com/dimk00z/GophKeeper/internal/utils/errs"
 	"github.com/google/uuid"

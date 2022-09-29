@@ -8,7 +8,7 @@ import (
 	// Swagger docs.
 	_ "github.com/dimk00z/GophKeeper/docs/server"
 
-	usecase "github.com/dimk00z/GophKeeper/internal/usecase/server"
+	usecase "github.com/dimk00z/GophKeeper/internal/server/usecase"
 	"github.com/dimk00z/GophKeeper/pkg/logger"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
