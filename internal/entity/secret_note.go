@@ -3,7 +3,7 @@ package entity
 import "github.com/google/uuid"
 
 type SecretNote struct {
-	ID   uuid.UUID
-	Name string `json:"name"`
-	Note string `json:"password"`
+	ID   uuid.UUID `json:"uuid" swaggerignore:"true"`
+	Name string    `json:"name"`
+	Note string    `json:"note"`
 }

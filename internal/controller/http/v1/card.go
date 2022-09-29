@@ -9,6 +9,18 @@ import (
 	"github.com/google/uuid"
 )
 
+// @Summary     Get user cards
+// @Description fetching user cards
+// @ID          get_cards
+// @Tags  	    Cards
+// @Param Authorization header string true "Insert your access token" default(Bearer <Add access token here>)
+// @Accept      json
+// @Produce     json
+// @Success     200 {object} []entity.Card
+// @Success     204 {object} response
+// @Failure     401 {object} response
+// @Failure     500 {object} response
+// @Router      /user/cards [get].
 func (r *GophKeeperRoutes) GetCards(ctx *gin.Context) {
 	currentUser, err := r.getUserFromCtx(ctx)
 	if err != nil {
@@ -29,6 +41,19 @@ func (r *GophKeeperRoutes) GetCards(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, userCards)
 }
 
+// @Summary     Add user card
+// @Description new user card
+// @ID          add_card
+// @Tags  	    Cards
+// @Param Authorization header string true "Insert your access token" default(Bearer <Add access token here>)
+// @Accept      json
+// @Produce     json
+// @Param       request body entity.Card true "card for save"
+// @Success     201 {object} entity.Card
+// @Failure     400 {object} response
+// @Failure     401 {object} response
+// @Failure     500 {object} response
+// @Router      /user/cards [post].
 func (r *GophKeeperRoutes) AddCard(ctx *gin.Context) {
 	currentUser, err := r.getUserFromCtx(ctx)
 	if err != nil {
@@ -52,6 +77,17 @@ func (r *GophKeeperRoutes) AddCard(ctx *gin.Context) {
 	ctx.JSON(http.StatusAccepted, payloadCard)
 }
 
+// @Summary     Delete user card
+// @Description del user card
+// @ID          del_card
+// @Tags  	    Cards
+// @Param Authorization header string true "Insert your access token" default(Bearer <Add access token here>)
+// @Param       id   path string  true  "Card ID"
+// @Success     201
+// @Failure     400 {object} response
+// @Failure     401 {object} response
+// @Failure     500 {object} response
+// @Router      /user/cards/{id} [delete].
 func (r *GophKeeperRoutes) DelCard(ctx *gin.Context) {
 	cardUUID, err := uuid.Parse(ctx.Param("id"))
 	if err != nil {
@@ -74,6 +110,20 @@ func (r *GophKeeperRoutes) DelCard(ctx *gin.Context) {
 	ctx.Status(http.StatusAccepted)
 }
 
+// @Summary     Update user card
+// @Description update user card
+// @ID          update_card
+// @Tags  	    Cards
+// @Param Authorization header string true "Insert your access token" default(Bearer <Add access token here>)
+// @Accept      json
+// @Produce     json
+// @Param       id   path string  true  "Card ID"
+// @Param       request body entity.Card true "card for update"
+// @Success     202
+// @Failure     400 {object} response
+// @Failure     401 {object} response
+// @Failure     500 {object} response
+// @Router      /user/cards/{id} [patch].
 func (r *GophKeeperRoutes) UpdateCard(ctx *gin.Context) {
 	cardUUID, err := uuid.Parse(ctx.Param("id"))
 	if err != nil {

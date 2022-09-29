@@ -9,7 +9,7 @@ import (
 // HealthCheck godoc
 // @Summary Show the status of server.
 // @Description get the status of server.
-// @Tags health
+// @Tags Root
 // @Accept */*
 // @Produce json
 // @Success 200

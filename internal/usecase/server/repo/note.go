@@ -10,7 +10,7 @@ import (
 )
 
 func (r *GophKeeperRepo) GetNotes(ctx context.Context, user entity.User) ([]entity.SecretNote, error) {
-	var notesFromDB []models.SecretNote
+	var notesFromDB []models.Note
 
 	err := r.db.WithContext(ctx).Find(&notesFromDB, "user_id = ?", user.ID).Error
 	if err != nil {
@@ -33,7 +33,7 @@ func (r *GophKeeperRepo) GetNotes(ctx context.Context, user entity.User) ([]enti
 }
 
 func (r *GophKeeperRepo) AddNote(ctx context.Context, note *entity.SecretNote, userID uuid.UUID) error {
-	noteToDB := models.SecretNote{
+	noteToDB := models.Note{
 		ID:     uuid.New(),
 		UserID: userID,
 		Name:   note.Name,
@@ -50,7 +50,7 @@ func (r *GophKeeperRepo) AddNote(ctx context.Context, note *entity.SecretNote, u
 }
 
 func (r *GophKeeperRepo) IsNoteOwner(ctx context.Context, noteID, userID uuid.UUID) bool {
-	var noteFromDB models.SecretNote
+	var noteFromDB models.Note
 
 	r.db.WithContext(ctx).Where("id = ?", noteID).First(&noteFromDB)
 
@@ -62,7 +62,7 @@ func (r *GophKeeperRepo) DelNote(ctx context.Context, noteID, userID uuid.UUID) 
 		return errs.ErrWrongOwnerOrNotFound
 	}
 
-	return r.db.WithContext(ctx).Delete(&models.SecretNote{}, noteID).Error
+	return r.db.WithContext(ctx).Delete(&models.Note{}, noteID).Error
 }
 
 func (r *GophKeeperRepo) UpdateNote(ctx context.Context, note *entity.SecretNote, userID uuid.UUID) error {
@@ -70,7 +70,7 @@ func (r *GophKeeperRepo) UpdateNote(ctx context.Context, note *entity.SecretNote
 		return errs.ErrWrongOwnerOrNotFound
 	}
 
-	noteToDB := models.SecretNote{
+	noteToDB := models.Note{
 		ID:     note.ID,
 		UserID: userID,
 		Name:   note.Name,

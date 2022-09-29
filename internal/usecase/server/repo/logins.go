@@ -10,7 +10,7 @@ import (
 )
 
 func (r *GophKeeperRepo) GetLogins(ctx context.Context, user entity.User) (logins []entity.Login, err error) {
-	var loginsFromDB []models.SavedLogin
+	var loginsFromDB []models.Login
 
 	err = r.db.WithContext(ctx).Find(&loginsFromDB, "user_id = ?", user.ID).Error
 	if err != nil {
@@ -35,7 +35,7 @@ func (r *GophKeeperRepo) GetLogins(ctx context.Context, user entity.User) (login
 }
 
 func (r *GophKeeperRepo) AddLogin(ctx context.Context, login *entity.Login, userID uuid.UUID) error {
-	loginToDB := models.SavedLogin{
+	loginToDB := models.Login{
 		ID:       uuid.New(),
 		UserID:   userID,
 		Name:     login.Name,
@@ -54,7 +54,7 @@ func (r *GophKeeperRepo) AddLogin(ctx context.Context, login *entity.Login, user
 }
 
 func (r *GophKeeperRepo) IsLoginOwner(ctx context.Context, loginID, userID uuid.UUID) bool {
-	var loginFromDB models.SavedLogin
+	var loginFromDB models.Login
 
 	r.db.WithContext(ctx).Where("id = ?", loginID).First(&loginFromDB)
 
@@ -66,7 +66,7 @@ func (r *GophKeeperRepo) DelLogin(ctx context.Context, loginID, userID uuid.UUID
 		return errs.ErrWrongOwnerOrNotFound
 	}
 
-	return r.db.WithContext(ctx).Delete(&models.SavedLogin{}, loginID).Error
+	return r.db.WithContext(ctx).Delete(&models.Login{}, loginID).Error
 }
 
 func (r *GophKeeperRepo) UpdateLogin(ctx context.Context, login *entity.Login, userID uuid.UUID) error {
@@ -74,7 +74,7 @@ func (r *GophKeeperRepo) UpdateLogin(ctx context.Context, login *entity.Login, u
 		return errs.ErrWrongOwnerOrNotFound
 	}
 
-	loginToDB := models.SavedLogin{
+	loginToDB := models.Login{
 		ID:       login.ID,
 		Name:     login.Name,
 		Password: login.Password,

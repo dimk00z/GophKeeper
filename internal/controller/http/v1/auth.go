@@ -90,16 +90,15 @@ func (r *GophKeeperRoutes) SignInUser(ctx *gin.Context) {
 }
 
 // @Summary     Refresh token
-// @Description getting user JWT
+// @Description refresh access token
 // @ID          refresh
 // @Tags  	    Auth
 // @Accept      json
 // @Produce     json
-// @Param       request body loginPayload true "Sing in user"
 // @Success     200 {object} entity.JWT
 // @Failure     400 {object} response
 // @Failure     500 {object} response
-// @Router      /auth/login [get].
+// @Router      /auth/refresh [get].
 func (r *GophKeeperRoutes) RefreshAccessToken(ctx *gin.Context) {
 	refreshToken, err := ctx.Cookie("refresh_token")
 	if err != nil {

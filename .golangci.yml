@@ -61,7 +61,6 @@ linters:
     - deadcode
     - depguard
     - dogsled
-    - dupl
     - durationcheck
     - errcheck
     - errorlint
@@ -69,7 +68,6 @@ linters:
     - exportloopref
     - forbidigo
     - funlen
-    - gci
     - gochecknoglobals
     - gochecknoinits
     - gocognit
@@ -114,13 +112,16 @@ linters:
     - wsl
     - whitespace
 
-# disable:
-#    - exhaustivestruct
-#    - ifshort
-#    - goheader
-#    - prealloc
-#    - testpackage
-#    - wrapcheck
+disable:
+   - exhaustivestruct
+   - ifshort
+   - goheader
+   - prealloc
+   - testpackage
+   - wrapcheck
+   - dupl
+   - gci
+
 
 issues:
   exclude-rules:

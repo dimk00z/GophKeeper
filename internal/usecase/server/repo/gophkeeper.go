@@ -29,8 +29,9 @@ func New(dsn string, l *logger.Logger) *GophKeeperRepo {
 func (r *GophKeeperRepo) Migrate() {
 	tables := []interface{}{
 		&models.User{},
-		&models.CreditCard{},
-		&models.SavedLogin{},
+		&models.Card{},
+		&models.Login{},
+		&models.Note{},
 	}
 
 	if err := r.db.AutoMigrate(tables...); err != nil {

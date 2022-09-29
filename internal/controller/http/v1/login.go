@@ -9,6 +9,18 @@ import (
 	"github.com/google/uuid"
 )
 
+// @Summary     Get user logins
+// @Description fetching user logins
+// @ID          get_logins
+// @Tags  	    Logins
+// @Param Authorization header string true "Insert your access token" default(Bearer <Add access token here>)
+// @Accept      json
+// @Produce     json
+// @Success     200 {object} []entity.Login
+// @Success     204 {object} response
+// @Failure     401 {object} response
+// @Failure     500 {object} response
+// @Router      /user/logins [get].
 func (r *GophKeeperRoutes) GetLogins(ctx *gin.Context) {
 	currentUser, err := r.getUserFromCtx(ctx)
 	if err != nil {
@@ -29,6 +41,19 @@ func (r *GophKeeperRoutes) GetLogins(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, userLogins)
 }
 
+// @Summary     Add user login
+// @Description new user login
+// @ID          add_login
+// @Tags  	    Logins
+// @Param Authorization header string true "Insert your access token" default(Bearer <Add access token here>)
+// @Accept      json
+// @Produce     json
+// @Param       request body entity.Login true "card for save"
+// @Success     201 {object} entity.Login
+// @Failure     400 {object} response
+// @Failure     401 {object} response
+// @Failure     500 {object} response
+// @Router      /user/logins [post].
 func (r *GophKeeperRoutes) AddLogin(ctx *gin.Context) {
 	currentUser, err := r.getUserFromCtx(ctx)
 	if err != nil {
@@ -52,6 +77,17 @@ func (r *GophKeeperRoutes) AddLogin(ctx *gin.Context) {
 	ctx.JSON(http.StatusAccepted, payloadLogin)
 }
 
+// @Summary     Delete user login
+// @Description del user login
+// @ID          del_login
+// @Tags  	    Logins
+// @Param Authorization header string true "Insert your access token" default(Bearer <Add access token here>)
+// @Param       id   path string  true  "login ID"
+// @Success     201
+// @Failure     400 {object} response
+// @Failure     401 {object} response
+// @Failure     500 {object} response
+// @Router      /user/logins/{id} [delete].
 func (r *GophKeeperRoutes) DelLogin(ctx *gin.Context) {
 	loginUUID, err := uuid.Parse(ctx.Param("id"))
 	if err != nil {
@@ -74,6 +110,20 @@ func (r *GophKeeperRoutes) DelLogin(ctx *gin.Context) {
 	ctx.Status(http.StatusAccepted)
 }
 
+// @Summary     Update user login
+// @Description update user login
+// @ID          update_login
+// @Param Authorization header string true "Insert your access token" default(Bearer <Add access token here>)
+// @Tags  	    Logins
+// @Accept      json
+// @Produce     json
+// @Param       id   path string  true  "Login ID"
+// @Param       request body entity.Login true "card for update"
+// @Success     202
+// @Failure     400 {object} response
+// @Failure     401 {object} response
+// @Failure     500 {object} response
+// @Router      /user/logins/{id} [patch].
 func (r *GophKeeperRoutes) UpdateLogin(ctx *gin.Context) {
 	loginUUID, err := uuid.Parse(ctx.Param("id"))
 	if err != nil {

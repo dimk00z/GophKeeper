@@ -10,7 +10,7 @@ import (
 )
 
 func (r *GophKeeperRepo) GetCards(ctx context.Context, user entity.User) ([]entity.Card, error) {
-	var cardsFromDB []models.CreditCard
+	var cardsFromDB []models.Card
 
 	err := r.db.WithContext(ctx).Find(&cardsFromDB, "user_id = ?", user.ID).Error
 	if err != nil {
@@ -38,7 +38,7 @@ func (r *GophKeeperRepo) GetCards(ctx context.Context, user entity.User) ([]enti
 }
 
 func (r *GophKeeperRepo) AddCard(ctx context.Context, card *entity.Card, userID uuid.UUID) error {
-	cardToDB := models.CreditCard{
+	cardToDB := models.Card{
 		ID:              uuid.New(),
 		UserID:          userID,
 		Name:            card.Name,
@@ -60,7 +60,7 @@ func (r *GophKeeperRepo) AddCard(ctx context.Context, card *entity.Card, userID 
 }
 
 func (r *GophKeeperRepo) IsCardOwner(ctx context.Context, cardUUID, userID uuid.UUID) bool {
-	var cardFromDB models.CreditCard
+	var cardFromDB models.Card
 
 	r.db.WithContext(ctx).Where("id = ?", cardUUID).First(&cardFromDB)
 
@@ -72,7 +72,7 @@ func (r *GophKeeperRepo) DelCard(ctx context.Context, cardUUID, userID uuid.UUID
 		return errs.ErrWrongOwnerOrNotFound
 	}
 
-	return r.db.WithContext(ctx).Delete(&models.CreditCard{}, cardUUID).Error
+	return r.db.WithContext(ctx).Delete(&models.Card{}, cardUUID).Error
 }
 
 func (r *GophKeeperRepo) UpdateCard(ctx context.Context, card *entity.Card, userID uuid.UUID) error {
@@ -80,7 +80,7 @@ func (r *GophKeeperRepo) UpdateCard(ctx context.Context, card *entity.Card, user
 		return errs.ErrWrongOwnerOrNotFound
 	}
 
-	cardToDB := models.CreditCard{
+	cardToDB := models.Card{
 		ID:              card.ID,
 		UserID:          userID,
 		Name:            card.Name,

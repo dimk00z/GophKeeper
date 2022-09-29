@@ -1,5 +1,47 @@
 basePath: /api/v1
 definitions:
+  entity.Card:
+    properties:
+      brand:
+        type: string
+      card_holder_hame:
+        type: string
+      expiration_month:
+        type: string
+      expiration_year:
+        type: string
+      name:
+        type: string
+      number:
+        type: string
+      security_code:
+        type: string
+    type: object
+  entity.JWT:
+    properties:
+      access_token:
+        type: string
+      refresh_token:
+        type: string
+    type: object
+  entity.Login:
+    properties:
+      login:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+      uri:
+        type: string
+    type: object
+  entity.SecretNote:
+    properties:
+      name:
+        type: string
+      note:
+        type: string
+    type: object
   entity.User:
     properties:
       email:
@@ -30,6 +72,71 @@ info:
   title: Gophkeeper Server
   version: 1.0.0
 paths:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: getting user JWT
+      operationId: login
+      parameters:
+      - description: Sing in user
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/v1.loginPayload'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.JWT'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+      summary: Login user
+      tags:
+      - Auth
+  /auth/logout:
+    get:
+      description: dropping cookies
+      operationId: logout
+      responses:
+        "200":
+          description: OK
+      summary: Logout
+      tags:
+      - Auth
+  /auth/refresh:
+    get:
+      consumes:
+      - application/json
+      description: refresh access token
+      operationId: refresh
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.JWT'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+      summary: Refresh token
+      tags:
+      - Auth
   /auth/register:
     post:
       consumes:
@@ -75,5 +182,419 @@ paths:
           description: Internal Server Error
       summary: Show the status of server.
       tags:
-      - health
+      - Root
+  /user/cards:
+    get:
+      consumes:
+      - application/json
+      description: fetching user cards
+      operationId: get_cards
+      parameters:
+      - default: Bearer <Add access token here>
+        description: Insert your access token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entity.Card'
+            type: array
+        "204":
+          description: No Content
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+      summary: Get user cards
+      tags:
+      - Cards
+    post:
+      consumes:
+      - application/json
+      description: new user card
+      operationId: add_card
+      parameters:
+      - default: Bearer <Add access token here>
+        description: Insert your access token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: card for save
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/entity.Card'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entity.Card'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+      summary: Add user card
+      tags:
+      - Cards
+  /user/cards/{id}:
+    delete:
+      description: del user card
+      operationId: del_card
+      parameters:
+      - default: Bearer <Add access token here>
+        description: Insert your access token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Card ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+      summary: Delete user card
+      tags:
+      - Cards
+    patch:
+      consumes:
+      - application/json
+      description: update user card
+      operationId: update_card
+      parameters:
+      - default: Bearer <Add access token here>
+        description: Insert your access token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Card ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: card for update
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/entity.Card'
+      produces:
+      - application/json
+      responses:
+        "202":
+          description: Accepted
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+      summary: Update user card
+      tags:
+      - Cards
+  /user/logins:
+    get:
+      consumes:
+      - application/json
+      description: fetching user logins
+      operationId: get_logins
+      parameters:
+      - default: Bearer <Add access token here>
+        description: Insert your access token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entity.Login'
+            type: array
+        "204":
+          description: No Content
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+      summary: Get user logins
+      tags:
+      - Logins
+    post:
+      consumes:
+      - application/json
+      description: new user login
+      operationId: add_login
+      parameters:
+      - default: Bearer <Add access token here>
+        description: Insert your access token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: card for save
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/entity.Login'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entity.Login'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+      summary: Add user login
+      tags:
+      - Logins
+  /user/logins/{id}:
+    delete:
+      description: del user login
+      operationId: del_login
+      parameters:
+      - default: Bearer <Add access token here>
+        description: Insert your access token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: login ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+      summary: Delete user login
+      tags:
+      - Logins
+    patch:
+      consumes:
+      - application/json
+      description: update user login
+      operationId: update_login
+      parameters:
+      - default: Bearer <Add access token here>
+        description: Insert your access token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Login ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: card for update
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/entity.Login'
+      produces:
+      - application/json
+      responses:
+        "202":
+          description: Accepted
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+      summary: Update user login
+      tags:
+      - Logins
+  /user/notes:
+    get:
+      consumes:
+      - application/json
+      description: fetching user notes
+      operationId: notes_cards
+      parameters:
+      - default: Bearer <Add access token here>
+        description: Insert your access token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entity.SecretNote'
+            type: array
+        "204":
+          description: No Content
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+      summary: Get user notes
+      tags:
+      - Notes
+    post:
+      consumes:
+      - application/json
+      description: new user note
+      operationId: add_note
+      parameters:
+      - default: Bearer <Add access token here>
+        description: Insert your access token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: note for save
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/entity.SecretNote'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entity.SecretNote'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+      summary: Add user note
+      tags:
+      - Notes
+  /user/notes/{id}:
+    delete:
+      description: del user note
+      operationId: del_note
+      parameters:
+      - default: Bearer <Add access token here>
+        description: Insert your access token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Note ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+      summary: Delete user note
+      tags:
+      - Notes
+    patch:
+      consumes:
+      - application/json
+      description: update user note
+      operationId: update_note
+      parameters:
+      - default: Bearer <Add access token here>
+        description: Insert your access token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Note ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: card for update
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/entity.SecretNote'
+      produces:
+      - application/json
+      responses:
+        "202":
+          description: Accepted
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+      summary: Update user note
+      tags:
+      - Notes
 swagger: "2.0"

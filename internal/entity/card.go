@@ -3,7 +3,7 @@ package entity
 import "github.com/google/uuid"
 
 type Card struct {
-	ID              uuid.UUID `json:"uuid"`
+	ID              uuid.UUID `json:"uuid" swaggerignore:"true"`
 	Name            string    `json:"name"`
 	CardHolderName  string    `json:"card_holder_hame"`
 	Number          string    `json:"number"`
