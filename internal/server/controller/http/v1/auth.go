@@ -40,7 +40,7 @@ func (r *GophKeeperRoutes) SignUpUser(ctx *gin.Context) {
 		return
 	}
 
-	if errors.Is(err, errs.ErrWrongEmail) {
+	if errors.Is(err, errs.ErrWrongEmail) || errors.Is(err, errs.ErrEmailAlreadyExists) {
 		errorResponse(ctx, http.StatusBadRequest, err.Error())
 
 		return

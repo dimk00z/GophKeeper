@@ -108,7 +108,6 @@ linters:
     - unparam
     - unused
     - varcheck
-    - wsl
     - whitespace
 
 disable:
@@ -121,7 +120,7 @@ disable:
    - dupl
    - gci
    - gochecknoinits
-
+  - wsl
 
 
 issues:

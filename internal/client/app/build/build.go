@@ -25,7 +25,7 @@ func CheckBuild() {
 }
 
 func PrintBulidInfo() {
-	fmt.Printf("Build version: %s\n", BuildVersion) //nolint:forbidigo
-	fmt.Printf("Build date: %s\n", BuildDate)       //nolint:forbidigo
-	fmt.Printf("Build commit: %s\n", BuildCommit)   //nolint:forbidigo
+	fmt.Printf("Build version: %s\n", BuildVersion) //nolint:forbidigo // print build info
+	fmt.Printf("Build date: %s\n", BuildDate)       //nolint:forbidigo // print build info
+	fmt.Printf("Build commit: %s\n", BuildCommit)   //nolint:forbidigo // print build info
 }

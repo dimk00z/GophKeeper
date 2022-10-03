@@ -9,10 +9,10 @@ import (
 
 type (
 	Config struct {
-		App `yaml:"app"`
-		// HTTP `yaml:"http"`
-		Log `yaml:"logger"`
-		// PG   `yaml:"postgres"`
+		App    `yaml:"app"`
+		Server `yaml:"server"`
+		Log    `yaml:"logger"`
+		SQLite `yaml:"sqlite"`
 	}
 
 	App struct {
@@ -20,39 +20,40 @@ type (
 		Version string `yaml:"version" env:"APP_VERSION"`
 	}
 
-	// HTTP struct {
-	// 	Port string `env-required:"true" yaml:"port" env:"HTTP_PORT"`
-	// }
+	Server struct {
+		URL string `yaml:"url" env:"SERVER_URL"`
+	}
 
 	Log struct {
 		Level string `yaml:"log_level"   env:"LOG_LEVEL"`
 	}
 
-	// PG struct {
-	// 	PoolMax int    `env-required:"true" yaml:"pool_max" env:"PG_POOL_MAX"`
-	// 	URL     string `env-required:"true"                 env:"PG_URL"`
-	// }
+	SQLite struct {
+		DSN string `yaml:"sqlite_dsn" env:"SQLITE_DSN"`
+	}
 )
 
 var (
-	currentConfig Config    //nolint:gochecknoglobals // pattern singleton
+	currentConfig *Config   //nolint:gochecknoglobals // pattern singleton
 	once          sync.Once //nolint:gochecknoglobals // pattern singleton
 )
 
 // LoadConfig returns app config.
-func LoadConfig() Config {
+func LoadConfig() *Config {
 	var err error
 
 	once.Do(func() {
-		err = cleanenv.ReadConfig("./config/client/config.yml", &currentConfig)
+		cfg := Config{}
+		err = cleanenv.ReadConfig("./config/client/config.yml", &cfg)
 		if err != nil {
 			log.Panicln("LoadConfig - %w", err)
 		}
 
-		err = cleanenv.ReadEnv(&currentConfig)
+		err = cleanenv.ReadEnv(&cfg)
 		if err != nil {
 			log.Panicln("LoadConfig - %w", err)
 		}
+		currentConfig = &cfg
 	})
 
 	return currentConfig
