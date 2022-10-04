@@ -12,5 +12,5 @@ type Login struct {
 	URI      string
 	Login    string
 	Password string
-	UserID   uuid.UUID
+	UserID   uint
 }

@@ -55,3 +55,10 @@ func (r *GophKeeperRepo) GetUserPasswordHash() string {
 
 	return existedUser.Password
 }
+
+func (r *GophKeeperRepo) GetSavedAccessToken() (accessToken string, err error) {
+	var user models.User
+	err = r.db.First(&user).Error
+
+	return user.AccessToken, err
+}

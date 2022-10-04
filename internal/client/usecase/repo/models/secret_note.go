@@ -10,5 +10,5 @@ type Note struct {
 	ID     uuid.UUID `gorm:"type:uuid;primary_key"`
 	Name   string    `gorm:"size:100"`
 	Note   string
-	UserID uuid.UUID
+	UserID uint
 }

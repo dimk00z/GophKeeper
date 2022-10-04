@@ -62,6 +62,14 @@ func (uc *GophKeeperClientUseCase) Sync(userPassword string) {
 	if !uc.verifyPassword(userPassword) {
 		return
 	}
+	accessToken, err := uc.repo.GetSavedAccessToken()
+	if err != nil {
+		color.Red("Internal error: %v", err)
+
+		return
+	}
+	uc.loadCards(accessToken)
+	// TODO add loadLogins loadNotes
 }
 
 func (uc *GophKeeperClientUseCase) verifyPassword(userPassword string) bool {

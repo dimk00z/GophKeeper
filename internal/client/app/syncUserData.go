@@ -7,10 +7,11 @@ import (
 )
 
 var syncUserData = &cobra.Command{ //nolint:gochecknoglobals // cobra style guide
-	Use:   "sync -p \"user_password\"",
+	Use:   "sync",
 	Short: "Sync user`s data",
 	Long: `
-This command update users private data from server`,
+This command update users private data from server
+Usage: gophkeeperclient sync -p \"user_password\"`,
 	Run: func(cmd *cobra.Command, args []string) {
 		clientUseCase.Sync(userPassword)
 	},

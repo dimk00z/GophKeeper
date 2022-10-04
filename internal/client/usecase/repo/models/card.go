@@ -15,5 +15,5 @@ type Card struct {
 	ExpirationMonth string
 	ExpirationYear  string
 	SecurityCode    string
-	UserID          uuid.UUID
+	UserID          uint
 }
