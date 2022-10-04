@@ -120,7 +120,6 @@ disable:
    - dupl
    - gci
    - gochecknoinits
-  - wsl
 
 
 issues:

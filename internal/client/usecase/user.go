@@ -1,33 +1,17 @@
 package usecase
 
 import (
-	"fmt"
 	"log"
-	"net/http"
 
 	"github.com/fatih/color"
 
 	"github.com/dimk00z/GophKeeper/internal/entity"
-	"github.com/dimk00z/GophKeeper/internal/utils/errs"
-	"github.com/go-resty/resty/v2"
+	"github.com/dimk00z/GophKeeper/internal/utils"
 )
 
 func (uc *GophKeeperClientUseCase) Login(user *entity.User) {
-	client := resty.New()
-	var token entity.JWT
-	body := fmt.Sprintf(`{"email":%q, "password":%q}`, user.Email, user.Password)
-	resp, err := client.R().
-		SetHeader("Content-Type", "application/json").
-		SetBody(body).
-		SetResult(&token).
-		Post(fmt.Sprintf("%s/api/v1/auth/login", uc.cfg.Server.URL))
+	token, err := uc.clientAPI.Login(user)
 	if err != nil {
-		log.Fatal(err)
-	}
-
-	if resp.StatusCode() == http.StatusBadRequest || resp.StatusCode() == http.StatusInternalServerError {
-		color.Red("Server error: %s", errs.ParseServerError(resp.Body()))
-
 		return
 	}
 
@@ -40,27 +24,52 @@ func (uc *GophKeeperClientUseCase) Login(user *entity.User) {
 	if err = uc.repo.UpdateUserToken(user, &token); err != nil {
 		log.Fatal(err)
 	}
-	color.Green("Got authorisation token for %q", user.Email)
+	color.Green("Got authorization token for %q", user.Email)
 }
 
 func (uc *GophKeeperClientUseCase) Register(user *entity.User) {
-	client := resty.New()
-	body := fmt.Sprintf(`{"email":%q, "password":%q}`, user.Email, user.Password)
-	resp, err := client.R().
-		SetHeader("Content-Type", "application/json").
-		SetBody(body).
-		SetResult(user).
-		Post(fmt.Sprintf("%s/api/v1/auth/register", uc.cfg.Server.URL))
+	if err := uc.clientAPI.Register(user); err != nil {
+		return
+	}
+	hashedPassword, err := utils.HashPassword(user.Password)
 	if err != nil {
 		log.Fatal(err)
 	}
-	if resp.StatusCode() == http.StatusBadRequest || resp.StatusCode() == http.StatusInternalServerError {
-		color.Red("Server error: %s", errs.ParseServerError(resp.Body()))
+
+	user.Password = hashedPassword
+	if err = uc.repo.AddUser(user); err != nil {
+		color.Red("Internal error: %v", err)
 
 		return
 	}
-	uc.repo.AddUser(user)
+
 	color.Green("User registered")
 	color.Green("ID: %v", user.ID)
-	color.Green("ID: %s", user.Email)
+	color.Green("Email: %s", user.Email)
+}
+
+func (uc *GophKeeperClientUseCase) Logout() {
+	if err := uc.repo.DropUserToken(); err != nil {
+		color.Red("Internal error: %v", err)
+
+		return
+	}
+
+	color.Green("Users tokens were dropped")
+}
+
+func (uc *GophKeeperClientUseCase) Sync(userPassword string) {
+	if !uc.verifyPassword(userPassword) {
+		return
+	}
+}
+
+func (uc *GophKeeperClientUseCase) verifyPassword(userPassword string) bool {
+	if err := utils.VerifyPassword(uc.repo.GetUserPasswordHash(), userPassword); err != nil {
+		color.Red("Password check status: failed")
+
+		return false
+	}
+
+	return true
 }

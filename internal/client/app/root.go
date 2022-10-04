@@ -8,6 +8,7 @@ import (
 	config "github.com/dimk00z/GophKeeper/config/client"
 	"github.com/dimk00z/GophKeeper/internal/client/app/build"
 	"github.com/dimk00z/GophKeeper/internal/client/usecase"
+	api "github.com/dimk00z/GophKeeper/internal/client/usecase/client_api"
 	"github.com/dimk00z/GophKeeper/internal/client/usecase/repo"
 	"github.com/spf13/cobra"
 )
@@ -15,7 +16,6 @@ import (
 var (
 	cfg           *config.Config
 	clientUseCase usecase.GophKeeperClient
-	clienRepo     usecase.GophKeeperClientRepo
 
 	rootCmd = &cobra.Command{
 		Use:   config.LoadConfig().App.Name,
@@ -42,6 +42,6 @@ func initApp() {
 	cfg = config.LoadConfig()
 
 	log.Println(cfg)
-	clienRepo = repo.New(cfg.SQLite.DSN)
-	clientUseCase = usecase.New(clienRepo, cfg)
+
+	clientUseCase = usecase.New(repo.New(cfg.SQLite.DSN), api.New(cfg.Server.URL), cfg)
 }

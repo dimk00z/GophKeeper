@@ -5,14 +5,16 @@ import (
 )
 
 type GophKeeperClientUseCase struct {
-	repo GophKeeperClientRepo
-	cfg  *config.Config
+	repo      GophKeeperClientRepo
+	clientAPI GophKeeperClientAPI
+	cfg       *config.Config
 }
 
-func New(repo GophKeeperClientRepo, cfg *config.Config) *GophKeeperClientUseCase {
+func New(repo GophKeeperClientRepo, clientAPI GophKeeperClientAPI, cfg *config.Config) *GophKeeperClientUseCase {
 	return &GophKeeperClientUseCase{
-		repo: repo,
-		cfg:  cfg,
+		repo:      repo,
+		cfg:       cfg,
+		clientAPI: clientAPI,
 	}
 }
 

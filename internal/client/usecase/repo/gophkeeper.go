@@ -29,12 +29,14 @@ func (r *GophKeeperRepo) MigrateDB() {
 		&models.Login{},
 		&models.Note{},
 	}
-	var err error
-	for _, table := range tables {
 
+	var err error
+
+	for _, table := range tables {
 		if err = r.db.Migrator().DropTable(table); err != nil {
 			color.Red("Init error %s", err.Error())
 		}
+
 		if err = r.db.Migrator().CreateTable(table); err != nil {
 			color.Red("Init error %s", err.Error())
 		}
