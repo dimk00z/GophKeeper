@@ -1,7 +1,19 @@
 package clientapi
 
-import "github.com/dimk00z/GophKeeper/internal/entity"
+import (
+	"github.com/dimk00z/GophKeeper/internal/entity"
+)
 
-func (api *GophKeeperClientAPI) GetNotes(accessToken string) (cards []entity.SecretNote, err error) {
-	return
+const notesEndpoint = "api/v1/user/notes"
+
+func (api *GophKeeperClientAPI) GetNotes(accessToken string) (notes []entity.SecretNote, err error) {
+	if err := api.getEntities(&notes, accessToken, notesEndpoint); err != nil {
+		return nil, err
+	}
+
+	return notes, nil
+}
+
+func (api *GophKeeperClientAPI) AddNote(accessToken string, note *entity.SecretNote) error {
+	return api.addEntity(note, accessToken, notesEndpoint)
 }

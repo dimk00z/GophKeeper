@@ -1,11 +1,15 @@
 package repo
 
 import (
+	"errors"
+
 	"github.com/dimk00z/GophKeeper/internal/client/usecase/repo/models"
 	"github.com/dimk00z/GophKeeper/internal/client/usecase/viewsets"
 	"github.com/dimk00z/GophKeeper/internal/entity"
 	"github.com/google/uuid"
 )
+
+var errLoginNotFound = errors.New("login not found")
 
 func (r *GophKeeperRepo) AddLogin(login *entity.Login) {
 	loginForSaving := models.Login{
@@ -20,6 +24,9 @@ func (r *GophKeeperRepo) AddLogin(login *entity.Login) {
 }
 
 func (r *GophKeeperRepo) SaveLogins(logins []entity.Login) error {
+	if len(logins) == 0 {
+		return nil
+	}
 	userID := r.getUserID()
 	loginsForDB := make([]models.Login, len(logins))
 	for index := range logins {
@@ -53,7 +60,17 @@ func (r *GophKeeperRepo) LoadLogins() []viewsets.LoginForList {
 	return loginsViewSet
 }
 
-func (r *GophKeeperRepo) GetLoginByID(loginID uuid.UUID) (login entity.Login) {
-	// TODO: add logic
+func (r *GophKeeperRepo) GetLoginByID(loginID uuid.UUID) (login entity.Login, err error) {
+	var loginFromDB models.Login
+	if err = r.db.Find(&loginFromDB, loginID).Error; loginFromDB.ID == uuid.Nil || err != nil {
+		return login, errLoginNotFound
+	}
+
+	login.ID = loginFromDB.ID
+	login.Login = loginFromDB.Login
+	login.Name = loginFromDB.Name
+	login.Password = loginFromDB.Password
+	login.URI = loginFromDB.URI
+
 	return
 }

@@ -20,6 +20,12 @@ type (
 
 		AddCard(userPassword string, card *entity.Card)
 		ShowCard(userPassword, cardID string)
+
+		AddLogin(userPassword string, login *entity.Login)
+		ShowLogin(userPassword, loginID string)
+
+		AddNote(userPassword string, note *entity.SecretNote)
+		ShowNote(userPassword, noteID string)
 	}
 	GophKeeperClientRepo interface {
 		MigrateDB()
@@ -39,16 +45,24 @@ type (
 		AddLogin(*entity.Login)
 		SaveLogins([]entity.Login) error
 		LoadLogins() []viewsets.LoginForList
-		GetLoginByID(loginID uuid.UUID) entity.Login
+		GetLoginByID(loginID uuid.UUID) (entity.Login, error)
 
 		LoadNotes() []viewsets.NoteForList
+		SaveNotes([]entity.SecretNote) error
+		AddNote(*entity.SecretNote)
+		GetNoteByID(notedID uuid.UUID) (entity.SecretNote, error)
 	}
 	GophKeeperClientAPI interface {
 		Login(user *entity.User) (entity.JWT, error)
 		Register(user *entity.User) error
+
 		GetCards(accessToken string) ([]entity.Card, error)
 		AddCard(accessToken string, card *entity.Card) error
+
 		GetLogins(accessToken string) ([]entity.Login, error)
+		AddLogin(accessToken string, login *entity.Login) error
+
 		GetNotes(accessToken string) ([]entity.SecretNote, error)
+		AddNote(accessToken string, note *entity.SecretNote) error
 	}
 )

@@ -69,7 +69,8 @@ func (uc *GophKeeperClientUseCase) Sync(userPassword string) {
 		return
 	}
 	uc.loadCards(accessToken)
-	// TODO add loadLogins loadNotes
+	uc.loadLogins(accessToken)
+	uc.loadNotes(accessToken)
 }
 
 func (uc *GophKeeperClientUseCase) verifyPassword(userPassword string) bool {

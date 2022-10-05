@@ -27,6 +27,9 @@ func (r *GophKeeperRepo) AddCard(card *entity.Card) {
 }
 
 func (r *GophKeeperRepo) SaveCards(cards []entity.Card) error {
+	if len(cards) == 0 {
+		return nil
+	}
 	userID := r.getUserID()
 	cardsForDB := make([]models.Card, len(cards))
 	for index := range cards {
@@ -65,7 +68,6 @@ func (r *GophKeeperRepo) LoadCards() []viewsets.CardForList {
 
 func (r *GophKeeperRepo) GetCardByID(cardID uuid.UUID) (card entity.Card, err error) {
 	var cardFromDB models.Card
-	r.db.Find(&cardFromDB, cardID)
 	if err = r.db.Find(&cardFromDB, cardID).Error; cardFromDB.ID == uuid.Nil || err != nil {
 		return card, errCardNotFound
 	}

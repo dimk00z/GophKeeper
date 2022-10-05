@@ -1,24 +1,22 @@
 package usecase
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/fatih/color"
+	"github.com/google/uuid"
 
 	"github.com/dimk00z/GophKeeper/internal/entity"
 	"github.com/dimk00z/GophKeeper/internal/utils"
 )
 
 func (uc *GophKeeperClientUseCase) AddCard(userPassword string, card *entity.Card) {
-	if !uc.verifyPassword(userPassword) {
+	accessToken, err := uc.authorisationCheck(userPassword)
+	if err != nil {
 		return
 	}
-	accessToken, err := uc.repo.GetSavedAccessToken()
-	if err != nil || accessToken == "" {
-		color.Red("User should be logged")
 
-		return
-	}
 	uc.encryptCard(userPassword, card)
 
 	if err = uc.clientAPI.AddCard(accessToken, card); err != nil {
@@ -32,34 +30,18 @@ func (uc *GophKeeperClientUseCase) AddCard(userPassword string, card *entity.Car
 
 func (uc *GophKeeperClientUseCase) encryptCard(userPassword string, card *entity.Card) {
 	card.Number = utils.Encrypt(userPassword, card.Number)
-	if card.SecurityCode != "" {
-		card.SecurityCode = utils.Encrypt(userPassword, card.SecurityCode)
-	}
-	if card.ExpirationMonth != "" {
-		card.ExpirationMonth = utils.Encrypt(userPassword, card.ExpirationMonth)
-	}
-	if card.ExpirationYear != "" {
-		card.ExpirationYear = utils.Encrypt(userPassword, card.ExpirationYear)
-	}
-	if card.CardHolderName != "" {
-		card.CardHolderName = utils.Encrypt(userPassword, card.CardHolderName)
-	}
+	card.SecurityCode = utils.Encrypt(userPassword, card.SecurityCode)
+	card.ExpirationMonth = utils.Encrypt(userPassword, card.ExpirationMonth)
+	card.ExpirationYear = utils.Encrypt(userPassword, card.ExpirationYear)
+	card.CardHolderName = utils.Encrypt(userPassword, card.CardHolderName)
 }
 
 func (uc *GophKeeperClientUseCase) decryptCard(userPassword string, card *entity.Card) {
 	card.Number = utils.Decrypt(userPassword, card.Number)
-	if card.SecurityCode != "" {
-		card.SecurityCode = utils.Decrypt(userPassword, card.SecurityCode)
-	}
-	if card.ExpirationMonth != "" {
-		card.ExpirationMonth = utils.Decrypt(userPassword, card.ExpirationMonth)
-	}
-	if card.ExpirationYear != "" {
-		card.ExpirationYear = utils.Decrypt(userPassword, card.ExpirationYear)
-	}
-	if card.CardHolderName != "" {
-		card.CardHolderName = utils.Decrypt(userPassword, card.CardHolderName)
-	}
+	card.SecurityCode = utils.Decrypt(userPassword, card.SecurityCode)
+	card.ExpirationMonth = utils.Decrypt(userPassword, card.ExpirationMonth)
+	card.ExpirationYear = utils.Decrypt(userPassword, card.ExpirationYear)
+	card.CardHolderName = utils.Decrypt(userPassword, card.CardHolderName)
 }
 
 func (uc *GophKeeperClientUseCase) loadCards(accessToken string) {
@@ -76,4 +58,34 @@ func (uc *GophKeeperClientUseCase) loadCards(accessToken string) {
 		return
 	}
 	color.Green("Loaded %v cards", len(cards))
+}
+
+func (uc *GophKeeperClientUseCase) ShowCard(userPassword, cardID string) {
+	if !uc.verifyPassword(userPassword) {
+		return
+	}
+	cardUUID, err := uuid.Parse(cardID)
+	if err != nil {
+		color.Red(err.Error())
+
+		return
+	}
+	card, err := uc.repo.GetCardByID(cardUUID)
+	if err != nil {
+		color.Red(err.Error())
+
+		return
+	}
+	uc.decryptCard(userPassword, &card)
+	yellow := color.New(color.FgYellow).SprintFunc()
+	fmt.Printf("ID: %s\nname:%s\nCardHolderName:%s\nNumber:%s\nBrand:%s\nExpiration: %s/%s\nCode%s\n", //nolint:forbidigo // cli printing
+		yellow(card.ID),
+		yellow(card.Name),
+		yellow(card.CardHolderName),
+		yellow(card.Number),
+		yellow(card.Brand),
+		yellow(card.ExpirationMonth),
+		yellow(card.ExpirationYear),
+		yellow(card.SecurityCode),
+	)
 }

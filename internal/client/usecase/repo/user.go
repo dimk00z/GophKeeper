@@ -66,5 +66,6 @@ func (r *GophKeeperRepo) GetSavedAccessToken() (accessToken string, err error) {
 func (r *GophKeeperRepo) getUserID() uint {
 	var user models.User
 	r.db.First(&user)
+
 	return user.ID
 }
