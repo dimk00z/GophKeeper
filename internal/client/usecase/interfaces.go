@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"github.com/dimk00z/GophKeeper/internal/client/usecase/viewsets"
 	"github.com/dimk00z/GophKeeper/internal/entity"
 	"github.com/google/uuid"
 )
@@ -15,10 +16,10 @@ type (
 		Logout()
 		Sync(userPassword string)
 
+		ShowVault(userPassword, showVaultOption string)
+
 		AddCard(userPassword string, card *entity.Card)
-		ListCards()
 		DetailCardByID(userPassword string, cardID uuid.UUID)
-		DetailCardByName(userPassword, cardName string)
 	}
 	GophKeeperClientRepo interface {
 		MigrateDB()
@@ -32,6 +33,15 @@ type (
 
 		AddCard(*entity.Card)
 		SaveCards([]entity.Card) error
+		LoadCards() []viewsets.CardForList
+		GetCardByID(cardID uuid.UUID) entity.Card
+
+		AddLogin(*entity.Login)
+		SaveLogins([]entity.Login) error
+		LoadLogins() []viewsets.LoginForList
+		GetLoginByID(loginID uuid.UUID) entity.Login
+
+		LoadNotes() []viewsets.NoteForList
 	}
 	GophKeeperClientAPI interface {
 		Login(user *entity.User) (entity.JWT, error)

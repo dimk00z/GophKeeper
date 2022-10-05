@@ -63,10 +63,6 @@ func (uc *GophKeeperClientUseCase) loadCards(accessToken string) {
 	color.Green("Loaded %v cards", len(cards))
 }
 
-func (uc *GophKeeperClientUseCase) ListCards() {
-	// TODO add logic
-}
-
 func (uc *GophKeeperClientUseCase) DetailCardByID(userPassword string, cardID uuid.UUID) {
 	// TODO add logic
 }

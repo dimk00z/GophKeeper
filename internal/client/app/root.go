@@ -14,10 +14,10 @@ import (
 )
 
 var (
-	cfg           *config.Config
-	clientUseCase usecase.GophKeeperClient
+	cfg           *config.Config           //nolint:gochecknoglobals // cobra style guide
+	clientUseCase usecase.GophKeeperClient //nolint:gochecknoglobals // cobra style guide
 
-	rootCmd = &cobra.Command{
+	rootCmd = &cobra.Command{ //nolint:gochecknoglobals // cobra style guide
 		Use:   config.LoadConfig().App.Name,
 		Short: "App for storing private data",
 		Long:  `User can save cards, note and logins`,

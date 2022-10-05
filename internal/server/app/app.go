@@ -21,7 +21,6 @@ import (
 // Run creates objects via constructors.
 func Run(cfg *config.Config) {
 	l := logger.New(cfg.Log.Level)
-	l.Info("%v", cfg)
 	gophKeeperRepo := repo.New(cfg.PG.URL, l)
 	gophKeeperRepo.Migrate()
 
