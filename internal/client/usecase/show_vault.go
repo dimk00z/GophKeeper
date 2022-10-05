@@ -5,6 +5,7 @@ import (
 
 	"github.com/dimk00z/GophKeeper/internal/client/usecase/viewsets"
 	"github.com/fatih/color"
+	"github.com/google/uuid"
 )
 
 func (uc *GophKeeperClientUseCase) ShowVault(userPassword, showVaultOption string) {
@@ -59,4 +60,35 @@ func (uc *GophKeeperClientUseCase) showNotes(notes []viewsets.NoteForList) {
 			yellow(note.Name))
 	}
 	fmt.Printf("Total %s notes\n", yellow(len(notes))) //nolint:forbidigo // cli printing
+}
+
+func (uc *GophKeeperClientUseCase) ShowCard(userPassword, cardID string) {
+	if !uc.verifyPassword(userPassword) {
+		return
+	}
+	cardUUID, err := uuid.Parse(cardID)
+	if err != nil {
+		color.Red(err.Error())
+
+		return
+	}
+	card, err := uc.repo.GetCardByID(cardUUID)
+	if err != nil {
+		color.Red(err.Error())
+
+		return
+	}
+	uc.decryptCard(userPassword, &card)
+	fmt.Println(card)
+	yellow := color.New(color.FgYellow).SprintFunc()
+	fmt.Printf("ID: %s\nname:%s\nCardHolderName:%s\nNumber:%s\nBrand:%s\nExpiration: %s/%s\nCode%s\n", //nolint:forbidigo // cli printing
+		yellow(card.ID),
+		yellow(card.Name),
+		yellow(card.CardHolderName),
+		yellow(card.Number),
+		yellow(card.Brand),
+		yellow(card.ExpirationMonth),
+		yellow(card.ExpirationYear),
+		yellow(card.SecurityCode),
+	)
 }

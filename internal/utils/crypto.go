@@ -56,23 +56,23 @@ func Decrypt(keyString, encryptedString string) (decryptedString string) {
 
 	cipherBlock, err := aes.NewCipher(getKeyFromPass(keyString))
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("Decrypt - aes.NewCipher - %v", err)
 	}
 
 	aead, err := cipher.NewGCM(cipherBlock)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("Decrypt - cipher.NewGCM - %v", err)
 	}
 
 	nonceSize := aead.NonceSize()
 	if len(encryptData) < nonceSize {
-		log.Fatal(err)
+		log.Fatalf("Decrypt - aead.NonceSize - %v", err)
 	}
 
 	nonce, cipherText := encryptData[:nonceSize], encryptData[nonceSize:]
 	plainData, err := aead.Open(nil, nonce, cipherText, nil)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("Decrypt - aead.Open - %v", err)
 	}
 
 	return string(plainData)

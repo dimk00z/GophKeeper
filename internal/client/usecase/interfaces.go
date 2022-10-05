@@ -19,7 +19,7 @@ type (
 		ShowVault(userPassword, showVaultOption string)
 
 		AddCard(userPassword string, card *entity.Card)
-		DetailCardByID(userPassword string, cardID uuid.UUID)
+		ShowCard(userPassword, cardID string)
 	}
 	GophKeeperClientRepo interface {
 		MigrateDB()
@@ -34,7 +34,7 @@ type (
 		AddCard(*entity.Card)
 		SaveCards([]entity.Card) error
 		LoadCards() []viewsets.CardForList
-		GetCardByID(cardID uuid.UUID) entity.Card
+		GetCardByID(cardID uuid.UUID) (entity.Card, error)
 
 		AddLogin(*entity.Login)
 		SaveLogins([]entity.Login) error

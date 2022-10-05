@@ -1,11 +1,15 @@
 package repo
 
 import (
+	"errors"
+
 	"github.com/dimk00z/GophKeeper/internal/client/usecase/repo/models"
 	"github.com/dimk00z/GophKeeper/internal/client/usecase/viewsets"
 	"github.com/dimk00z/GophKeeper/internal/entity"
 	"github.com/google/uuid"
 )
+
+var errCardNotFound = errors.New("card not found")
 
 func (r *GophKeeperRepo) AddCard(card *entity.Card) {
 	cardForSaving := models.Card{
@@ -59,8 +63,20 @@ func (r *GophKeeperRepo) LoadCards() []viewsets.CardForList {
 	return cardsViewSet
 }
 
-func (r *GophKeeperRepo) GetCardByID(cardID uuid.UUID) (card entity.Card) {
-	// TODO: add logic
+func (r *GophKeeperRepo) GetCardByID(cardID uuid.UUID) (card entity.Card, err error) {
+	var cardFromDB models.Card
+	r.db.Find(&cardFromDB, cardID)
+	if err = r.db.Find(&cardFromDB, cardID).Error; cardFromDB.ID == uuid.Nil || err != nil {
+		return card, errCardNotFound
+	}
+
+	card.ID = cardFromDB.ID
+	card.Brand = cardFromDB.Brand
+	card.Number = cardFromDB.Number
+	card.Name = cardFromDB.Name
+	card.CardHolderName = cardFromDB.CardHolderName
+	card.ExpirationMonth = cardFromDB.ExpirationMonth
+	card.ExpirationYear = cardFromDB.ExpirationYear
 
 	return
 }
