@@ -89,3 +89,25 @@ func (uc *GophKeeperClientUseCase) ShowCard(userPassword, cardID string) {
 		yellow(card.SecurityCode),
 	)
 }
+
+func (uc *GophKeeperClientUseCase) DelCard(userPassword, cardID string) {
+	accessToken, err := uc.authorisationCheck(userPassword)
+	if err != nil {
+		return
+	}
+	cardUUID, err := uuid.Parse(cardID)
+	if err != nil {
+		color.Red(err.Error())
+		log.Fatalf("GophKeeperClientUseCase - uuid.Parse - %v", err)
+	}
+
+	if err := uc.repo.DelCard(cardUUID); err != nil {
+		log.Fatalf("GophKeeperClientUseCase - repo.DelCard - %v", err)
+	}
+
+	if err := uc.clientAPI.DelCard(accessToken, cardID); err != nil {
+		log.Fatalf("GophKeeperClientUseCase - repo.DelCard - %v", err)
+	}
+
+	color.Green("Card %q removed", cardID)
+}

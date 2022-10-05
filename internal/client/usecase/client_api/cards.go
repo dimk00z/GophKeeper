@@ -17,3 +17,7 @@ func (api *GophKeeperClientAPI) GetCards(accessToken string) (cards []entity.Car
 func (api *GophKeeperClientAPI) AddCard(accessToken string, card *entity.Card) error {
 	return api.addEntity(card, accessToken, cardsEndpoint)
 }
+
+func (api *GophKeeperClientAPI) DelCard(accessToken, cardID string) error {
+	return api.delEntity(accessToken, cardsEndpoint, cardID)
+}

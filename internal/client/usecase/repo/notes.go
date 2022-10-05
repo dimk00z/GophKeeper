@@ -67,3 +67,7 @@ func (r *GophKeeperRepo) GetNoteByID(noteID uuid.UUID) (note entity.SecretNote, 
 
 	return
 }
+
+func (r *GophKeeperRepo) DelNote(noteID uuid.UUID) error {
+	return r.db.Unscoped().Delete(&models.Note{}, noteID).Error
+}

@@ -59,3 +59,19 @@ func (api *GophKeeperClientAPI) checkResCode(resp *resty.Response) error {
 
 	return nil
 }
+
+func (api *GophKeeperClientAPI) delEntity(accessToken, endpoint, id string) error {
+	client := resty.New()
+	client.SetAuthToken(accessToken)
+	resp, err := client.R().
+		SetHeader("Content-Type", "application/json").
+		Delete(fmt.Sprintf("%s/%s/%s", api.serverURL, endpoint, id))
+	if err != nil {
+		log.Fatalf("GophKeeperClientAPI - client.R - %v ", err)
+	}
+	if err := api.checkResCode(resp); err != nil {
+		return errServer
+	}
+
+	return nil
+}

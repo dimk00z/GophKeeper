@@ -17,3 +17,7 @@ func (api *GophKeeperClientAPI) GetLogins(accessToken string) (logins []entity.L
 func (api *GophKeeperClientAPI) AddLogin(accessToken string, login *entity.Login) error {
 	return api.addEntity(login, accessToken, loginsEndpoint)
 }
+
+func (api *GophKeeperClientAPI) DelLogin(accessToken, loginID string) error {
+	return api.delEntity(accessToken, loginsEndpoint, loginID)
+}

@@ -82,3 +82,7 @@ func (r *GophKeeperRepo) GetCardByID(cardID uuid.UUID) (card entity.Card, err er
 
 	return
 }
+
+func (r *GophKeeperRepo) DelCard(cardID uuid.UUID) error {
+	return r.db.Unscoped().Delete(&models.Card{}, cardID).Error
+}

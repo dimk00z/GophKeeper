@@ -17,3 +17,7 @@ func (api *GophKeeperClientAPI) GetNotes(accessToken string) (notes []entity.Sec
 func (api *GophKeeperClientAPI) AddNote(accessToken string, note *entity.SecretNote) error {
 	return api.addEntity(note, accessToken, notesEndpoint)
 }
+
+func (api *GophKeeperClientAPI) DelNote(accessToken, noteID string) error {
+	return api.delEntity(accessToken, notesEndpoint, noteID)
+}

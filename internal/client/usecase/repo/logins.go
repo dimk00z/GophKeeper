@@ -74,3 +74,7 @@ func (r *GophKeeperRepo) GetLoginByID(loginID uuid.UUID) (login entity.Login, er
 
 	return
 }
+
+func (r *GophKeeperRepo) DelLogin(loginID uuid.UUID) error {
+	return r.db.Unscoped().Delete(&models.Login{}, loginID).Error
+}

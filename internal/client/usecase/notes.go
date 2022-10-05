@@ -75,3 +75,25 @@ func (uc *GophKeeperClientUseCase) encryptNote(userPassword string, note *entity
 func (uc *GophKeeperClientUseCase) decryptNote(userPassword string, note *entity.SecretNote) {
 	note.Note = utils.Decrypt(userPassword, note.Note)
 }
+
+func (uc *GophKeeperClientUseCase) DelNote(userPassword, noteID string) {
+	accessToken, err := uc.authorisationCheck(userPassword)
+	if err != nil {
+		return
+	}
+	noteUUID, err := uuid.Parse(noteID)
+	if err != nil {
+		color.Red(err.Error())
+		log.Fatalf("GophKeeperClientUseCase - uuid.Parse - %v", err)
+	}
+
+	if err := uc.repo.DelNote(noteUUID); err != nil {
+		log.Fatalf("GophKeeperClientUseCase - repo.DelNote - %v", err)
+	}
+
+	if err := uc.clientAPI.DelNote(accessToken, noteID); err != nil {
+		log.Fatalf("GophKeeperClientUseCase - repo.DelNote - %v", err)
+	}
+
+	color.Green("Note %q removed", noteID)
+}

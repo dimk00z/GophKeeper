@@ -79,3 +79,25 @@ func (uc *GophKeeperClientUseCase) decryptLogin(userPassword string, login *enti
 	login.Login = utils.Decrypt(userPassword, login.Login)
 	login.Password = utils.Decrypt(userPassword, login.Password)
 }
+
+func (uc *GophKeeperClientUseCase) DelLogin(userPassword, loginID string) {
+	accessToken, err := uc.authorisationCheck(userPassword)
+	if err != nil {
+		return
+	}
+	loginUUID, err := uuid.Parse(loginID)
+	if err != nil {
+		color.Red(err.Error())
+		log.Fatalf("GophKeeperClientUseCase - uuid.Parse - %v", err)
+	}
+
+	if err := uc.repo.DelLogin(loginUUID); err != nil {
+		log.Fatalf("GophKeeperClientUseCase - repo.DelLogin - %v", err)
+	}
+
+	if err := uc.clientAPI.DelLogin(accessToken, loginID); err != nil {
+		log.Fatalf("GophKeeperClientUseCase - repo.DelLogin - %v", err)
+	}
+
+	color.Green("Login %q removed", loginID)
+}
