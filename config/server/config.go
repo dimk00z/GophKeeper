@@ -2,6 +2,7 @@ package server
 
 import (
 	"fmt"
+	"log"
 	"time"
 
 	"github.com/ilyakaznacheev/cleanenv"
@@ -66,7 +67,7 @@ func NewConfig() (*Config, error) {
 	}
 
 	if err := cleanenv.ReadConfig(".env", cfg); err != nil {
-		return nil, err
+		log.Println(err.Error())
 	}
 
 	if err := cleanenv.ReadEnv(cfg); err != nil {

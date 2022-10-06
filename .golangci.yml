@@ -93,7 +93,6 @@ linters:
     - nlreturn
     - noctx
     - nolintlint
-    - paralleltest
     - predeclared
     - revive
     - rowserrcheck
@@ -120,6 +119,7 @@ disable:
    - dupl
    - gci
    - gochecknoinits
+   - paralleltest
 
 
 issues:

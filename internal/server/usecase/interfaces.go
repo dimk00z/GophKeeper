@@ -8,8 +8,6 @@ import (
 	"github.com/google/uuid"
 )
 
-//go:generate mockgen -source=interfaces.go -destination=./mocks_test.go -package=usecase_test
-
 type (
 	// GophKeeper - use cases.
 	GophKeeper interface {
