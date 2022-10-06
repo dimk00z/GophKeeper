@@ -14,8 +14,8 @@ import (
 )
 
 const (
-	host = "app:8080"
-	// host       = "localhost:8080" // for local testing
+	// host = "app:8080"
+	host       = "localhost:8080" // for local testing
 	healthPath = "http://" + host + "/api/v1/health"
 	attempts   = 20
 
@@ -141,11 +141,9 @@ func getTestCard() entity.Card {
 	}
 }
 
-var testCards []entity.Card //nolint:gochecknoglobals // use for tests
-
 // HTTP Post: /users/cards.
 func TestHTTPAddUserCard(t *testing.T) {
-	testCards = make([]entity.Card, numberOfTests)
+	testCards := make([]entity.Card, numberOfTests)
 	for i := 0; i < numberOfTests; i++ {
 		testCards[i] = getTestCard()
 	}
@@ -177,6 +175,8 @@ func TestHTTPAddUserCard(t *testing.T) {
 	)
 }
 
+var testCards []entity.Card //nolint:gochecknoglobals // for different tests
+
 // HTTP get: /users/cards.
 func TestHTTPGetUserCard(t *testing.T) {
 	Test(t,
@@ -187,18 +187,16 @@ func TestHTTPGetUserCard(t *testing.T) {
 		Expect().Body().JSON().Contains("error"),
 	)
 
-	var cards []entity.Card
-
 	Test(t,
 		Description("UserLogin Get card with token"),
 		Get(basePath+"/user/cards"),
 		Send().Headers("Content-Type").Add("application/json"),
 		Send().Headers("Authorization").Add("Bearer "+testUserToken.AccessToken),
 		Expect().Status().Equal(http.StatusOK),
-		Store().Response().Body().JSON().In(&cards),
+		Store().Response().Body().JSON().In(&testCards),
 	)
-	if len(cards) != numberOfTests {
-		t.Errorf("Expected %v, got %v", numberOfTests, len(cards))
+	if len(testCards) != numberOfTests {
+		t.Errorf("Expected %v, got %v", numberOfTests, len(testCards))
 	}
 }
 
@@ -224,6 +222,192 @@ func TestHTTPDelUserCard(t *testing.T) {
 	)
 	if len(testCards) != numberOfTests-1 {
 		t.Errorf("Expected %v, got %v", numberOfTests-1, len(testCards))
+	}
+}
+
+func getTestLogin() entity.Login {
+	return entity.Login{
+		Name:     gofakeit.NounAbstract(),
+		Login:    gofakeit.Adverb(),
+		Password: gofakeit.Password(true, true, true, true, false, 12),
+		URI:      gofakeit.URL(),
+	}
+}
+
+// HTTP Post: /users/logins.
+func TestHTTPAddUserLogin(t *testing.T) {
+	testLogins := make([]entity.Login, numberOfTests)
+	for i := 0; i < numberOfTests; i++ {
+		testLogins[i] = getTestLogin()
+	}
+	Test(t,
+		Description("UserLogin Add login without token"),
+		Post(basePath+"/user/logins"),
+		Send().Headers("Content-Type").Add("application/json"),
+		Send().Body().JSON(&testLogins[0]),
+		Expect().Status().Equal(http.StatusUnauthorized),
+		Expect().Body().JSON().Contains("error"),
+	)
+	for i := 0; i < numberOfTests; i++ {
+		Test(t,
+			Description("UserLogin Add card with token"),
+			Post(basePath+"/user/logins"),
+			Send().Headers("Content-Type").Add("application/json"),
+			Send().Headers("Authorization").Add("Bearer "+testUserToken.AccessToken),
+			Send().Body().JSON(&testLogins[i]),
+			Expect().Status().Equal(http.StatusAccepted),
+			Store().Response().Body().JSON().JQ(".uuid").In(&testLogins[i].ID),
+		)
+	}
+	Test(t,
+		Description("UserLogin Add card - empty body"),
+		Post(basePath+"/user/cards"),
+		Send().Headers("Content-Type").Add("application/json"),
+		Send().Headers("Authorization").Add("Bearer "+testUserToken.AccessToken),
+		Expect().Status().Equal(http.StatusBadRequest),
+	)
+}
+
+var testLogins []entity.Login //nolint:gochecknoglobals // for different tests
+
+// HTTP get: /users/logins.
+func TestHTTPGetUserLogins(t *testing.T) {
+	Test(t,
+		Description("UserLogin Get logins without token"),
+		Get(basePath+"/user/logins"),
+		Send().Headers("Content-Type").Add("application/json"),
+		Expect().Status().Equal(http.StatusUnauthorized),
+		Expect().Body().JSON().Contains("error"),
+	)
+
+	Test(t,
+		Description("UserLogin Get card with token"),
+		Get(basePath+"/user/logins"),
+		Send().Headers("Content-Type").Add("application/json"),
+		Send().Headers("Authorization").Add("Bearer "+testUserToken.AccessToken),
+		Expect().Status().Equal(http.StatusOK),
+		Store().Response().Body().JSON().In(&testLogins),
+	)
+	if len(testLogins) != numberOfTests {
+		t.Errorf("Expected %v, got %v", numberOfTests, len(testLogins))
+	}
+}
+
+// HTTP delete: /users/logins/:id.
+func TestHTTPDelUserLogin(t *testing.T) {
+	Test(t,
+		Description("UserLogin Del login"),
+		Delete(basePath+"/user/logins/"+testLogins[0].ID.String()),
+		Send().Headers("Content-Type").Add("application/json"),
+		Send().Headers("Authorization").Add("Bearer "+testUserToken.AccessToken),
+		Expect().Status().Equal(http.StatusAccepted),
+	)
+
+	var logins []entity.Login
+
+	Test(t,
+		Description("UserLogin Get logins after delete"),
+		Get(basePath+"/user/logins"),
+		Send().Headers("Content-Type").Add("application/json"),
+		Send().Headers("Authorization").Add("Bearer "+testUserToken.AccessToken),
+		Expect().Status().Equal(http.StatusOK),
+		Store().Response().Body().JSON().In(&logins),
+	)
+	if len(logins) != numberOfTests-1 {
+		t.Errorf("Expected %v, got %v", numberOfTests-1, len(logins))
+	}
+}
+
+func getTestNote() entity.SecretNote {
+	wordsCount := 99
+
+	return entity.SecretNote{
+		Name: gofakeit.NounAbstract(),
+		Note: gofakeit.Sentence(wordsCount),
+	}
+}
+
+// HTTP Post: /users/notes.
+func TestHTTPAddUserNotes(t *testing.T) {
+	testNotes := make([]entity.SecretNote, numberOfTests)
+	for i := 0; i < numberOfTests; i++ {
+		testNotes[i] = getTestNote()
+	}
+	Test(t,
+		Description("UserLogin Add note without token"),
+		Post(basePath+"/user/notes"),
+		Send().Headers("Content-Type").Add("application/json"),
+		Send().Body().JSON(&testNotes[0]),
+		Expect().Status().Equal(http.StatusUnauthorized),
+		Expect().Body().JSON().Contains("error"),
+	)
+	for i := 0; i < numberOfTests; i++ {
+		Test(t,
+			Description("UserLogin Add card with token"),
+			Post(basePath+"/user/notes"),
+			Send().Headers("Content-Type").Add("application/json"),
+			Send().Headers("Authorization").Add("Bearer "+testUserToken.AccessToken),
+			Send().Body().JSON(&testNotes[i]),
+			Expect().Status().Equal(http.StatusAccepted),
+			Store().Response().Body().JSON().JQ(".uuid").In(&testNotes[i].ID),
+		)
+	}
+	Test(t,
+		Description("UserLogin Add card - empty body"),
+		Post(basePath+"/user/notes"),
+		Send().Headers("Content-Type").Add("application/json"),
+		Send().Headers("Authorization").Add("Bearer "+testUserToken.AccessToken),
+		Expect().Status().Equal(http.StatusBadRequest),
+	)
+}
+
+var testNotes []entity.SecretNote //nolint:gochecknoglobals // for different tests
+
+// HTTP get: /users/notes.
+func TestHTTPGetUserNotes(t *testing.T) {
+	Test(t,
+		Description("UserLogin Get logins without token"),
+		Get(basePath+"/user/notes"),
+		Send().Headers("Content-Type").Add("application/json"),
+		Expect().Status().Equal(http.StatusUnauthorized),
+		Expect().Body().JSON().Contains("error"),
+	)
+
+	Test(t,
+		Description("UserLogin Get notes with token"),
+		Get(basePath+"/user/notes"),
+		Send().Headers("Content-Type").Add("application/json"),
+		Send().Headers("Authorization").Add("Bearer "+testUserToken.AccessToken),
+		Expect().Status().Equal(http.StatusOK),
+		Store().Response().Body().JSON().In(&testNotes),
+	)
+	if len(testNotes) != numberOfTests {
+		t.Errorf("Expected %v, got %v", numberOfTests, len(testNotes))
+	}
+}
+
+// HTTP delete: /users/notes/:id.
+func TestHTTPDelUserNotes(t *testing.T) {
+	Test(t,
+		Description("UserLogin Delnotes"),
+		Delete(basePath+"/user/notes/"+testNotes[0].ID.String()),
+		Send().Headers("Content-Type").Add("application/json"),
+		Send().Headers("Authorization").Add("Bearer "+testUserToken.AccessToken),
+		Expect().Status().Equal(http.StatusAccepted),
+	)
+
+	var notes []entity.SecretNote
+
+	Test(t,
+		Description("UserLogin Get logins after delete"),
+		Get(basePath+"/user/notes"),
+		Send().Headers("Content-Type").Add("application/json"),
+		Send().Headers("Authorization").Add("Bearer "+testUserToken.AccessToken),
+		Expect().Status().Equal(http.StatusOK),
+		Store().Response().Body().JSON().In(&notes),
+	)
+	if len(notes) != numberOfTests-1 {
+		t.Errorf("Expected %v, got %v", numberOfTests-1, len(notes))
 	}
 }
 
