@@ -9,6 +9,7 @@ import (
 	"time"
 
 	. "github.com/Eun/go-hit"
+	"github.com/brianvoe/gofakeit/v6"
 	"github.com/dimk00z/GophKeeper/internal/entity"
 )
 
@@ -23,7 +24,7 @@ const (
 )
 
 var testUser = entity.User{ //nolint:gochecknoglobals // test entity
-	Email:    "test@test.tt",
+	Email:    gofakeit.Email(),
 	Password: "password",
 }
 var testUserToken = entity.JWT{} //nolint:gochecknoglobals // test entity
