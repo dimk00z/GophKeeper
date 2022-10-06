@@ -14,8 +14,8 @@ import (
 )
 
 const (
-	// host = "app:8080"
-	host       = "localhost:8080"
+	host = "app:8080"
+	// host       = "localhost:8080" // for local testing
 	healthPath = "http://" + host + "/api/v1/health"
 	attempts   = 20
 
@@ -141,7 +141,7 @@ func getTestCard() entity.Card {
 	}
 }
 
-var testCards []entity.Card
+var testCards []entity.Card //nolint:gochecknoglobals // use for tests
 
 // HTTP Post: /users/cards.
 func TestHTTPAddUserCard(t *testing.T) {
@@ -187,7 +187,7 @@ func TestHTTPGetUserCard(t *testing.T) {
 		Expect().Body().JSON().Contains("error"),
 	)
 
-	var testCards []entity.Card
+	var cards []entity.Card
 
 	Test(t,
 		Description("UserLogin Get card with token"),
@@ -195,10 +195,10 @@ func TestHTTPGetUserCard(t *testing.T) {
 		Send().Headers("Content-Type").Add("application/json"),
 		Send().Headers("Authorization").Add("Bearer "+testUserToken.AccessToken),
 		Expect().Status().Equal(http.StatusOK),
-		Store().Response().Body().JSON().In(&testCards),
+		Store().Response().Body().JSON().In(&cards),
 	)
-	if len(testCards) != numberOfTests {
-		t.Errorf("Expected %v, got %v", numberOfTests, len(testCards))
+	if len(cards) != numberOfTests {
+		t.Errorf("Expected %v, got %v", numberOfTests, len(cards))
 	}
 }
 
