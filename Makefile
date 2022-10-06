@@ -2,7 +2,7 @@ include .env.example
 export
 
 compose-up: ### Run docker-compose
-	docker-compose up --build -d postgres rabbitmq && docker-compose logs -f
+	docker-compose up --build -d postgres && docker-compose logs -f
 .PHONY: compose-up
 
 compose-up-integration-test: ### Run docker-compose with integration test
@@ -40,7 +40,7 @@ integration-test: ### run integration-test
 	go clean -testcache && go test -v ./integration-test/...
 .PHONY: integration-test
 
-mock: ### run mockery
-	mockery --all -r --case snake
-.PHONY: mock
+# mock: ### run mockery
+# 	mockery --all -r --case snake
+# .PHONY: mock
 
