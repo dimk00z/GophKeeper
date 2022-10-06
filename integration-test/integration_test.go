@@ -14,8 +14,8 @@ import (
 )
 
 const (
-	// host = "app:8080"
-	host       = "localhost:8080" // for local testing
+	host = "app:8080"
+	// host       = "localhost:8080" // for local testing
 	healthPath = "http://" + host + "/api/v1/health"
 	attempts   = 20
 
