@@ -8,7 +8,8 @@ services:
       - ./postgres/docker-entrypoint-initdb:/docker-entrypoint-initdb.d/
       - pg-data:/var/lib/postgresql/data
     env_file:
-      - .env
+      - .env.example
+      # - .env
     ports:
       - 5432:5432
 
@@ -17,7 +18,8 @@ services:
     container_name: app
     image: app
     env_file:
-      - .env
+      - .env.example
+      # - .env
     ports:
       - 8080:8080
     depends_on:
