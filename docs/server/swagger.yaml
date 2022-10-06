@@ -431,8 +431,8 @@ paths:
         required: true
         type: string
       responses:
-        "201":
-          description: Created
+        "202":
+          description: Accepted
         "400":
           description: Bad Request
           schema:

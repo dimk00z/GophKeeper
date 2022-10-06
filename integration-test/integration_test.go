@@ -14,13 +14,14 @@ import (
 )
 
 const (
-	host = "app:8080"
-	// host       = "localhost:8080"
+	// host = "app:8080"
+	host       = "localhost:8080"
 	healthPath = "http://" + host + "/api/v1/health"
 	attempts   = 20
 
 	// HTTP REST.
-	basePath = "http://" + host + "/api/v1"
+	basePath      = "http://" + host + "/api/v1"
+	numberOfTests = 3
 )
 
 var testUser = entity.User{ //nolint:gochecknoglobals // test entity
@@ -128,6 +129,104 @@ func TestHTTPDoUserLogin(t *testing.T) {
 	)
 }
 
+func getTestCard() entity.Card {
+	return entity.Card{
+		Name:            gofakeit.NounAbstract(),
+		CardHolderName:  gofakeit.LastName() + " " + gofakeit.Name(),
+		Number:          gofakeit.CreditCardNumber(&gofakeit.CreditCardOptions{Gaps: true}),
+		ExpirationMonth: "02",
+		ExpirationYear:  "2022",
+		Brand:           gofakeit.CreditCardType(),
+		SecurityCode:    gofakeit.CreditCardCvv(),
+	}
+}
+
+var testCards []entity.Card
+
+// HTTP Post: /users/cards.
+func TestHTTPAddUserCard(t *testing.T) {
+	testCards = make([]entity.Card, numberOfTests)
+	for i := 0; i < numberOfTests; i++ {
+		testCards[i] = getTestCard()
+	}
+	Test(t,
+		Description("UserLogin Add card without token"),
+		Post(basePath+"/user/cards"),
+		Send().Headers("Content-Type").Add("application/json"),
+		Send().Body().JSON(&testCards[0]),
+		Expect().Status().Equal(http.StatusUnauthorized),
+		Expect().Body().JSON().Contains("error"),
+	)
+	for i := 0; i < numberOfTests; i++ {
+		Test(t,
+			Description("UserLogin Add card with token"),
+			Post(basePath+"/user/cards"),
+			Send().Headers("Content-Type").Add("application/json"),
+			Send().Headers("Authorization").Add("Bearer "+testUserToken.AccessToken),
+			Send().Body().JSON(&testCards[i]),
+			Expect().Status().Equal(http.StatusAccepted),
+			Store().Response().Body().JSON().JQ(".uuid").In(&testCards[i].ID),
+		)
+	}
+	Test(t,
+		Description("UserLogin Add card - empty body"),
+		Post(basePath+"/user/cards"),
+		Send().Headers("Content-Type").Add("application/json"),
+		Send().Headers("Authorization").Add("Bearer "+testUserToken.AccessToken),
+		Expect().Status().Equal(http.StatusBadRequest),
+	)
+}
+
+// HTTP get: /users/cards.
+func TestHTTPGetUserCard(t *testing.T) {
+	Test(t,
+		Description("UserLogin Get card without token"),
+		Get(basePath+"/user/cards"),
+		Send().Headers("Content-Type").Add("application/json"),
+		Expect().Status().Equal(http.StatusUnauthorized),
+		Expect().Body().JSON().Contains("error"),
+	)
+
+	var testCards []entity.Card
+
+	Test(t,
+		Description("UserLogin Get card with token"),
+		Get(basePath+"/user/cards"),
+		Send().Headers("Content-Type").Add("application/json"),
+		Send().Headers("Authorization").Add("Bearer "+testUserToken.AccessToken),
+		Expect().Status().Equal(http.StatusOK),
+		Store().Response().Body().JSON().In(&testCards),
+	)
+	if len(testCards) != numberOfTests {
+		t.Errorf("Expected %v, got %v", numberOfTests, len(testCards))
+	}
+}
+
+// HTTP delete: /users/cards/:id.
+func TestHTTPDelUserCard(t *testing.T) {
+	Test(t,
+		Description("UserLogin Del card"),
+		Delete(basePath+"/user/cards/"+testCards[0].ID.String()),
+		Send().Headers("Content-Type").Add("application/json"),
+		Send().Headers("Authorization").Add("Bearer "+testUserToken.AccessToken),
+		Expect().Status().Equal(http.StatusAccepted),
+	)
+
+	var testCards []entity.Card
+
+	Test(t,
+		Description("UserLogin Get card after delete"),
+		Get(basePath+"/user/cards"),
+		Send().Headers("Content-Type").Add("application/json"),
+		Send().Headers("Authorization").Add("Bearer "+testUserToken.AccessToken),
+		Expect().Status().Equal(http.StatusOK),
+		Store().Response().Body().JSON().In(&testCards),
+	)
+	if len(testCards) != numberOfTests-1 {
+		t.Errorf("Expected %v, got %v", numberOfTests-1, len(testCards))
+	}
+}
+
 // HTTP GET: /auth/logout.
 func TestHTTPDoUserLogout(t *testing.T) {
 	Test(t,
@@ -137,42 +236,3 @@ func TestHTTPDoUserLogout(t *testing.T) {
 		Expect().Status().Equal(http.StatusOK),
 	)
 }
-
-// // RabbitMQ RPC Client: getHistory.
-// func TestRMQClientRPC(t *testing.T) {
-// 	rmqClient, err := client.New(rmqURL, rpcServerExchange, rpcClientExchange)
-// 	if err != nil {
-// 		t.Fatal("RabbitMQ RPC Client - init error - client.New")
-// 	}
-
-// 	defer func() {
-// 		err = rmqClient.Shutdown()
-// 		if err != nil {
-// 			t.Fatal("RabbitMQ RPC Client - shutdown error - rmqClient.RemoteCall", err)
-// 		}
-// 	}()
-
-// 	type GophKeeper struct {
-// 		Source      string `json:"source"`
-// 		Destination string `json:"destination"`
-// 		Original    string `json:"original"`
-// 		GophKeeper  string `json:"GophKeeper"`
-// 	}
-
-// 	type historyResponse struct {
-// 		History []GophKeeper `json:"history"`
-// 	}
-
-// 	for i := 0; i < requests; i++ {
-// 		var history historyResponse
-
-// 		err = rmqClient.RemoteCall("getHistory", nil, &history)
-// 		if err != nil {
-// 			t.Fatal("RabbitMQ RPC Client - remote call error - rmqClient.RemoteCall", err)
-// 		}
-
-// 		if history.History[0].Original != "текст для перевода" {
-// 			t.Fatal("Original != текст для перевода")
-// 		}
-// 	}
-// }

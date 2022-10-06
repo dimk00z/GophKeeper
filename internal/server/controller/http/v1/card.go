@@ -83,7 +83,7 @@ func (r *GophKeeperRoutes) AddCard(ctx *gin.Context) {
 // @Tags  	    Cards
 // @Param Authorization header string true "Insert your access token" default(Bearer <Add access token here>)
 // @Param       id   path string  true  "Card ID"
-// @Success     201
+// @Success     202
 // @Failure     400 {object} response
 // @Failure     401 {object} response
 // @Failure     500 {object} response

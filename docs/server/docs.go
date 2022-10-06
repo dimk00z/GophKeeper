@@ -555,8 +555,8 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "201": {
-                        "description": "Created"
+                    "202": {
+                        "description": "Accepted"
                     },
                     "400": {
                         "description": "Bad Request",

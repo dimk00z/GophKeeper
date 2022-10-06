@@ -83,7 +83,7 @@ func (r *GophKeeperRoutes) AddLogin(ctx *gin.Context) {
 // @Tags  	    Logins
 // @Param Authorization header string true "Insert your access token" default(Bearer <Add access token here>)
 // @Param       id   path string  true  "login ID"
-// @Success     201
+// @Success     202
 // @Failure     400 {object} response
 // @Failure     401 {object} response
 // @Failure     500 {object} response

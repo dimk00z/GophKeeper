@@ -2,7 +2,7 @@ include .env.example
 export
 
 compose-up: ### Run docker-compose
-	docker-compose up --build -d postgres && docker-compose logs -f
+	docker-compose up --build -d postgres app
 .PHONY: compose-up
 
 compose-up-integration-test: ### Run docker-compose with integration test
@@ -17,7 +17,7 @@ swag-v1: ### swag init
 	swag init -g cmd/server/main.go -o ./docs/server
 
 docker-rm-volume: ### remove docker volume
-	docker volume rm go-clean-template_pg-data
+	docker volume rm gophkeeper_pg-data
 .PHONY: docker-rm-volume
 
 linter-golangci: ### check by golangci linter
@@ -39,8 +39,4 @@ test: ### run test
 integration-test: ### run integration-test
 	go clean -testcache && go test -v ./integration-test/...
 .PHONY: integration-test
-
-# mock: ### run mockery
-# 	mockery --all -r --case snake
-# .PHONY: mock
 
