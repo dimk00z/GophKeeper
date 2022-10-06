@@ -1,13 +1,16 @@
 package repo
 
 import (
+	"log"
+	"time"
+
 	"github.com/dimk00z/GophKeeper/internal/server/usecase/repo/models"
 	"github.com/dimk00z/GophKeeper/pkg/logger"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
-// GophKeeper -.
+// GophKeeper - Repo.
 type GophKeeperRepo struct {
 	db *gorm.DB
 	l  *logger.Logger
@@ -15,15 +18,22 @@ type GophKeeperRepo struct {
 
 // New -.
 func New(dsn string, l *logger.Logger) *GophKeeperRepo {
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
-	if err != nil {
-		l.Fatal("Repo - new - %v", err)
+	attempts := 20
+	for attempts > 0 {
+		db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+		if err == nil {
+			return &GophKeeperRepo{
+				db: db,
+				l:  l,
+			}
+		}
+		log.Printf("Database: %s is not available, attempts left: %d", dsn, attempts)
+		time.Sleep(time.Second)
+		attempts--
 	}
+	log.Fatalln("GophKeeperRepo - New - could not connect")
 
-	return &GophKeeperRepo{
-		db: db,
-		l:  l,
-	}
+	return nil
 }
 
 func (r *GophKeeperRepo) Migrate() {

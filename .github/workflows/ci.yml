@@ -69,8 +69,6 @@ jobs:
           -covermode atomic \
           -coverprofile=coverage.txt \
           ./internal/..."
-      - name: Upload coverage report
-        run: bash <(curl -s https://codecov.io/bash)
 
       - name: Integration tests
         run: "docker-compose up \
