@@ -37,7 +37,9 @@ func (uc *GophKeeperClientUseCase) AddNote(userPassword string, note *entity.Sec
 		log.Fatalf("GophKeeperClientUseCase - AddNote - %v", err)
 	}
 
-	uc.repo.AddNote(note)
+	if err = uc.repo.AddNote(note); err != nil {
+		log.Fatal(err)
+	}
 
 	color.Green("Note %q added, id: %v", note.Name, note.ID)
 }
@@ -61,10 +63,11 @@ func (uc *GophKeeperClientUseCase) ShowNote(userPassword, noteID string) {
 
 	uc.decryptNote(userPassword, &note)
 	yellow := color.New(color.FgYellow).SprintFunc()
-	fmt.Printf("ID: %s\nname:%s\nNote:%s\n", //nolint:forbidigo // cli printing
+	fmt.Printf("ID: %s\nname:%s\nNote:%s\n%v\n", //nolint:forbidigo // cli printing
 		yellow(note.ID),
 		yellow(note.Name),
 		yellow(note.Note),
+		yellow(note.Meta),
 	)
 }
 

@@ -37,7 +37,9 @@ func (uc *GophKeeperClientUseCase) AddLogin(userPassword string, login *entity.L
 		return
 	}
 
-	uc.repo.AddLogin(login)
+	if err = uc.repo.AddLogin(login); err != nil {
+		log.Fatal(err)
+	}
 
 	color.Green("Login %q added, id: %v", login.Name, login.ID)
 }
@@ -61,12 +63,13 @@ func (uc *GophKeeperClientUseCase) ShowLogin(userPassword, loginID string) {
 
 	uc.decryptLogin(userPassword, &login)
 	yellow := color.New(color.FgYellow).SprintFunc()
-	fmt.Printf("ID: %s\nname:%s\nURI:%s\nLogin:%s\nPassword:%s\n", //nolint:forbidigo // cli printing
+	fmt.Printf("ID: %s\nname:%s\nURI:%s\nLogin:%s\nPassword:%s\n%v\n", //nolint:forbidigo // cli printing
 		yellow(login.ID),
 		yellow(login.Name),
 		yellow(login.URI),
 		yellow(login.Login),
 		yellow(login.Password),
+		yellow(login.Meta),
 	)
 }
 

@@ -7,20 +7,38 @@ import (
 	"github.com/dimk00z/GophKeeper/internal/client/usecase/viewsets"
 	"github.com/dimk00z/GophKeeper/internal/entity"
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 var errLoginNotFound = errors.New("login not found")
 
-func (r *GophKeeperRepo) AddLogin(login *entity.Login) {
-	loginForSaving := models.Login{
-		ID:       login.ID,
-		Name:     login.Name,
-		URI:      login.URI,
-		Login:    login.Login,
-		Password: login.Password,
-		UserID:   r.getUserID(),
-	}
-	r.db.Save(&loginForSaving)
+func (r *GophKeeperRepo) AddLogin(login *entity.Login) error {
+	return r.db.Transaction(func(tx *gorm.DB) error {
+		loginForSaving := models.Login{
+			ID:       login.ID,
+			Name:     login.Name,
+			URI:      login.URI,
+			Login:    login.Login,
+			Password: login.Password,
+			UserID:   r.getUserID(),
+		}
+		if err := tx.Save(&loginForSaving).Error; err != nil {
+			return err
+		}
+		for _, meta := range login.Meta {
+			metaForLogin := models.MetaCard{
+				Name:   meta.Name,
+				Value:  meta.Value,
+				CardID: loginForSaving.ID,
+				ID:     meta.ID,
+			}
+			if err := tx.Create(&metaForLogin).Error; err != nil {
+				return err
+			}
+		}
+
+		return nil
+	})
 }
 
 func (r *GophKeeperRepo) SaveLogins(logins []entity.Login) error {
@@ -36,6 +54,14 @@ func (r *GophKeeperRepo) SaveLogins(logins []entity.Login) error {
 		loginsForDB[index].Login = logins[index].Login
 		loginsForDB[index].Password = logins[index].Password
 		loginsForDB[index].UserID = userID
+		for _, meta := range logins[index].Meta {
+			loginsForDB[index].Meta = append(loginsForDB[index].Meta, models.MetaLogin{
+				Name:    meta.Name,
+				Value:   meta.Value,
+				LoginID: logins[index].ID,
+				ID:      meta.ID,
+			})
+		}
 	}
 
 	return r.db.Save(loginsForDB).Error

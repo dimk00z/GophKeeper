@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/dimk00z/GophKeeper/internal/entity"
+	utils "github.com/dimk00z/GophKeeper/internal/utils/client"
 	"github.com/spf13/cobra"
 )
 
@@ -22,7 +23,10 @@ Flags:
   -o, --owner string      Card holder name
   -p, --password string   User password value.
   -t, --title string      Card title
-  -y, --year string       Card expiration year`,
+  -y, --year string       Card expiration year
+  -meta 				  Add meta data for entiry
+  example: -meta'[{"name":"some_meta","value":"some_meta_value"},{"name":"some_meta2","value":"some_meta_value2"}]'
+  `,
 	Run: func(cmd *cobra.Command, args []string) {
 		clientUseCase.AddCard(userPassword, &cardForAdditing)
 	},
@@ -40,6 +44,7 @@ func init() {
 	addCard.Flags().StringVarP(&cardForAdditing.SecurityCode, "code", "c", "", "Card code")
 	addCard.Flags().StringVarP(&cardForAdditing.ExpirationMonth, "month", "m", "", "Card expiration month")
 	addCard.Flags().StringVarP(&cardForAdditing.ExpirationYear, "year", "y", "", "Card expiration year")
+	addCard.Flags().Var(&utils.JSONFlag{Target: &cardForAdditing.Meta}, "meta", `Add meta fields for entity`)
 
 	if err := addCard.MarkFlagRequired("password"); err != nil {
 		log.Fatal(err)

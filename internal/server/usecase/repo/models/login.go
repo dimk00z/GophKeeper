@@ -10,7 +10,7 @@ type MetaLogin struct {
 	ID      uuid.UUID `gorm:"type:uuid;default:uuid_generate_v4();primary_key"`
 	Name    string
 	Value   string
-	LoginID uuid.UUID `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	LoginID uuid.UUID
 }
 type Login struct {
 	gorm.Model
@@ -20,5 +20,5 @@ type Login struct {
 	Login    string
 	Password string
 	UserID   uuid.UUID
-	Meta     []MetaLogin
+	Meta     []MetaLogin `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }

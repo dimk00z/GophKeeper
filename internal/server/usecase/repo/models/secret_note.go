@@ -10,7 +10,7 @@ type MetaNote struct {
 	ID     uuid.UUID `gorm:"type:uuid;default:uuid_generate_v4();primary_key"`
 	Name   string
 	Value  string
-	NoteID uuid.UUID `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	NoteID uuid.UUID
 }
 type Note struct {
 	gorm.Model
@@ -18,5 +18,5 @@ type Note struct {
 	Name   string    `gorm:"size:100"`
 	Note   string
 	UserID uuid.UUID
-	Meta   []MetaNote
+	Meta   []MetaNote `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }

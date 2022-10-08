@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/dimk00z/GophKeeper/internal/entity"
+	utils "github.com/dimk00z/GophKeeper/internal/utils/client"
 	"github.com/spf13/cobra"
 )
 
@@ -19,7 +20,10 @@ Flags:
   -p, --password string   User password value.
   -s, --secret string     Site password|secret
   -t, --title string      Login title
-  -u, --uri string        Site endloint`,
+  -u, --uri string        Site endloint  
+  -meta 				  Add meta data for entiry
+  example: -meta'[{"name":"some_meta","value":"some_meta_value"},{"name":"some_meta2","value":"some_meta_value2"}]'
+  `,
 	Run: func(cmd *cobra.Command, args []string) {
 		clientUseCase.AddLogin(userPassword, &loginForAdditing)
 	},
@@ -35,6 +39,7 @@ func init() {
 	addLogin.Flags().StringVarP(&loginForAdditing.Login, "login", "l", "", "Site login")
 	addLogin.Flags().StringVarP(&loginForAdditing.Password, "secret", "s", "", "Site password|secret")
 	addLogin.Flags().StringVarP(&loginForAdditing.URI, "uri", "u", "", "Site endloint")
+	addLogin.Flags().Var(&utils.JSONFlag{Target: &loginForAdditing.Meta}, "meta", `Add meta fields for entity`)
 
 	if err := addLogin.MarkFlagRequired("password"); err != nil {
 		log.Fatal(err)

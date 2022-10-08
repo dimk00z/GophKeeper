@@ -27,7 +27,9 @@ func (r *GophKeeperRepo) MigrateDB() {
 		&models.User{},
 		&models.Card{},
 		&models.Login{},
-		&models.Note{},
+		&models.MetaCard{},
+		&models.MetaLogin{},
+		&models.MetaLogin{},
 	}
 
 	var err error

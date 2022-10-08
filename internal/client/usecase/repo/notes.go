@@ -7,18 +7,36 @@ import (
 	"github.com/dimk00z/GophKeeper/internal/client/usecase/viewsets"
 	"github.com/dimk00z/GophKeeper/internal/entity"
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 var errNoteNotFound = errors.New("note not found")
 
-func (r *GophKeeperRepo) AddNote(note *entity.SecretNote) {
-	noteForSaving := models.Note{
-		ID:     note.ID,
-		Name:   note.Name,
-		Note:   note.Note,
-		UserID: r.getUserID(),
-	}
-	r.db.Save(&noteForSaving)
+func (r *GophKeeperRepo) AddNote(note *entity.SecretNote) error {
+	return r.db.Transaction(func(tx *gorm.DB) error {
+		noteForSaving := models.Note{
+			ID:     note.ID,
+			Name:   note.Name,
+			Note:   note.Note,
+			UserID: r.getUserID(),
+		}
+		if err := tx.Save(&noteForSaving).Error; err != nil {
+			return err
+		}
+		for _, meta := range note.Meta {
+			metaForLogin := models.MetaNote{
+				Name:   meta.Name,
+				Value:  meta.Value,
+				NoteID: noteForSaving.ID,
+				ID:     meta.ID,
+			}
+			if err := tx.Create(&metaForLogin).Error; err != nil {
+				return err
+			}
+		}
+
+		return nil
+	})
 }
 
 func (r *GophKeeperRepo) LoadNotes() []viewsets.NoteForList {

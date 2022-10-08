@@ -23,7 +23,9 @@ func (uc *GophKeeperClientUseCase) AddCard(userPassword string, card *entity.Car
 		return
 	}
 
-	uc.repo.AddCard(card)
+	if err = uc.repo.AddCard(card); err != nil {
+		log.Fatal(err)
+	}
 
 	color.Green("Card %q added, id: %v", card.Name, card.ID)
 }
@@ -78,7 +80,7 @@ func (uc *GophKeeperClientUseCase) ShowCard(userPassword, cardID string) {
 	}
 	uc.decryptCard(userPassword, &card)
 	yellow := color.New(color.FgYellow).SprintFunc()
-	fmt.Printf("ID: %s\nname:%s\nCardHolderName:%s\nNumber:%s\nBrand:%s\nExpiration: %s/%s\nCode%s\n", //nolint:forbidigo // cli printing
+	fmt.Printf("ID: %s\nname:%s\nCardHolderName:%s\nNumber:%s\nBrand:%s\nExpiration: %s/%s\nCode%s\n%v\n", //nolint:forbidigo // cli printing
 		yellow(card.ID),
 		yellow(card.Name),
 		yellow(card.CardHolderName),
@@ -87,6 +89,7 @@ func (uc *GophKeeperClientUseCase) ShowCard(userPassword, cardID string) {
 		yellow(card.ExpirationMonth),
 		yellow(card.ExpirationYear),
 		yellow(card.SecurityCode),
+		yellow(card.Meta),
 	)
 }
 

@@ -40,13 +40,13 @@ type (
 		UserExistsByEmail(email string) bool
 		GetUserPasswordHash() string
 
-		AddCard(*entity.Card)
+		AddCard(*entity.Card) error
 		SaveCards([]entity.Card) error
 		LoadCards() []viewsets.CardForList
 		GetCardByID(cardID uuid.UUID) (entity.Card, error)
 		DelCard(cardID uuid.UUID) error
 
-		AddLogin(*entity.Login)
+		AddLogin(*entity.Login) error
 		SaveLogins([]entity.Login) error
 		LoadLogins() []viewsets.LoginForList
 		GetLoginByID(loginID uuid.UUID) (entity.Login, error)
@@ -54,7 +54,7 @@ type (
 
 		LoadNotes() []viewsets.NoteForList
 		SaveNotes([]entity.SecretNote) error
-		AddNote(*entity.SecretNote)
+		AddNote(*entity.SecretNote) error
 		GetNoteByID(notedID uuid.UUID) (entity.SecretNote, error)
 		DelNote(noteID uuid.UUID) error
 	}

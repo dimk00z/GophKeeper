@@ -10,7 +10,7 @@ type MetaCard struct {
 	ID     uuid.UUID `gorm:"type:uuid;default:uuid_generate_v4();primary_key"`
 	Name   string
 	Value  string
-	CardID uuid.UUID `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	CardID uuid.UUID
 }
 type Card struct {
 	gorm.Model
@@ -23,5 +23,5 @@ type Card struct {
 	ExpirationYear  string
 	SecurityCode    string
 	UserID          uuid.UUID
-	Meta            []MetaCard
+	Meta            []MetaCard `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
