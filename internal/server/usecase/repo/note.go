@@ -7,6 +7,7 @@ import (
 	"github.com/dimk00z/GophKeeper/internal/server/usecase/repo/models"
 	"github.com/dimk00z/GophKeeper/internal/utils/errs"
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 func (r *GophKeeperRepo) GetNotes(ctx context.Context, user entity.User) ([]entity.SecretNote, error) {
@@ -33,20 +34,33 @@ func (r *GophKeeperRepo) GetNotes(ctx context.Context, user entity.User) ([]enti
 }
 
 func (r *GophKeeperRepo) AddNote(ctx context.Context, note *entity.SecretNote, userID uuid.UUID) error {
-	noteToDB := models.Note{
-		ID:     uuid.New(),
-		UserID: userID,
-		Name:   note.Name,
-		Note:   note.Note,
-	}
+	return r.db.Transaction(func(tx *gorm.DB) error {
+		noteToDB := models.Note{
+			ID:     uuid.New(),
+			UserID: userID,
+			Name:   note.Name,
+			Note:   note.Note,
+		}
 
-	if err := r.db.WithContext(ctx).Create(&noteToDB).Error; err != nil {
-		return err
-	}
+		if err := r.db.WithContext(ctx).Create(&noteToDB).Error; err != nil {
+			return err
+		}
 
-	note.ID = noteToDB.ID
+		note.ID = noteToDB.ID
+		for _, meta := range note.Meta {
+			metaForNote := models.MetaNote{
+				Name:   meta.Name,
+				Value:  meta.Value,
+				NoteID: noteToDB.ID,
+				ID:     meta.ID,
+			}
+			if err := tx.WithContext(ctx).Create(&metaForNote).Error; err != nil {
+				return err
+			}
+		}
 
-	return nil
+		return nil
+	})
 }
 
 func (r *GophKeeperRepo) IsNoteOwner(ctx context.Context, noteID, userID uuid.UUID) bool {
@@ -70,12 +84,18 @@ func (r *GophKeeperRepo) UpdateNote(ctx context.Context, note *entity.SecretNote
 		return errs.ErrWrongOwnerOrNotFound
 	}
 
-	noteToDB := models.Note{
-		ID:     note.ID,
-		UserID: userID,
-		Name:   note.Name,
-		Note:   note.Note,
-	}
+	return r.db.Transaction(func(tx *gorm.DB) error {
+		noteToDB := models.Note{
+			ID:     note.ID,
+			UserID: userID,
+			Name:   note.Name,
+			Note:   note.Note,
+		}
 
-	return r.db.WithContext(ctx).Save(&noteToDB).Error
+		if err := r.db.WithContext(ctx).Save(&noteToDB).Error; err != nil {
+			return nil
+		}
+
+		return nil
+	})
 }

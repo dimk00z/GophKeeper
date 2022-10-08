@@ -7,6 +7,7 @@ import (
 	"github.com/dimk00z/GophKeeper/internal/server/usecase/repo/models"
 	"github.com/dimk00z/GophKeeper/internal/utils/errs"
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 func (r *GophKeeperRepo) GetLogins(ctx context.Context, user entity.User) (logins []entity.Login, err error) {
@@ -35,22 +36,35 @@ func (r *GophKeeperRepo) GetLogins(ctx context.Context, user entity.User) (login
 }
 
 func (r *GophKeeperRepo) AddLogin(ctx context.Context, login *entity.Login, userID uuid.UUID) error {
-	loginToDB := models.Login{
-		ID:       uuid.New(),
-		UserID:   userID,
-		Name:     login.Name,
-		Password: login.Password,
-		URI:      login.URI,
-		Login:    login.Login,
-	}
+	return r.db.Transaction(func(tx *gorm.DB) error {
+		loginToDB := models.Login{
+			ID:       uuid.New(),
+			UserID:   userID,
+			Name:     login.Name,
+			Password: login.Password,
+			URI:      login.URI,
+			Login:    login.Login,
+		}
 
-	if err := r.db.WithContext(ctx).Create(&loginToDB).Error; err != nil {
-		return err
-	}
+		if err := tx.WithContext(ctx).Create(&loginToDB).Error; err != nil {
+			return err
+		}
 
-	login.ID = loginToDB.ID
+		login.ID = loginToDB.ID
+		for index, meta := range login.Meta {
+			metaForLogin := models.MetaLogin{
+				Name:    meta.Name,
+				Value:   meta.Value,
+				LoginID: loginToDB.ID,
+			}
+			if err := tx.WithContext(ctx).Create(&metaForLogin).Error; err != nil {
+				return err
+			}
+			login.Meta[index].ID = metaForLogin.ID
+		}
 
-	return nil
+		return nil
+	})
 }
 
 func (r *GophKeeperRepo) IsLoginOwner(ctx context.Context, loginID, userID uuid.UUID) bool {
@@ -74,14 +88,32 @@ func (r *GophKeeperRepo) UpdateLogin(ctx context.Context, login *entity.Login, u
 		return errs.ErrWrongOwnerOrNotFound
 	}
 
-	loginToDB := models.Login{
-		ID:       login.ID,
-		Name:     login.Name,
-		Password: login.Password,
-		URI:      login.URI,
-		Login:    login.Login,
-		UserID:   userID,
-	}
+	return r.db.Transaction(func(tx *gorm.DB) error {
+		loginToDB := models.Login{
+			ID:       login.ID,
+			Name:     login.Name,
+			Password: login.Password,
+			URI:      login.URI,
+			Login:    login.Login,
+			UserID:   userID,
+		}
 
-	return r.db.WithContext(ctx).Save(&loginToDB).Error
+		if err := tx.WithContext(ctx).Save(&loginToDB).Error; err != nil {
+			return err
+		}
+		login.ID = loginToDB.ID
+		for _, meta := range login.Meta {
+			metaForLogin := models.MetaLogin{
+				Name:    meta.Name,
+				Value:   meta.Value,
+				LoginID: loginToDB.ID,
+				ID:      meta.ID,
+			}
+			if err := tx.WithContext(ctx).Create(&metaForLogin).Error; err != nil {
+				return err
+			}
+		}
+
+		return nil
+	})
 }

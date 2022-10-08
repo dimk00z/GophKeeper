@@ -11,5 +11,5 @@ type Card struct {
 	ExpirationMonth string    `json:"expiration_month"`
 	ExpirationYear  string    `json:"expiration_year"`
 	SecurityCode    string    `json:"security_code"`
-	Meta            Meta      `json:"meta"`
+	Meta            []Meta    `json:"meta"`
 }

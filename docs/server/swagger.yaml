@@ -10,6 +10,10 @@ definitions:
         type: string
       expiration_year:
         type: string
+      meta:
+        items:
+          $ref: '#/definitions/entity.Meta'
+        type: array
       name:
         type: string
       number:
@@ -28,6 +32,10 @@ definitions:
     properties:
       login:
         type: string
+      meta:
+        items:
+          $ref: '#/definitions/entity.Meta'
+        type: array
       name:
         type: string
       password:
@@ -35,8 +43,19 @@ definitions:
       uri:
         type: string
     type: object
+  entity.Meta:
+    properties:
+      name:
+        type: string
+      value:
+        type: string
+    type: object
   entity.SecretNote:
     properties:
+      meta:
+        items:
+          $ref: '#/definitions/entity.Meta'
+        type: array
       name:
         type: string
       note:
@@ -277,8 +296,8 @@ paths:
         required: true
         type: string
       responses:
-        "201":
-          description: Created
+        "202":
+          description: Accepted
         "400":
           description: Bad Request
           schema:

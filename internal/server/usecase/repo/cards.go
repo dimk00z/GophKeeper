@@ -7,6 +7,7 @@ import (
 	"github.com/dimk00z/GophKeeper/internal/server/usecase/repo/models"
 	"github.com/dimk00z/GophKeeper/internal/utils/errs"
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 func (r *GophKeeperRepo) GetCards(ctx context.Context, user entity.User) ([]entity.Card, error) {
@@ -38,25 +39,37 @@ func (r *GophKeeperRepo) GetCards(ctx context.Context, user entity.User) ([]enti
 }
 
 func (r *GophKeeperRepo) AddCard(ctx context.Context, card *entity.Card, userID uuid.UUID) error {
-	cardToDB := models.Card{
-		ID:              uuid.New(),
-		UserID:          userID,
-		Name:            card.Name,
-		Brand:           card.Brand,
-		CardHolderName:  card.CardHolderName,
-		Number:          card.Number,
-		ExpirationMonth: card.ExpirationMonth,
-		ExpirationYear:  card.ExpirationYear,
-		SecurityCode:    card.SecurityCode,
-	}
+	return r.db.Transaction(func(tx *gorm.DB) error {
+		cardToDB := models.Card{
+			ID:              uuid.New(),
+			UserID:          userID,
+			Name:            card.Name,
+			Brand:           card.Brand,
+			CardHolderName:  card.CardHolderName,
+			Number:          card.Number,
+			ExpirationMonth: card.ExpirationMonth,
+			ExpirationYear:  card.ExpirationYear,
+			SecurityCode:    card.SecurityCode,
+		}
 
-	if err := r.db.WithContext(ctx).Create(&cardToDB).Error; err != nil {
-		return err
-	}
+		if err := tx.WithContext(ctx).Create(&cardToDB).Error; err != nil {
+			return err
+		}
+		card.ID = cardToDB.ID
+		for index, meta := range card.Meta {
+			metaForCard := models.MetaCard{
+				Name:   meta.Name,
+				Value:  meta.Value,
+				CardID: cardToDB.ID,
+			}
+			if err := tx.WithContext(ctx).Create(&metaForCard).Error; err != nil {
+				return err
+			}
+			card.Meta[index].ID = metaForCard.ID
+		}
 
-	card.ID = cardToDB.ID
-
-	return nil
+		return nil
+	})
 }
 
 func (r *GophKeeperRepo) IsCardOwner(ctx context.Context, cardUUID, userID uuid.UUID) bool {
@@ -80,17 +93,33 @@ func (r *GophKeeperRepo) UpdateCard(ctx context.Context, card *entity.Card, user
 		return errs.ErrWrongOwnerOrNotFound
 	}
 
-	cardToDB := models.Card{
-		ID:              card.ID,
-		UserID:          userID,
-		Name:            card.Name,
-		Brand:           card.Brand,
-		CardHolderName:  card.CardHolderName,
-		Number:          card.Number,
-		ExpirationMonth: card.ExpirationMonth,
-		ExpirationYear:  card.ExpirationYear,
-		SecurityCode:    card.SecurityCode,
-	}
+	return r.db.Transaction(func(tx *gorm.DB) error {
+		cardToDB := models.Card{
+			ID:              card.ID,
+			UserID:          userID,
+			Name:            card.Name,
+			Brand:           card.Brand,
+			CardHolderName:  card.CardHolderName,
+			Number:          card.Number,
+			ExpirationMonth: card.ExpirationMonth,
+			ExpirationYear:  card.ExpirationYear,
+			SecurityCode:    card.SecurityCode,
+		}
+		if err := tx.WithContext(ctx).Save(&cardToDB).Error; err != nil {
+			return err
+		}
+		for _, meta := range card.Meta {
+			metaForCard := models.MetaCard{
+				Name:   meta.Name,
+				Value:  meta.Value,
+				CardID: cardToDB.ID,
+				ID:     meta.ID,
+			}
+			if err := tx.WithContext(ctx).Create(&metaForCard).Error; err != nil {
+				return err
+			}
+		}
 
-	return r.db.WithContext(ctx).Save(&cardToDB).Error
+		return nil
+	})
 }

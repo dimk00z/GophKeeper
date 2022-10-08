@@ -328,8 +328,8 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "201": {
-                        "description": "Created"
+                    "202": {
+                        "description": "Accepted"
                     },
                     "400": {
                         "description": "Bad Request",
@@ -886,6 +886,12 @@ const docTemplate = `{
                 "expiration_year": {
                     "type": "string"
                 },
+                "meta": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.Meta"
+                    }
+                },
                 "name": {
                     "type": "string"
                 },
@@ -914,6 +920,12 @@ const docTemplate = `{
                 "login": {
                     "type": "string"
                 },
+                "meta": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.Meta"
+                    }
+                },
                 "name": {
                     "type": "string"
                 },
@@ -925,9 +937,26 @@ const docTemplate = `{
                 }
             }
         },
+        "entity.Meta": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "string"
+                }
+            }
+        },
         "entity.SecretNote": {
             "type": "object",
             "properties": {
+                "meta": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.Meta"
+                    }
+                },
                 "name": {
                     "type": "string"
                 },
