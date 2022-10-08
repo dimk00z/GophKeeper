@@ -5,6 +5,13 @@ import (
 	"gorm.io/gorm"
 )
 
+type MetaCard struct {
+	gorm.Model
+	ID     uuid.UUID `gorm:"type:uuid;default:uuid_generate_v4();primary_key"`
+	Name   string
+	Value  string
+	CardID uuid.UUID `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+}
 type Card struct {
 	gorm.Model
 	ID              uuid.UUID `gorm:"type:uuid;default:uuid_generate_v4();primary_key"`
@@ -16,4 +23,5 @@ type Card struct {
 	ExpirationYear  string
 	SecurityCode    string
 	UserID          uuid.UUID
+	Meta            []MetaCard
 }
