@@ -7,22 +7,32 @@ import (
 	"github.com/fatih/color"
 )
 
+const (
+	showAllData  = "a"
+	showCards    = "c"
+	showLogins   = "l"
+	showNotes    = "n"
+	showBinaries = "b"
+)
+
 func (uc *GophKeeperClientUseCase) ShowVault(userPassword, showVaultOption string) {
 	if !uc.verifyPassword(userPassword) {
 		return
 	}
 
 	switch showVaultOption {
-	case "a":
+	case showAllData:
 		uc.showCards(uc.repo.LoadCards())
 		uc.showLogins(uc.repo.LoadLogins())
 		uc.showNotes(uc.repo.LoadNotes())
-	case "c":
+	case showCards:
 		uc.showCards(uc.repo.LoadCards())
-	case "l":
+	case showLogins:
 		uc.showLogins(uc.repo.LoadLogins())
-	case "n":
+	case showNotes:
 		uc.showNotes(uc.repo.LoadNotes())
+	case showBinaries:
+		// TODO:Add logic
 	}
 }
 

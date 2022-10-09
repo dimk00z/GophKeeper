@@ -10,7 +10,7 @@ var showVault = &cobra.Command{ //nolint:gochecknoglobals // cobra style guide
 	Use:   "showvault",
 	Short: "Show user vault",
 	Long: `
-This command add card
+This command show user vault
 Usage: showvault -o \"a|c|l|n\" 
 Flags:
   -o, --option string     Option for listing (default "a")
@@ -18,6 +18,7 @@ Flags:
 	c - cards
 	l - logins
 	n - notes
+	b - bynaries
   -p, --password string   User password value.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		clientUseCase.ShowVault(userPassword, showVaultOption)
