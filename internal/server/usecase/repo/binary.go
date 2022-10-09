@@ -14,7 +14,10 @@ var errWrongBinaryOwner = errors.New("wrong binary owner or not found")
 func (r *GophKeeperRepo) GetBinaries(ctx context.Context, user entity.User) ([]entity.Binary, error) {
 	var binariesFromDB []models.Binary
 
-	if err := r.db.WithContext(ctx).Find(&binariesFromDB, "user_id = ?", user.ID).Error; err != nil {
+	if err := r.db.WithContext(ctx).
+		Model(&models.Binary{}).
+		Preload("Meta").
+		Find(&binariesFromDB, "user_id = ?", user.ID).Error; err != nil {
 		return nil, err
 	}
 
@@ -28,6 +31,13 @@ func (r *GophKeeperRepo) GetBinaries(ctx context.Context, user entity.User) ([]e
 		binaries[index].ID = binariesFromDB[index].ID
 		binaries[index].Name = binariesFromDB[index].Name
 		binaries[index].FileName = binariesFromDB[index].FileName
+		for metaIndex := range binariesFromDB[index].Meta {
+			binaries[index].Meta = append(binaries[index].Meta, entity.Meta{
+				ID:    binariesFromDB[index].Meta[metaIndex].ID,
+				Name:  binariesFromDB[index].Meta[metaIndex].Name,
+				Value: binariesFromDB[index].Meta[metaIndex].Value,
+			})
+		}
 	}
 
 	return binaries, nil
@@ -52,17 +62,19 @@ func (r *GophKeeperRepo) AddBinary(ctx context.Context, binary *entity.Binary, u
 
 func (r *GophKeeperRepo) GetBinary(ctx context.Context, binaryID, userID uuid.UUID) (*entity.Binary, error) {
 	var binaryFromDB models.Binary
-	if err := r.db.WithContext(ctx).Find(&binaryFromDB, binaryID).Error; err != nil {
+	if err := r.db.WithContext(ctx).
+		Model(&models.Binary{}).
+		Preload("Meta").
+		Find(&binaryFromDB, binaryID).Error; err != nil {
 		return nil, err
 	}
 
 	if binaryFromDB.UserID != userID {
 		return nil, errWrongBinaryOwner
 	}
-
 	var meta []entity.Meta
 	if len(binaryFromDB.Meta) > 0 {
-		meta = make([]entity.Meta, len(binaryFromDB.Name))
+		meta = make([]entity.Meta, len(binaryFromDB.Meta))
 		for index := range binaryFromDB.Meta {
 			meta[index].ID = binaryFromDB.Meta[index].ID
 			meta[index].Name = binaryFromDB.Meta[index].Name
