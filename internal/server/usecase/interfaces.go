@@ -35,14 +35,14 @@ type (
 		UpdateNote(ctx context.Context, note *entity.SecretNote, userID uuid.UUID) error
 
 		GetBinaries(ctx context.Context, user entity.User) ([]entity.Binary, error)
-		AddBinary(
+		AddBinary(ctx context.Context, binary *entity.Binary, file *multipart.FileHeader, userID uuid.UUID) error
+		GetUserBinary(ctx context.Context, currentUser *entity.User, binaryUUID uuid.UUID) (string, error)
+		DelUserBinary(ctx context.Context, currentUser *entity.User, binaryUUID uuid.UUID) error
+		AddBinaryMeta(
 			ctx context.Context,
-			binary *entity.Binary,
-			file *multipart.FileHeader,
-			userID uuid.UUID) error
-		// UpdateBinaryMeta
-		// GetBinaryFile
-		// DelBinary
+			currentUser *entity.User,
+			binaryUUID uuid.UUID,
+			meta []entity.Meta) (*entity.Binary, error)
 	}
 
 	// GophKeeperRepo - db logic.
@@ -72,5 +72,12 @@ type (
 
 		GetBinaries(ctx context.Context, user entity.User) ([]entity.Binary, error)
 		AddBinary(ctx context.Context, binary *entity.Binary, userID uuid.UUID) error
+		GetBinary(ctx context.Context, binaryID, userID uuid.UUID) (*entity.Binary, error)
+		DelUserBinary(ctx context.Context, currentUser *entity.User, binaryUUID uuid.UUID) error
+		AddBinaryMeta(
+			ctx context.Context,
+			currentUser *entity.User,
+			binaryUUID uuid.UUID,
+			meta []entity.Meta) (*entity.Binary, error)
 	}
 )

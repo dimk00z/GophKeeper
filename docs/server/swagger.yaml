@@ -248,6 +248,167 @@ paths:
       summary: Get user binary data
       tags:
       - Binary
+    post:
+      consumes:
+      - application/json
+      description: saving user binary data
+      operationId: add_binary
+      parameters:
+      - default: Bearer <Add access token here>
+        description: Insert your access token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Body with binary file
+        in: formData
+        name: file
+        required: true
+        type: file
+      - description: name for entity
+        in: query
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            items:
+              $ref: '#/definitions/entity.Binary'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+      summary: Add user binary data
+      tags:
+      - Binary
+  /user/binary/{id}:
+    delete:
+      description: del user file
+      operationId: del_binary
+      parameters:
+      - default: Bearer <Add access token here>
+        description: Insert your access token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Binary ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "202":
+          description: Accepted
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+      summary: Delete user binary
+      tags:
+      - Binary
+    get:
+      consumes:
+      - application/json
+      description: downloading user binary data
+      operationId: download_binary
+      parameters:
+      - default: Bearer <Add access token here>
+        description: Insert your access token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Binary ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: file
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+      summary: Download user binary data
+      tags:
+      - Binary
+  /user/binary/{id}/meta:
+    post:
+      consumes:
+      - application/json
+      description: saving meta data
+      operationId: add_binary_meta
+      parameters:
+      - default: Bearer <Add access token here>
+        description: Insert your access token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Binary ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: meta for save
+        in: body
+        name: request
+        required: true
+        schema:
+          items:
+            $ref: '#/definitions/entity.Meta'
+          type: array
+      produces:
+      - application/json
+      responses:
+        "202":
+          description: Accepted
+          schema:
+            $ref: '#/definitions/entity.Binary'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+      summary: Add meta data for binary file
+      tags:
+      - Binary
   /user/cards:
     get:
       consumes:

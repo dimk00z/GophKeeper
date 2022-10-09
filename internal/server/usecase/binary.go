@@ -2,7 +2,9 @@ package usecase
 
 import (
 	"context"
+	"fmt"
 	"mime/multipart"
+	"os"
 
 	"github.com/dimk00z/GophKeeper/internal/entity"
 	"github.com/dimk00z/GophKeeper/internal/utils"
@@ -32,4 +34,55 @@ func (uc *GophKeeperUseCase) AddBinary(
 	}
 
 	return nil
+}
+
+func (uc *GophKeeperUseCase) GetUserBinary(
+	ctx context.Context,
+	currentUser *entity.User,
+	binaryUUID uuid.UUID,
+) (string, error) {
+	binary, err := uc.repo.GetBinary(ctx, binaryUUID, currentUser.ID)
+	if err != nil {
+		return "", err
+	}
+	filePath := fmt.Sprintf(
+		"%s/%s/%s",
+		uc.cfg.FilesStorage.Location,
+		currentUser.ID.String(),
+		binary.ID)
+
+	return filePath, nil
+}
+
+func (uc *GophKeeperUseCase) DelUserBinary(
+	ctx context.Context,
+	currentUser *entity.User,
+	binaryUUID uuid.UUID,
+) error {
+	err := uc.repo.DelUserBinary(ctx, currentUser, binaryUUID)
+	if err != nil {
+		return err
+	}
+
+	filePath := fmt.Sprintf(
+		"%s/%s/%s",
+		uc.cfg.FilesStorage.Location,
+		currentUser.ID.String(),
+		binaryUUID.String())
+
+	return os.Remove(filePath)
+}
+
+func (uc *GophKeeperUseCase) AddBinaryMeta(
+	ctx context.Context,
+	currentUser *entity.User,
+	binaryUUID uuid.UUID,
+	meta []entity.Meta,
+) (*entity.Binary, error) {
+	return uc.repo.AddBinaryMeta(
+		ctx,
+		currentUser,
+		binaryUUID,
+		meta,
+	)
 }

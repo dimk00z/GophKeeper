@@ -2,11 +2,14 @@ package repo
 
 import (
 	"context"
+	"errors"
 
 	"github.com/dimk00z/GophKeeper/internal/entity"
 	"github.com/dimk00z/GophKeeper/internal/server/usecase/repo/models"
 	"github.com/google/uuid"
 )
+
+var errWrongBinaryOwner = errors.New("wrong binary owner or not found")
 
 func (r *GophKeeperRepo) GetBinaries(ctx context.Context, user entity.User) ([]entity.Binary, error) {
 	var binariesFromDB []models.Binary
@@ -45,4 +48,61 @@ func (r *GophKeeperRepo) AddBinary(ctx context.Context, binary *entity.Binary, u
 	binary.ID = newBinaryToDB.ID
 
 	return nil
+}
+
+func (r *GophKeeperRepo) GetBinary(ctx context.Context, binaryID, userID uuid.UUID) (*entity.Binary, error) {
+	var binaryFromDB models.Binary
+	if err := r.db.WithContext(ctx).Find(&binaryFromDB, binaryID).Error; err != nil {
+		return nil, err
+	}
+
+	if binaryFromDB.UserID != userID {
+		return nil, errWrongBinaryOwner
+	}
+
+	var meta []entity.Meta
+	if len(binaryFromDB.Meta) > 0 {
+		meta = make([]entity.Meta, len(binaryFromDB.Name))
+		for index := range binaryFromDB.Meta {
+			meta[index].ID = binaryFromDB.Meta[index].ID
+			meta[index].Name = binaryFromDB.Meta[index].Name
+			meta[index].Value = binaryFromDB.Meta[index].Value
+		}
+	}
+
+	return &entity.Binary{
+		ID:       binaryFromDB.ID,
+		FileName: binaryFromDB.FileName,
+		Meta:     meta,
+	}, nil
+}
+
+func (r *GophKeeperRepo) DelUserBinary(ctx context.Context, currentUser *entity.User, binaryUUID uuid.UUID) error {
+	var binaryFromDB models.Binary
+	r.db.WithContext(ctx).Find(&binaryFromDB, binaryUUID)
+	if binaryFromDB.UserID != currentUser.ID {
+		return errWrongBinaryOwner
+	}
+
+	return r.db.Delete(&binaryFromDB).Error
+}
+
+func (r *GophKeeperRepo) AddBinaryMeta(
+	ctx context.Context,
+	currentUser *entity.User,
+	binaryUUID uuid.UUID,
+	meta []entity.Meta,
+) (*entity.Binary, error) {
+	metaForDB := make([]models.MetaBinary, len(meta))
+	for index := range meta {
+		metaForDB[index].BinaryID = binaryUUID
+		metaForDB[index].Name = meta[index].Name
+		metaForDB[index].Value = meta[index].Value
+	}
+
+	if err := r.db.WithContext(ctx).Save(&metaForDB).Error; err != nil {
+		return nil, err
+	}
+
+	return r.GetBinary(ctx, binaryUUID, currentUser.ID)
 }
