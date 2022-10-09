@@ -11,12 +11,13 @@ import (
 type (
 	// Config -.
 	Config struct {
-		App      `yaml:"app"`
-		HTTP     `yaml:"http"`
-		Log      `yaml:"logger"`
-		PG       `yaml:"postgres"`
-		Secutiry `yaml:"security"`
-		Cache    `yaml:"cache"`
+		App          `yaml:"app"`
+		HTTP         `yaml:"http"`
+		Log          `yaml:"logger"`
+		PG           `yaml:"postgres"`
+		Secutiry     `yaml:"security"`
+		Cache        `yaml:"cache"`
+		FilesStorage `yaml:"files_storage"`
 	}
 
 	// App -.
@@ -43,6 +44,9 @@ type (
 	Cache struct {
 		DefaultExpiration int `yaml:"default_expiration" env:"DEFAULT_EXPIRATION"`
 		CleanupInterval   int `yaml:"cleanup_interval" env:"CLEANUP_INTERVAL"`
+	}
+	FilesStorage struct {
+		Location string `yaml:"location" env:"FILES_LOCATION"`
 	}
 	Secutiry struct {
 		AccessTokenPrivateKey  string        `yaml:"access_token_private_key" env:"ACCESS_TOKEN_PRIVATE_KEY"`

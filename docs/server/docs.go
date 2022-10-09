@@ -188,6 +188,58 @@ const docTemplate = `{
                 }
             }
         },
+        "/user/binary": {
+            "get": {
+                "description": "fetching user binary data",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Binary"
+                ],
+                "summary": "Get user binary data",
+                "operationId": "get_binary",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "default": "Bearer \u003cAdd access token here\u003e",
+                        "description": "Insert your access token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/entity.Binary"
+                            }
+                        }
+                    },
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/v1.response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/v1.response"
+                        }
+                    }
+                }
+            }
+        },
         "/user/cards": {
             "get": {
                 "description": "fetching user cards",
@@ -871,6 +923,23 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "entity.Binary": {
+            "type": "object",
+            "properties": {
+                "file_name": {
+                    "type": "string"
+                },
+                "meta": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.Meta"
+                    }
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "entity.Card": {
             "type": "object",
             "properties": {

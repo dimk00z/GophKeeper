@@ -1,5 +1,16 @@
 basePath: /api/v1
 definitions:
+  entity.Binary:
+    properties:
+      file_name:
+        type: string
+      meta:
+        items:
+          $ref: '#/definitions/entity.Meta'
+        type: array
+      name:
+        type: string
+    type: object
   entity.Card:
     properties:
       brand:
@@ -202,6 +213,41 @@ paths:
       summary: Show the status of server.
       tags:
       - Root
+  /user/binary:
+    get:
+      consumes:
+      - application/json
+      description: fetching user binary data
+      operationId: get_binary
+      parameters:
+      - default: Bearer <Add access token here>
+        description: Insert your access token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entity.Binary'
+            type: array
+        "204":
+          description: No Content
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/v1.response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.response'
+      summary: Get user binary data
+      tags:
+      - Binary
   /user/cards:
     get:
       consumes:

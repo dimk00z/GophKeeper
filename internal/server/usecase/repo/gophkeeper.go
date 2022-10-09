@@ -44,8 +44,8 @@ func (r *GophKeeperRepo) Migrate() {
 		&models.Login{},
 		&models.MetaLogin{},
 		&models.Note{},
-		&models.Bynary{},
-		&models.MetaBynary{},
+		&models.Binary{},
+		&models.MetaBinary{},
 	}
 
 	if err := r.db.AutoMigrate(tables...); err != nil {

@@ -3,6 +3,7 @@ package usecase
 
 import (
 	"context"
+	"mime/multipart"
 
 	"github.com/dimk00z/GophKeeper/internal/entity"
 	"github.com/google/uuid"
@@ -32,6 +33,16 @@ type (
 		AddNote(ctx context.Context, note *entity.SecretNote, userID uuid.UUID) error
 		DelNote(ctx context.Context, noteID, userID uuid.UUID) error
 		UpdateNote(ctx context.Context, note *entity.SecretNote, userID uuid.UUID) error
+
+		GetBinaries(ctx context.Context, user entity.User) ([]entity.Binary, error)
+		AddBinary(
+			ctx context.Context,
+			binary *entity.Binary,
+			file *multipart.FileHeader,
+			userID uuid.UUID) error
+		// UpdateBinaryMeta
+		// GetBinaryFile
+		// DelBinary
 	}
 
 	// GophKeeperRepo - db logic.
@@ -58,5 +69,8 @@ type (
 		DelNote(ctx context.Context, noteID, userID uuid.UUID) error
 		UpdateNote(ctx context.Context, note *entity.SecretNote, userID uuid.UUID) error
 		IsNoteOwner(ctx context.Context, noteID, userID uuid.UUID) bool
+
+		GetBinaries(ctx context.Context, user entity.User) ([]entity.Binary, error)
+		AddBinary(ctx context.Context, binary *entity.Binary, userID uuid.UUID) error
 	}
 )

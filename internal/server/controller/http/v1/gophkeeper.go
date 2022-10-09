@@ -35,6 +35,10 @@ func newGophKeeperRoutes(handler *gin.RouterGroup, g usecase.GophKeeper, l logge
 		userAPI.POST("notes", r.ProtectedByAccessToken(), r.AddNote)
 		userAPI.DELETE("notes/:id", r.ProtectedByAccessToken(), r.DelNote)
 		userAPI.PATCH("notes/:id", r.ProtectedByAccessToken(), r.UpdateNote)
+
+		userAPI.GET("binary", r.ProtectedByAccessToken(), r.GetBinaries)
+		userAPI.POST("binary", r.ProtectedByAccessToken(), r.AddBinary)
+		// userAPI.DELETE("binary/:id", r.ProtectedByAccessToken(), r.DelNote)
 	}
 
 	authAPI := handler.Group("/auth")

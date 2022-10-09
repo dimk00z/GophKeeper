@@ -30,6 +30,7 @@ func Run(cfg *config.Config) {
 		gophKeeperRepo,
 		cfg,
 		cache.New(cfg.Cache.DefaultExpiration, cfg.Cache.CleanupInterval),
+		l,
 	)
 
 	var err error
