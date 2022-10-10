@@ -7,6 +7,7 @@ import (
 
 	config "github.com/dimk00z/GophKeeper/config/client"
 	auth "github.com/dimk00z/GophKeeper/internal/client/app/auth"
+	binary "github.com/dimk00z/GophKeeper/internal/client/app/binary"
 	"github.com/dimk00z/GophKeeper/internal/client/app/build"
 	cards "github.com/dimk00z/GophKeeper/internal/client/app/cards"
 	logins "github.com/dimk00z/GophKeeper/internal/client/app/logins"
@@ -61,6 +62,8 @@ func init() {
 		notes.AddNote,
 		notes.DelNote,
 		notes.GetNote,
+
+		binary.AddBinary,
 	}
 
 	rootCmd.AddCommand(commands...)

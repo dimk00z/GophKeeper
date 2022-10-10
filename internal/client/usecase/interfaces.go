@@ -29,6 +29,10 @@ type (
 		AddNote(userPassword string, note *entity.SecretNote)
 		ShowNote(userPassword, noteID string)
 		DelNote(userPassword, noteID string)
+
+		AddBinary(userPassword string, binary *entity.Binary)
+		DelBinary(userPassword, binaryID string)
+		GetBinary(userPassword, getBinaryID, filePath string)
 	}
 	GophKeeperClientRepo interface {
 		MigrateDB()
