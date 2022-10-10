@@ -1,6 +1,8 @@
 package repo
 
 import (
+	"log"
+
 	"github.com/dimk00z/GophKeeper/internal/client/usecase/repo/models"
 	"github.com/fatih/color"
 	"gorm.io/driver/sqlite"
@@ -25,22 +27,29 @@ func New(dbFileName string) *GophKeeperRepo {
 func (r *GophKeeperRepo) MigrateDB() {
 	tables := []interface{}{
 		&models.User{},
+
 		&models.Card{},
-		&models.Login{},
 		&models.MetaCard{},
+
+		&models.Login{},
 		&models.MetaLogin{},
-		&models.MetaLogin{},
+
+		&models.Note{},
+		&models.MetaNote{},
+
+		&models.Binary{},
+		&models.MetaBinary{},
 	}
 
 	var err error
 
 	for _, table := range tables {
 		if err = r.db.Migrator().DropTable(table); err != nil {
-			color.Red("Init error %s", err.Error())
+			log.Fatalf("Init error %s", err.Error())
 		}
 
 		if err = r.db.Migrator().CreateTable(table); err != nil {
-			color.Red("Init error %s", err.Error())
+			log.Fatalf("Init error %s", err.Error())
 		}
 	}
 

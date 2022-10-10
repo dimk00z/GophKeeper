@@ -1,20 +1,17 @@
 package app
 
 import (
+	"github.com/dimk00z/GophKeeper/internal/client/usecase"
 	"github.com/spf13/cobra"
 )
 
-var registerInitLocalStorage = &cobra.Command{ //nolint:gochecknoglobals // cobra style guide
+var RegisterInitLocalStorage = &cobra.Command{ //nolint:gochecknoglobals // cobra style guide
 	Use:   "init",
 	Short: "Init local storage",
 	Long: `
 This command register init sqlite db for storaging private data.
 Usage: gophkeeperclient init`,
 	Run: func(cmd *cobra.Command, args []string) {
-		clientUseCase.InitDB()
+		usecase.GetClientUseCase().InitDB()
 	},
-}
-
-func init() {
-	rootCmd.AddCommand(registerInitLocalStorage)
 }

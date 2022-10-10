@@ -6,7 +6,12 @@ import (
 	"os"
 
 	config "github.com/dimk00z/GophKeeper/config/client"
+	auth "github.com/dimk00z/GophKeeper/internal/client/app/auth"
 	"github.com/dimk00z/GophKeeper/internal/client/app/build"
+	cards "github.com/dimk00z/GophKeeper/internal/client/app/cards"
+	logins "github.com/dimk00z/GophKeeper/internal/client/app/logins"
+	notes "github.com/dimk00z/GophKeeper/internal/client/app/notes"
+	vault "github.com/dimk00z/GophKeeper/internal/client/app/vault"
 	"github.com/dimk00z/GophKeeper/internal/client/usecase"
 	api "github.com/dimk00z/GophKeeper/internal/client/usecase/client_api"
 	"github.com/dimk00z/GophKeeper/internal/client/usecase/repo"
@@ -15,7 +20,7 @@ import (
 
 var (
 	cfg           *config.Config           //nolint:gochecknoglobals // cobra style guide
-	clientUseCase usecase.GophKeeperClient //nolint:gochecknoglobals // cobra style guide
+	ClientUseCase usecase.GophKeeperClient //nolint:gochecknoglobals // cobra style guide
 
 	rootCmd = &cobra.Command{ //nolint:gochecknoglobals // cobra style guide
 		Use:   config.LoadConfig().App.Name,
@@ -36,6 +41,29 @@ func Execute() {
 
 func init() {
 	cobra.OnInitialize(initApp)
+	commands := []*cobra.Command{
+		auth.LoginUserCmd,
+		auth.LogoutUser,
+		auth.RegisterUserCmd,
+
+		vault.RegisterInitLocalStorage,
+		vault.ShowVault,
+		vault.SyncUserData,
+
+		cards.AddCard,
+		cards.DelCard,
+		cards.GetCard,
+
+		logins.AddLogin,
+		logins.DelLogin,
+		logins.GetLogin,
+
+		notes.AddNote,
+		notes.DelNote,
+		notes.GetNote,
+	}
+
+	rootCmd.AddCommand(commands...)
 }
 
 func initApp() {
@@ -43,5 +71,14 @@ func initApp() {
 
 	log.Println(cfg)
 
-	clientUseCase = usecase.New(repo.New(cfg.SQLite.DSN), api.New(cfg.Server.URL), cfg)
+	uc := usecase.GetClientUseCase()
+	clientOpts := []usecase.GophKeeperUseCaseOpts{
+		usecase.SetAPI(api.New(cfg.Server.URL)),
+		usecase.SetConfig(cfg),
+		usecase.SetRepo(repo.New(cfg.SQLite.DSN)),
+	}
+
+	for _, opt := range clientOpts {
+		opt(uc)
+	}
 }

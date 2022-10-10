@@ -1,11 +1,12 @@
 package app
 
 import (
+	"github.com/dimk00z/GophKeeper/internal/client/usecase"
 	"github.com/dimk00z/GophKeeper/internal/entity"
 	"github.com/spf13/cobra"
 )
 
-var registerUserCmd = &cobra.Command{ //nolint:gochecknoglobals // cobra style guide
+var RegisterUserCmd = &cobra.Command{ //nolint:gochecknoglobals // cobra style guide
 	Use:   "register",
 	Short: "Register user to the service",
 	Long: `
@@ -18,10 +19,9 @@ Usage: gophkeeperclient register user_login user_password`,
 			Password: args[1],
 		}
 
-		clientUseCase.Register(&account)
+		usecase.GetClientUseCase().Register(&account)
 	},
 }
 
 func init() {
-	rootCmd.AddCommand(registerUserCmd)
 }

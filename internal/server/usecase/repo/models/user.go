@@ -13,9 +13,10 @@ type User struct {
 	Password  string    `gorm:"not null"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
-	Cards     []Card  `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
-	Logins    []Login `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
-	Notes     []Note  `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	Cards     []Card   `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	Logins    []Login  `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	Notes     []Note   `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	Bynary    []Binary `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
 func (user *User) ToString() string {

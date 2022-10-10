@@ -15,6 +15,7 @@ type User struct {
 	Cards        []Card  `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	Logins       []Login `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	Notes        []Note  `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	Binary       []Note  `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
 func (user *User) ToString() string {

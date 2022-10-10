@@ -29,7 +29,7 @@ func (api *GophKeeperClientAPI) Login(user *entity.User) (token entity.JWT, err 
 	if resp.StatusCode() == http.StatusBadRequest || resp.StatusCode() == http.StatusInternalServerError {
 		color.Red("Server error: %s", errs.ParseServerError(resp.Body()))
 
-		return
+		return token, errServer
 	}
 
 	return token, nil
