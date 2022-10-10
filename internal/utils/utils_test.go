@@ -1,6 +1,9 @@
 package utils_test
 
 import (
+	"crypto/sha256"
+	"io"
+	"os"
 	"testing"
 	"time"
 
@@ -43,4 +46,52 @@ func TestToken(t *testing.T) {
 	if _, err := utils.ValidateToken(testToken, testPublicKey); err != nil {
 		t.Errorf("got %v error", err)
 	}
+}
+
+func TestCryptoFile(t *testing.T) {
+	phrase := "This is top secret"
+	inputFilePath := "../../README.md"
+	outputEncryptedFilePath := "../../encrypted_README.md"
+	outputDecryptedFilePath := "../../decrypted_README.md"
+	err := utils.EncryptFile(phrase, inputFilePath, outputEncryptedFilePath)
+	if err != nil {
+		t.Errorf("got %v error", err)
+	}
+	err = utils.DecryptFile(phrase, outputEncryptedFilePath, outputDecryptedFilePath)
+	if err != nil {
+		t.Errorf("got %v error", err)
+	}
+
+	hashes := make([]string, 2)
+	for index, filePath := range []string{inputFilePath, outputDecryptedFilePath} {
+		hashes[index], err = getFileHash(filePath)
+		if err != nil {
+			t.Errorf("got %v error", err)
+		}
+	}
+
+	if !(hashes[0] == hashes[1]) {
+		t.Errorf("files hashes are different:\n%s\n%s\n", hashes[0], hashes[1])
+	}
+
+	for _, filePath := range []string{outputEncryptedFilePath, outputDecryptedFilePath} {
+		if err := os.Remove(filePath); err != nil {
+			t.Errorf("got %v error", err)
+		}
+	}
+}
+
+func getFileHash(filePath string) (string, error) {
+	inputData, err := os.Open(filePath)
+	if err != nil {
+		return "", err
+	}
+	defer inputData.Close()
+
+	hash := sha256.New()
+	if _, err := io.Copy(hash, inputData); err != nil {
+		return "", err
+	}
+
+	return string(hash.Sum(nil)), nil
 }
