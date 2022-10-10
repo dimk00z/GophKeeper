@@ -42,7 +42,10 @@ func (r *GophKeeperRepo) AddNote(note *entity.SecretNote) error {
 func (r *GophKeeperRepo) LoadNotes() []viewsets.NoteForList {
 	userID := r.getUserID()
 	var notes []models.Note
-	r.db.Where("user_id", userID).Find(&notes)
+	r.db.
+		Model(&models.Note{}).
+		Preload("Meta").
+		Where("user_id", userID).Find(&notes)
 	if len(notes) == 0 {
 		return nil
 	}
@@ -75,7 +78,10 @@ func (r *GophKeeperRepo) SaveNotes(notes []entity.SecretNote) error {
 
 func (r *GophKeeperRepo) GetNoteByID(noteID uuid.UUID) (note entity.SecretNote, err error) {
 	var noteFromDB models.Note
-	if err = r.db.Find(&noteFromDB, noteID).Error; noteFromDB.ID == uuid.Nil || err != nil {
+	if err = r.db.
+		Model(&models.Note{}).
+		Preload("Meta").
+		Find(&noteFromDB, noteID).Error; noteFromDB.ID == uuid.Nil || err != nil {
 		return note, errNoteNotFound
 	}
 

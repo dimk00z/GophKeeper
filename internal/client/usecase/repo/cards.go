@@ -76,7 +76,10 @@ func (r *GophKeeperRepo) SaveCards(cards []entity.Card) error {
 func (r *GophKeeperRepo) LoadCards() []viewsets.CardForList {
 	userID := r.getUserID()
 	var cards []models.Card
-	r.db.Where("user_id", userID).Find(&cards)
+	r.db.Model(&models.Card{}).
+		Preload("Meta").
+		Where("user_id", userID).
+		Find(&cards)
 	if len(cards) == 0 {
 		return nil
 	}
@@ -94,7 +97,10 @@ func (r *GophKeeperRepo) LoadCards() []viewsets.CardForList {
 
 func (r *GophKeeperRepo) GetCardByID(cardID uuid.UUID) (card entity.Card, err error) {
 	var cardFromDB models.Card
-	if err = r.db.Find(&cardFromDB, cardID).Error; cardFromDB.ID == uuid.Nil || err != nil {
+	if err = r.db.
+		Model(&models.Card{}).
+		Preload("Meta").
+		Find(&cardFromDB, cardID).Error; cardFromDB.ID == uuid.Nil || err != nil {
 		return card, errCardNotFound
 	}
 

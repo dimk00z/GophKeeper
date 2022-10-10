@@ -70,7 +70,10 @@ func (r *GophKeeperRepo) SaveLogins(logins []entity.Login) error {
 func (r *GophKeeperRepo) LoadLogins() []viewsets.LoginForList {
 	userID := r.getUserID()
 	var logins []models.Login
-	r.db.Where("user_id", userID).Find(&logins)
+	r.db.
+		Model(&models.Login{}).
+		Preload("Meta").
+		Where("user_id", userID).Find(&logins)
 	if len(logins) == 0 {
 		return nil
 	}
@@ -88,7 +91,10 @@ func (r *GophKeeperRepo) LoadLogins() []viewsets.LoginForList {
 
 func (r *GophKeeperRepo) GetLoginByID(loginID uuid.UUID) (login entity.Login, err error) {
 	var loginFromDB models.Login
-	if err = r.db.Find(&loginFromDB, loginID).Error; loginFromDB.ID == uuid.Nil || err != nil {
+	if err = r.db.
+		Model(&models.Login{}).
+		Preload("Meta").
+		Find(&loginFromDB, loginID).Error; loginFromDB.ID == uuid.Nil || err != nil {
 		return login, errLoginNotFound
 	}
 
