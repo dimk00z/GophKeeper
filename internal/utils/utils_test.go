@@ -11,8 +11,9 @@ import (
 	"github.com/google/uuid"
 )
 
+const phrase = "This is top secret"
+
 func TestCrypto(t *testing.T) {
-	phrase := "This is top secret"
 	secretKey := "secretKey"
 	encryptedString := utils.Encrypt(secretKey, phrase)
 	decryptedString := utils.Decrypt(secretKey, encryptedString)
@@ -49,7 +50,6 @@ func TestToken(t *testing.T) {
 }
 
 func TestCryptoFile(t *testing.T) {
-	phrase := "This is top secret"
 	inputFilePath := "../../README.md"
 	outputEncryptedFilePath := "../../encrypted_README.md"
 	outputDecryptedFilePath := "../../decrypted_README.md"
