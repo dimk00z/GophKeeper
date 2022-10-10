@@ -13,7 +13,10 @@ import (
 func (r *GophKeeperRepo) GetCards(ctx context.Context, user entity.User) ([]entity.Card, error) {
 	var cardsFromDB []models.Card
 
-	err := r.db.WithContext(ctx).Find(&cardsFromDB, "user_id = ?", user.ID).Error
+	err := r.db.WithContext(ctx).
+		Model(&models.Card{}).
+		Preload("Meta").
+		Find(&cardsFromDB, "user_id = ?", user.ID).Error
 	if err != nil {
 		return nil, err
 	}

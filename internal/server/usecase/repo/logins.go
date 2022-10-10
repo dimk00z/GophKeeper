@@ -13,7 +13,10 @@ import (
 func (r *GophKeeperRepo) GetLogins(ctx context.Context, user entity.User) (logins []entity.Login, err error) {
 	var loginsFromDB []models.Login
 
-	err = r.db.WithContext(ctx).Find(&loginsFromDB, "user_id = ?", user.ID).Error
+	err = r.db.WithContext(ctx).
+		Model(&models.Login{}).
+		Preload("Meta").
+		Find(&loginsFromDB, "user_id = ?", user.ID).Error
 	if err != nil {
 		return nil, err
 	}

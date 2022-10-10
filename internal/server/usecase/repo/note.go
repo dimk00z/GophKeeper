@@ -13,7 +13,10 @@ import (
 func (r *GophKeeperRepo) GetNotes(ctx context.Context, user entity.User) ([]entity.SecretNote, error) {
 	var notesFromDB []models.Note
 
-	err := r.db.WithContext(ctx).Find(&notesFromDB, "user_id = ?", user.ID).Error
+	err := r.db.WithContext(ctx).
+		Model(&models.Note{}).
+		Preload("Meta").
+		Find(&notesFromDB, "user_id = ?", user.ID).Error
 	if err != nil {
 		return nil, err
 	}
