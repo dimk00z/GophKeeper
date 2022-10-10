@@ -44,6 +44,7 @@ func (r *GophKeeperRepo) Migrate() {
 		&models.Login{},
 		&models.MetaLogin{},
 		&models.Note{},
+		&models.MetaNote{},
 		&models.Binary{},
 		&models.MetaBinary{},
 	}
