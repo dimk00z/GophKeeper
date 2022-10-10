@@ -6,6 +6,5 @@ type Binary struct {
 	ID       uuid.UUID `json:"uuid" swaggerignore:"true"`
 	Name     string    `json:"name"`
 	FileName string    `json:"file_name"`
-	Data     []byte    `json:"-"`
 	Meta     []Meta    `json:"meta"`
 }

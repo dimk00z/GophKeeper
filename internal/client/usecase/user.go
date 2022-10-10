@@ -31,13 +31,8 @@ func (uc *GophKeeperClientUseCase) Register(user *entity.User) {
 	if err := uc.clientAPI.Register(user); err != nil {
 		return
 	}
-	hashedPassword, err := utils.HashPassword(user.Password)
-	if err != nil {
-		log.Fatal(err)
-	}
 
-	user.Password = hashedPassword
-	if err = uc.repo.AddUser(user); err != nil {
+	if err := uc.repo.AddUser(user); err != nil {
 		color.Red("Internal error: %v", err)
 
 		return
@@ -71,6 +66,7 @@ func (uc *GophKeeperClientUseCase) Sync(userPassword string) {
 	uc.loadCards(accessToken)
 	uc.loadLogins(accessToken)
 	uc.loadNotes(accessToken)
+	uc.loadBinaries(accessToken)
 }
 
 func (uc *GophKeeperClientUseCase) verifyPassword(userPassword string) bool {

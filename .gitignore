@@ -23,3 +23,4 @@ vendor/
 *.sqlite
 *debug_bin
 users_files
+user_files

@@ -25,6 +25,7 @@ func (uc *GophKeeperClientUseCase) ShowVault(userPassword, showVaultOption strin
 		uc.showCards(uc.repo.LoadCards())
 		uc.showLogins(uc.repo.LoadLogins())
 		uc.showNotes(uc.repo.LoadNotes())
+		uc.showBinaries(uc.repo.LoadBinaries())
 	case showCards:
 		uc.showCards(uc.repo.LoadCards())
 	case showLogins:
@@ -32,7 +33,8 @@ func (uc *GophKeeperClientUseCase) ShowVault(userPassword, showVaultOption strin
 	case showNotes:
 		uc.showNotes(uc.repo.LoadNotes())
 	case showBinaries:
-		// TODO:Add logic
+		uc.showBinaries(uc.repo.LoadBinaries())
+
 	}
 }
 
@@ -69,4 +71,16 @@ func (uc *GophKeeperClientUseCase) showNotes(notes []viewsets.NoteForList) {
 			yellow(note.Name))
 	}
 	fmt.Printf("Total %s notes\n", yellow(len(notes))) //nolint:forbidigo // cli printing
+}
+
+func (uc *GophKeeperClientUseCase) showBinaries(binaries []viewsets.BinaryForList) {
+	color.Yellow("Users files:")
+	yellow := color.New(color.FgYellow).SprintFunc()
+	for _, binary := range binaries {
+		fmt.Printf("ID: %s name:%s file_name:%s\n", //nolint:forbidigo // cli printing
+			yellow(binary.ID),
+			yellow(binary.Name),
+			yellow(binary.FileName))
+	}
+	fmt.Printf("Total %s binaries\n", yellow(len(binaries))) //nolint:forbidigo // cli printing
 }

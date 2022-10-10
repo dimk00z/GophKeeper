@@ -1,8 +1,11 @@
 package repo
 
 import (
+	"fmt"
+
 	"github.com/dimk00z/GophKeeper/internal/client/usecase/repo/models"
 	"github.com/dimk00z/GophKeeper/internal/entity"
+	"github.com/dimk00z/GophKeeper/internal/utils"
 )
 
 func (r *GophKeeperRepo) RemoveUsers() {
@@ -11,10 +14,14 @@ func (r *GophKeeperRepo) RemoveUsers() {
 
 func (r *GophKeeperRepo) AddUser(user *entity.User) error {
 	r.RemoveUsers()
+	hashedPassword, err := utils.HashPassword(user.Password)
+	if err != nil {
+		return fmt.Errorf("GophKeeperRepo - AddUser - HashPassword - %w", err)
+	}
 
 	newUser := models.User{
 		Email:    user.Email,
-		Password: user.Password,
+		Password: hashedPassword,
 	}
 
 	return r.db.Create(&newUser).Error

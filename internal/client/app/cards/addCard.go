@@ -25,8 +25,8 @@ Flags:
   -p, --password string   User password value.
   -t, --title string      Card title
   -y, --year string       Card expiration year
-  -meta 				  Add meta data for entiry
-  example: -meta'[{"name":"some_meta","value":"some_meta_value"},{"name":"some_meta2","value":"some_meta_value2"}]'
+  --meta 				  Add meta data for entiry
+  example: --meta'[{"name":"some_meta","value":"some_meta_value"},{"name":"some_meta2","value":"some_meta_value2"}]'
   `,
 	Run: func(cmd *cobra.Command, args []string) {
 		usecase.GetClientUseCase().AddCard(userPassword, &cardForAdditing)

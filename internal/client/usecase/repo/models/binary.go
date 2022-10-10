@@ -18,6 +18,6 @@ type Binary struct {
 	ID       uuid.UUID `gorm:"type:uuid;primary_key"`
 	Name     string
 	FileName string
-	UserID   uuid.UUID
+	UserID   uint
 	Meta     []MetaBinary
 }

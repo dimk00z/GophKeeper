@@ -458,7 +458,10 @@ const docTemplate = `{
                     "202": {
                         "description": "Accepted",
                         "schema": {
-                            "$ref": "#/definitions/entity.Binary"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/entity.Meta"
+                            }
                         }
                     },
                     "401": {

@@ -9,10 +9,11 @@ import (
 
 type (
 	Config struct {
-		App    `yaml:"app"`
-		Server `yaml:"server"`
-		Log    `yaml:"logger"`
-		SQLite `yaml:"sqlite"`
+		App          `yaml:"app"`
+		Server       `yaml:"server"`
+		Log          `yaml:"logger"`
+		SQLite       `yaml:"sqlite"`
+		FilesStorage `yaml:"files_storage"`
 	}
 
 	App struct {
@@ -30,6 +31,9 @@ type (
 
 	SQLite struct {
 		DSN string `yaml:"sqlite_dsn" env:"SQLITE_DSN"`
+	}
+	FilesStorage struct {
+		Location string `yaml:"location" env:"FILES_LOCATION"`
 	}
 )
 

@@ -84,4 +84,11 @@ func initApp() {
 	for _, opt := range clientOpts {
 		opt(uc)
 	}
+
+	if _, err := os.Stat(cfg.FilesStorage.Location); os.IsNotExist(err) {
+		err = os.MkdirAll(cfg.FilesStorage.Location, os.ModePerm)
+		if err != nil {
+			log.Fatalf("App.Init - os.MkdirAll - %v", err)
+		}
+	}
 }

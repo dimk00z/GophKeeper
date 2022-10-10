@@ -19,8 +19,8 @@ Flags:
   -h, --help              help for addlogin
   -p, --password string   User password value.
   -f, --file string       User file  
-  -meta 				  Add meta data for entiry
-  example: -meta'[{"name":"some_meta","value":"some_meta_value"},{"name":"some_meta2","value":"some_meta_value2"}]'
+  --meta 				  Add meta data for entiry
+  example: --meta'[{"name":"some_meta","value":"some_meta_value"},{"name":"some_meta2","value":"some_meta_value2"}]'
   `,
 	Run: func(cmd *cobra.Command, args []string) {
 		usecase.GetClientUseCase().AddBinary(userPassword, &binaryForAdditing)

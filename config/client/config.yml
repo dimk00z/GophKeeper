@@ -11,3 +11,6 @@ logger:
 
 sqlite:
   sqlite_dsn: 'gophkeeper.sqlite'
+
+files_storage:
+  location: 'user_files'

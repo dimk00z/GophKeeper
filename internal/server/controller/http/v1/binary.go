@@ -170,7 +170,7 @@ func (r *GophKeeperRoutes) DelBinary(ctx *gin.Context) {
 // @Param       request body []entity.Meta true "meta for save"
 // @Accept      json
 // @Produce     json
-// @Success     202 {object} entity.Binary
+// @Success     202 {object} []entity.Meta
 // @Failure     401 {object} response
 // @Failure     500 {object} response
 // @Router      /user/binary/{id}/meta [post].
@@ -201,5 +201,5 @@ func (r *GophKeeperRoutes) AddBinaryMeta(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusCreated, binary)
+	ctx.JSON(http.StatusCreated, binary.Meta)
 }

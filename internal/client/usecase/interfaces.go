@@ -61,6 +61,12 @@ type (
 		AddNote(*entity.SecretNote) error
 		GetNoteByID(notedID uuid.UUID) (entity.SecretNote, error)
 		DelNote(noteID uuid.UUID) error
+
+		LoadBinaries() []viewsets.BinaryForList
+		SaveBinaries([]entity.Binary) error
+		AddBinary(*entity.Binary) error
+		GetBinaryByID(binarydID uuid.UUID) (entity.Binary, error)
+		DelBinary(binaryID uuid.UUID) error
 	}
 	GophKeeperClientAPI interface {
 		Login(user *entity.User) (entity.JWT, error)
@@ -77,5 +83,10 @@ type (
 		GetNotes(accessToken string) ([]entity.SecretNote, error)
 		AddNote(accessToken string, note *entity.SecretNote) error
 		DelNote(accessToken, noteID string) error
+
+		GetBinaries(accessToken string) ([]entity.Binary, error)
+		AddBinary(accessToken string, binary *entity.Binary, tmpFilePath string) error
+		DelBinary(accessToken, binaryID string) error
+		DownloadBinary(accessToken, binary *entity.Binary) error
 	}
 )

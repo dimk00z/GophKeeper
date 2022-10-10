@@ -397,7 +397,9 @@ paths:
         "202":
           description: Accepted
           schema:
-            $ref: '#/definitions/entity.Binary'
+            items:
+              $ref: '#/definitions/entity.Meta'
+            type: array
         "401":
           description: Unauthorized
           schema:

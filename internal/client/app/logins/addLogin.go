@@ -22,8 +22,8 @@ Flags:
   -s, --secret string     Site password|secret
   -t, --title string      Login title
   -u, --uri string        Site endloint  
-  -meta 				  Add meta data for entiry
-  example: -meta'[{"name":"some_meta","value":"some_meta_value"},{"name":"some_meta2","value":"some_meta_value2"}]'
+  --meta 				  Add meta data for entiry
+  example: --meta'[{"name":"some_meta","value":"some_meta_value"},{"name":"some_meta2","value":"some_meta_value2"}]'
   `,
 	Run: func(cmd *cobra.Command, args []string) {
 		usecase.GetClientUseCase().AddLogin(userPassword, &loginForAdditing)
