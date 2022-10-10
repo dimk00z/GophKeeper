@@ -30,7 +30,7 @@ var (
 func init() {
 	GetBinary.Flags().StringVarP(&userPassword, "password", "p", "", "User password value.")
 	GetBinary.Flags().StringVarP(&getBinaryID, "id", "i", "", "Binary id")
-	AddBinary.Flags().StringVarP(&filePath, "file", "f", "", "User file")
+	GetBinary.Flags().StringVarP(&filePath, "file", "f", "", "User file")
 
 	if err := GetBinary.MarkFlagRequired("password"); err != nil {
 		log.Fatal(err)
