@@ -88,6 +88,15 @@ func (r *GophKeeperRepo) GetNoteByID(noteID uuid.UUID) (note entity.SecretNote, 
 	note.ID = noteFromDB.ID
 	note.Note = noteFromDB.Note
 	note.Name = noteFromDB.Name
+	for index := range noteFromDB.Meta {
+		note.Meta = append(
+			note.Meta,
+			entity.Meta{
+				ID:    noteFromDB.Meta[index].ID,
+				Name:  noteFromDB.Meta[index].Name,
+				Value: noteFromDB.Meta[index].Value,
+			})
+	}
 
 	return
 }

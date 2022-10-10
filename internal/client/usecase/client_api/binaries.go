@@ -2,6 +2,7 @@ package clientapi
 
 import (
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/dimk00z/GophKeeper/internal/entity"
@@ -52,7 +53,21 @@ func (api *GophKeeperClientAPI) DelBinary(accessToken, binaryID string) error {
 	return api.delEntity(accessToken, binaryEndpoint, binaryID)
 }
 
-func (api *GophKeeperClientAPI) DownloadBinary(accessToken, binary *entity.Binary) error {
-	// TODO: addlogic
+func (api *GophKeeperClientAPI) DownloadBinary(accessToken, outpuFilePath string, binary *entity.Binary) error {
+	client := resty.New()
+	client.SetAuthToken(accessToken)
+	resp, err := client.R().
+		SetOutput(outpuFilePath).
+		Get(fmt.Sprintf("%s/%s/%s", api.serverURL, binaryEndpoint, binary.ID.String()))
+	if err != nil {
+		log.Println(err)
+
+		return err
+	}
+
+	if err := api.checkResCode(resp); err != nil {
+		return err
+	}
+
 	return nil
 }

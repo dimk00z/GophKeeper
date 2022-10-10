@@ -66,8 +66,33 @@ func (uc *GophKeeperClientUseCase) DelBinary(userPassword, binaryID string) {
 	color.Green("Binary %q removed", binaryID)
 }
 
-func (uc *GophKeeperClientUseCase) GetBinary(userPassword, getBinaryID, filePath string) {
-	// TODO:Add logic
+func (uc *GophKeeperClientUseCase) GetBinary(userPassword, binaryID, filePath string) {
+	accessToken, err := uc.authorisationCheck(userPassword)
+	if err != nil {
+		return
+	}
+
+	binaryUUID, err := uuid.Parse(binaryID)
+	if err != nil {
+		log.Fatalf("GophKeeperClientUseCase - GetBinary - uuid.Parse - %v", err)
+	}
+
+	binary, err := uc.repo.GetBinaryByID(binaryUUID)
+	if err != nil {
+		log.Fatalf("GophKeeperClientUseCase - GetBinary - GetBinaryByID - %v", err)
+	}
+
+	tmpFilePath := "/tmp/" + binary.FileName
+	if err = uc.clientAPI.DownloadBinary(accessToken, tmpFilePath, &binary); err != nil {
+		log.Fatalf("GophKeeperClientUseCase - GetBinary - clientAPI.DownloadBinary - %v", err)
+	}
+
+	if err = utils.DecryptFile(userPassword, tmpFilePath, filePath); err != nil {
+		log.Fatalf("GophKeeperClientUseCase - GetBinary - EncryptFile - %v", err)
+	}
+
+	color.Green("File decrypted to %s", filePath)
+	color.Green("%v", binary)
 }
 
 func (uc *GophKeeperClientUseCase) loadBinaries(accessToken string) {

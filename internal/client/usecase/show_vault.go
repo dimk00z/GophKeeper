@@ -34,7 +34,6 @@ func (uc *GophKeeperClientUseCase) ShowVault(userPassword, showVaultOption strin
 		uc.showNotes(uc.repo.LoadNotes())
 	case showBinaries:
 		uc.showBinaries(uc.repo.LoadBinaries())
-
 	}
 }
 

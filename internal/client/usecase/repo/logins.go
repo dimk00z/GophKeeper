@@ -103,6 +103,15 @@ func (r *GophKeeperRepo) GetLoginByID(loginID uuid.UUID) (login entity.Login, er
 	login.Name = loginFromDB.Name
 	login.Password = loginFromDB.Password
 	login.URI = loginFromDB.URI
+	for index := range loginFromDB.Meta {
+		login.Meta = append(
+			login.Meta,
+			entity.Meta{
+				ID:    loginFromDB.Meta[index].ID,
+				Name:  loginFromDB.Meta[index].Name,
+				Value: loginFromDB.Meta[index].Value,
+			})
+	}
 
 	return
 }

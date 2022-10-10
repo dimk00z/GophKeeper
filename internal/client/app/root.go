@@ -64,6 +64,8 @@ func init() {
 		notes.GetNote,
 
 		binary.AddBinary,
+		binary.DelBinary,
+		binary.GetBinary,
 	}
 
 	rootCmd.AddCommand(commands...)

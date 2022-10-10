@@ -87,6 +87,6 @@ type (
 		GetBinaries(accessToken string) ([]entity.Binary, error)
 		AddBinary(accessToken string, binary *entity.Binary, tmpFilePath string) error
 		DelBinary(accessToken, binaryID string) error
-		DownloadBinary(accessToken, binary *entity.Binary) error
+		DownloadBinary(accessToken, outpuFilePath string, binary *entity.Binary) error
 	}
 )

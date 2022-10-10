@@ -76,13 +76,34 @@ func (r *GophKeeperRepo) AddBinary(binary *entity.Binary) error {
 				return err
 			}
 		}
+
 		return nil
 	})
 }
 
-func (r *GophKeeperRepo) GetBinaryByID(binarydID uuid.UUID) (entity.Binary, error) {
-	// TODO:add logic
-	return entity.Binary{}, nil
+func (r *GophKeeperRepo) GetBinaryByID(binaryID uuid.UUID) (binary entity.Binary, err error) {
+	var binaryFromDB models.Binary
+	if err = r.db.
+		Model(&models.Binary{}).
+		Preload("Meta").
+		Find(&binaryFromDB, binaryID).Error; binaryFromDB.ID == uuid.Nil || err != nil {
+		return binary, errNoteNotFound
+	}
+
+	binary.ID = binaryFromDB.ID
+	binary.Name = binaryFromDB.Name
+	binary.FileName = binaryFromDB.FileName
+	for index := range binaryFromDB.Meta {
+		binary.Meta = append(
+			binary.Meta,
+			entity.Meta{
+				ID:    binaryFromDB.Meta[index].ID,
+				Name:  binaryFromDB.Meta[index].Name,
+				Value: binaryFromDB.Meta[index].Value,
+			})
+	}
+
+	return binary, nil
 }
 
 func (r *GophKeeperRepo) DelBinary(binaryID uuid.UUID) error {

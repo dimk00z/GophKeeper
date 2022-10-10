@@ -9,10 +9,10 @@ import (
 
 var GetBinary = &cobra.Command{ //nolint:gochecknoglobals // cobra style guide
 	Use:   "getbinary",
-	Short: "Show user file by id",
+	Short: "Get user file by id",
 	Long: `
-This command show user binary info and encode it for path
-Usage: getnote -i \"note_id\" 
+This command get user binary info and encode it for path
+Usage: getbinary -i \"binary_id\" -f some_file -p pass 
 Flags:
   -i, --id string Note id
   -p, --password string   User password value
