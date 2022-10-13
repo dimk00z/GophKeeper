@@ -3,35 +3,27 @@ services:
 
   postgres:
     container_name: postgres
-    image: postgres
+    image: docker.io/bitnami/postgresql:14
     volumes:
+      - ./postgres/docker-entrypoint-initdb:/docker-entrypoint-initdb.d/
       - pg-data:/var/lib/postgresql/data
-    environment:
-      POSTGRES_USER: 'user'
-      POSTGRES_PASSWORD: 'pass'
-      POSTGRES_DB: 'postgres'
+    env_file:
+      - .env.example
+      # - .env
     ports:
       - 5432:5432
-
-  rabbitmq:
-    container_name: rabbitmq
-    image: rabbitmq:3.8.12-management
-    ports:
-      - 5672:5672
-      - 15672:15672
 
   app:
     build: .
     container_name: app
     image: app
-    environment:
-      PG_URL: 'postgres://user:pass@postgres:5432/postgres'
-      RMQ_URL: 'amqp://guest:guest@rabbitmq:5672/'
+    env_file:
+      - .env.example
+      # - .env
     ports:
       - 8080:8080
     depends_on:
       - postgres
-      - rabbitmq
 
   integration:
     build:

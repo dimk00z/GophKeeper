@@ -1,6 +1,6 @@
 linters-settings:
   gci:
-    local-prefixes: github.com/evrone/go-clean-template
+    local-prefixes: github.com/dimk00z/GophKeeper
   dupl:
     threshold: 100
   errorlint:
@@ -61,7 +61,6 @@ linters:
     - deadcode
     - depguard
     - dogsled
-    - dupl
     - durationcheck
     - errcheck
     - errorlint
@@ -69,14 +68,11 @@ linters:
     - exportloopref
     - forbidigo
     - funlen
-    - gci
     - gochecknoglobals
-    - gochecknoinits
     - gocognit
     - goconst
     - gocritic
     - gocyclo
-    - godot
     - godox
     - goerr113
     - gofmt
@@ -96,7 +92,6 @@ linters:
     - nlreturn
     - noctx
     - nolintlint
-    - paralleltest
     - predeclared
     - revive
     - rowserrcheck
@@ -111,16 +106,21 @@ linters:
     - unparam
     - unused
     - varcheck
-    - wsl
     - whitespace
 
-# disable:
-#    - exhaustivestruct
-#    - ifshort
-#    - goheader
-#    - prealloc
-#    - testpackage
-#    - wrapcheck
+disable:
+   - exhaustivestruct
+   - ifshort
+   - goheader
+   - godot
+   - prealloc
+   - testpackage
+   - wrapcheck
+   - dupl
+   - gci
+   - gochecknoinits
+   - paralleltest
+
 
 issues:
   exclude-rules:
