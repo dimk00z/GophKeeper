@@ -24,7 +24,3 @@ Usage: gophkeeperclient login user_login user_password`,
 		usecase.GetClientUseCase().Login(&account)
 	},
 }
-
-// func init() {
-// 	rootCmd.AddCommand(loginUserCmd)
-// }

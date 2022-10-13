@@ -22,6 +22,3 @@ Usage: gophkeeperclient register user_login user_password`,
 		usecase.GetClientUseCase().Register(&account)
 	},
 }
-
-func init() {
-}
