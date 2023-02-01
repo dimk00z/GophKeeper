@@ -19,7 +19,7 @@ require (
 	github.com/spf13/cobra v1.6.1
 	github.com/swaggo/files v0.0.0-20220728132757-551d4a08d97a
 	github.com/swaggo/gin-swagger v1.5.3
-	github.com/swaggo/swag v1.8.7
+	github.com/swaggo/swag v1.8.10
 	golang.org/x/crypto v0.0.0-20220919173607-35f4265a4bc0
 	golang.org/x/exp v0.0.0-20221002003631-540bb7301a08
 	gorm.io/driver/postgres v1.3.10
